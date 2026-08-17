@@ -50,6 +50,7 @@ app.use('/api/accommodations', require('./routes/accommodationRoutes'));
 app.use('/api/currency', require('./routes/currencyRoutes'));
 app.use('/api/records', require('./routes/recordRoutes'));
 app.use('/api/reports', require('./routes/reportRoutes'));
+app.use('/api/prescriptions', require('./routes/prescriptionRoutes'));
 
 // Fallback 404 Route Handler
 app.use((req, res, next) => {
