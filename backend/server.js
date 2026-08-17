@@ -45,6 +45,11 @@ app.use('/api/ambulance', require('./routes/ambulanceRoutes'));
 app.use('/api/ngos', require('./routes/ngoRoutes'));
 app.use('/api/insurance', require('./routes/insuranceRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
+app.use('/api/translators', require('./routes/translatorRoutes'));
+app.use('/api/accommodations', require('./routes/accommodationRoutes'));
+app.use('/api/currency', require('./routes/currencyRoutes'));
+app.use('/api/records', require('./routes/recordRoutes'));
+app.use('/api/reports', require('./routes/reportRoutes'));
 
 // Fallback 404 Route Handler
 app.use((req, res, next) => {
