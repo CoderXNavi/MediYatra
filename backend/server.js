@@ -40,6 +40,12 @@ app.use('/api/treatments', require('./routes/treatmentRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/search', require('./routes/searchRoutes'));
 
+// Enhanced Medical Tourism Feature Routes
+app.use('/api/ambulance', require('./routes/ambulanceRoutes'));
+app.use('/api/ngos', require('./routes/ngoRoutes'));
+app.use('/api/insurance', require('./routes/insuranceRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
+
 // Fallback 404 Route Handler
 app.use((req, res, next) => {
   res.status(404).json({
