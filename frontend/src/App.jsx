@@ -12,6 +12,7 @@ import AdminDashboard from './components/AdminDashboard';
 import AITriageWidget from './components/AITriageWidget';
 import AppointmentModal from './components/AppointmentModal';
 import ConsultationModal from './components/ConsultationModal';
+import TourismBookingModal from './components/TourismBookingModal';
 import EmergencySOSModal from './components/EmergencySOSModal';
 import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
@@ -44,6 +45,8 @@ export default function App() {
   // Modals state
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [isTourismModalOpen, setIsTourismModalOpen] = useState(false);
+  const [tourismModalService, setTourismModalService] = useState('');
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
   const [isAITriageOpen, setIsAITriageOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -132,12 +135,9 @@ export default function App() {
     setIsBookingOpen(true);
   }
 
-  function handleBookService(serviceName) {
-    setSelectedService(serviceName);
-    setSelectedDoctor(null);
-    setSelectedHospital(null);
-    setSelectedTreatment(null);
-    setIsBookingOpen(true);
+  function handleOpenTourismModal(serviceTitle) {
+    setTourismModalService(serviceTitle || 'Fast-Track e-Medical Visa Invitation Letter');
+    setIsTourismModalOpen(true);
   }
 
   // Auth Success Return Flow Handler
@@ -245,7 +245,7 @@ export default function App() {
               <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
                 Procedure Pricing & Tariff Comparisons
               </h1>
-              <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
+              <p className="text-[#D7C6FF] text-xs sm:text-sm mt-1 font-semibold">
                 Compare hospital surgical tariffs in India against US/UK hospital costs with up to 90% savings.
               </p>
             </div>
@@ -368,7 +368,8 @@ export default function App() {
 
         {activeTab === 'tourism' && (
           <MedicalTourismHub 
-            onSelectService={handleBookService}
+            currency={currency}
+            onSelectService={handleOpenTourismModal}
           />
         )}
 
@@ -417,6 +418,18 @@ export default function App() {
         currentUser={currentUser}
         doctor={consultationDoctor}
         onConsultationSubmitted={() => {
+          setActiveTab('records');
+        }}
+      />
+
+      <TourismBookingModal
+        isOpen={isTourismModalOpen}
+        onClose={() => setIsTourismModalOpen(false)}
+        currentUser={currentUser}
+        initialService={tourismModalService}
+        hospitals={hospitals}
+        doctors={doctors}
+        onSuccess={() => {
           setActiveTab('records');
         }}
       />
