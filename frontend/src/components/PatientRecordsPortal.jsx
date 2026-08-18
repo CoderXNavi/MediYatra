@@ -13,13 +13,15 @@ import {
   Lock,
   User,
   ShieldCheck,
-  MessageSquare
+  MessageSquare,
+  Plane
 } from 'lucide-react';
 
 export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNewAppointment }) {
   const [activeSubTab, setActiveSubTab] = useState('consultations');
   const [consultations, setConsultations] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [tourismOrders, setTourismOrders] = useState([]);
   const [records, setRecords] = useState([]);
   const [reports, setReports] = useState([]);
   const [prescriptions, setPrescriptions] = useState([]);
@@ -30,6 +32,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
       if (!currentUser?.email) {
         setConsultations([]);
         setAppointments([]);
+        setTourismOrders([]);
         setRecords([]);
         setReports([]);
         setPrescriptions([]);
@@ -40,9 +43,10 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
       try {
         const userEmail = encodeURIComponent(currentUser.email.trim().toLowerCase());
         
-        const [conRes, aptsRes, recsRes, repsRes, rxRes] = await Promise.all([
+        const [conRes, aptsRes, tourRes, recsRes, repsRes, rxRes] = await Promise.all([
           fetch(`/api/consultations?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null),
           fetch(`/api/appointments?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null),
+          fetch(`/api/tourism?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null),
           fetch(`/api/records?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null),
           fetch(`/api/reports?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null),
           fetch(`/api/prescriptions?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null)
@@ -50,6 +54,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
 
         if (conRes?.data) setConsultations(conRes.data);
         if (aptsRes?.data) setAppointments(aptsRes.data);
+        if (tourRes?.data) setTourismOrders(tourRes.data);
         if (recsRes?.data) setRecords(recsRes.data);
         if (repsRes?.data) setReports(repsRes.data);
         if (rxRes?.data) setPrescriptions(rxRes.data);
@@ -127,7 +132,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
             </span>
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">
-            My Health Records & Consultations
+            My Health Records & Travel Concierge
           </h2>
           <p className="text-slate-900 text-xs sm:text-sm mt-1 font-bold">
             Private records associated with account <span className="text-[#2D3A5E] font-black">{currentUser.email}</span>.
@@ -148,6 +153,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
         {[
           { id: 'consultations', label: `My Doctor Consultations (${consultations.length})`, icon: MessageSquare },
           { id: 'appointments', label: `My Appointments (${appointments.length})`, icon: Calendar },
+          { id: 'tourism', label: `My Tourism & Travel Services (${tourismOrders.length})`, icon: Plane },
           { id: 'records', label: 'My Medical Records', icon: FileText },
           { id: 'reports', label: 'My Diagnostic Reports', icon: FileCheck },
           { id: 'prescriptions', label: 'My Prescriptions', icon: Pill },
@@ -339,6 +345,59 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
                   </div>
                 );
               })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Sub Tab: My Tourism & Travel Services (NEW) */}
+      {activeSubTab === 'tourism' && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-slate-900 font-sans">Booked Medical Tourism & Concierge Services</h3>
+          
+          {tourismOrders.length === 0 ? (
+            <div className="portal-card p-12 text-center bg-white border-2 border-slate-300 rounded-xl space-y-3">
+              <Plane className="w-12 h-12 text-slate-400 mx-auto" />
+              <h4 className="text-base font-black text-slate-900">No Tourism & Travel Services Booked Yet</h4>
+              <p className="text-xs text-slate-700 font-bold">Request Visa Invitation Letters, Certified Language Interpreters, Recovery Suites, or Airport Pickups from the Tourism Concierge Hub.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {tourismOrders.map((ord) => (
+                <div key={ord._id} className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl flex flex-col justify-between space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                      <span className="font-mono text-xs font-black text-[#2D3A5E]">Order Ref: {ord._id}</span>
+                      <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
+                        ord.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
+                        ord.status === 'Completed' ? 'bg-blue-100 text-blue-950 border-blue-300' :
+                        'bg-amber-100 text-amber-950 border-amber-300'
+                      }`}>
+                        {ord.status || 'Pending'}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1 text-xs font-bold text-slate-900">
+                      <p className="text-sm font-black text-[#2D3A5E] flex items-center gap-1.5">
+                        <Plane className="w-4 h-4 text-[#2D3A5E]" />
+                        <span>Service: {ord.serviceType}</span>
+                      </p>
+                      <p className="text-slate-700">{ord.serviceDetails || 'Standard International Support'}</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-700 font-extrabold">Patient: {ord.patientName}</span>
+                    <button
+                      onClick={() => handleDownloadPDF(`Tourism_Voucher_${ord._id}`)}
+                      className="px-3 py-1.5 bg-[#2D3A5E] text-white text-xs font-black rounded hover:bg-[#1A233D] flex items-center gap-1"
+                    >
+                      <Download className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                      <span>Download Voucher</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

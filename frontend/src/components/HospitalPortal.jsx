@@ -10,14 +10,17 @@ import {
   Bed,
   ShieldCheck,
   Award,
-  Clock
+  Clock,
+  Plane,
+  FileText
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
 export default function HospitalPortal({ currentUser }) {
-  const [activeTab, setActiveTab] = useState('appointments'); // 'appointments' | 'doctors' | 'facilities'
+  const [activeTab, setActiveTab] = useState('appointments'); // 'appointments' | 'doctors' | 'facilities' | 'visa-support'
   const [appointments, setAppointments] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [tourismOrders, setTourismOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusMsg, setStatusMsg] = useState('');
 
@@ -35,13 +38,15 @@ export default function HospitalPortal({ currentUser }) {
   async function loadHospitalData() {
     setIsLoading(true);
     try {
-      const [docList, aptsRes] = await Promise.all([
+      const [docList, aptsRes, tourRes] = await Promise.all([
         apiService.getDoctors(),
-        fetch('/api/appointments').then(r => r.ok ? r.json() : null)
+        fetch('/api/appointments').then(r => r.ok ? r.json() : null),
+        fetch('/api/tourism').then(r => r.ok ? r.json() : null)
       ]);
 
       setDoctors(docList || []);
       if (aptsRes?.data) setAppointments(aptsRes.data);
+      if (tourRes?.data) setTourismOrders(tourRes.data);
     } catch (err) {
       console.warn('Error loading hospital provider data:', err);
     } finally {
@@ -58,6 +63,22 @@ export default function HospitalPortal({ currentUser }) {
       });
       if (res.ok) {
         setStatusMsg(`✅ Hospital appointment #${id} status updated to ${newStatus}`);
+        loadHospitalData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleApproveVisaLetter(id) {
+    try {
+      const res = await fetch(`/api/tourism/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'Confirmed' })
+      });
+      if (res.ok) {
+        setStatusMsg(`✅ Visa Invitation Letter #${id} approved by Hospital Desk!`);
         loadHospitalData();
       }
     } catch (err) {
@@ -106,10 +127,10 @@ export default function HospitalPortal({ currentUser }) {
             </span>
           </div>
           <h2 className="text-2xl font-black text-white tracking-tight font-sans">
-            Hospital Provider Desk & Medical Roster
+            Hospital Provider Desk & Operations Portal
           </h2>
           <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-            Manage hospital medical staff, confirm patient appointment requests, and oversee clinical bed facilities.
+            Manage hospital medical staff, confirm patient appointment requests, clear visa letters, and oversee clinical bed facilities.
           </p>
         </div>
 
@@ -135,6 +156,7 @@ export default function HospitalPortal({ currentUser }) {
           { id: 'appointments', label: `Hospital Appointments (${appointments.length})`, icon: Calendar },
           { id: 'doctors', label: `Hospital Doctor Roster (${doctors.length})`, icon: UserCheck },
           { id: 'facilities', label: 'Hospital Facilities & Bed Management', icon: Bed },
+          { id: 'visa-support', label: `Visa Letters & Travel Support (${tourismOrders.length})`, icon: Plane },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -158,7 +180,7 @@ export default function HospitalPortal({ currentUser }) {
       {/* 1. Appointments */}
       {activeTab === 'appointments' && (
         <div className="space-y-4">
-          <h3 className="text-lg font-black text-slate-900 font-sans">Patient Consultation Requests for Hospital</h3>
+          <h3 className="text-lg font-black text-slate-900 font-sans font-bold">Patient Consultation Requests for Hospital</h3>
           <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-900 font-bold">
@@ -303,6 +325,58 @@ export default function HospitalPortal({ currentUser }) {
             <div className="p-4 bg-slate-100 rounded-xl border-2 border-slate-300">
               <span className="text-slate-600 block text-[10px] uppercase font-black">International Patient Lounges</span>
               <span className="text-2xl font-black text-[#2D3A5E] font-mono">3 VIP Suites</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Visa & Travel Support (NEW) */}
+      {activeTab === 'visa-support' && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-slate-900 font-sans">International Patient Visa Invitations & Travel Orders</h3>
+          <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-900 font-bold">
+                <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
+                  <tr>
+                    <th className="p-3">Order ID</th>
+                    <th className="p-3">Patient Name</th>
+                    <th className="p-3">Service Requested</th>
+                    <th className="p-3">Status</th>
+                    <th className="p-3 text-right">Hospital Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {tourismOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="p-6 text-center text-slate-600 font-bold">No international visa or travel requests pending.</td>
+                    </tr>
+                  ) : (
+                    tourismOrders.map((ord) => (
+                      <tr key={ord._id} className="hover:bg-slate-50">
+                        <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
+                        <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
+                        <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
+                        <td className="p-3">
+                          <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
+                            ord.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                          }`}>
+                            {ord.status || 'Pending'}
+                          </span>
+                        </td>
+                        <td className="p-3 text-right">
+                          <button
+                            onClick={() => handleApproveVisaLetter(ord._id)}
+                            className="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black rounded"
+                          >
+                            Approve VIL Letter
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
