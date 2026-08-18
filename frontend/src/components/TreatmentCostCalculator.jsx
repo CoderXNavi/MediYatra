@@ -32,6 +32,33 @@ export default function TreatmentCostCalculator({ treatments = [], currency, onB
 
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Top Visual Hero Banner for Surgical Tariffs */}
+      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+        <img
+          src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=1600"
+          alt="Robotic Surgery Suite & Modern Operating Room"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
+        
+        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+              Full Price Transparency
+            </span>
+            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-full uppercase tracking-wider">
+              Save Up To 85% Vs. US/UK Rates
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+            Surgical Package Tariffs & Treatment Cost Estimator
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
+            Compare verified all-inclusive surgical procedure packages in India against US/UK hospital averages with zero hidden surgical fees.
+          </p>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8">
         <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">

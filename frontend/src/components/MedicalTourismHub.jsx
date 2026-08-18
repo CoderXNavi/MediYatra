@@ -85,6 +85,32 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
 
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Top Visual Hero Banner for Medical Tourism Concierge */}
+      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+        <img
+          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=1600"
+          alt="International Medical Tourism Concierge & Flight Travel"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
+        
+        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+              End-to-End Travel Concierge
+            </span>
+            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-full uppercase tracking-wider">
+              24h Visa Recommendation Letter
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+            International Medical Tourism & Flight Concierge
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
+            Full concierge support including e-Medical Visa Invitation Letters issued by host hospitals, certified multilingual interpreters, airport wheelchair transfers, and serviced recovery guest suites.
+          </p>
+        </div>
+      </div>
       
       {/* Header Toolbar */}
       <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8">

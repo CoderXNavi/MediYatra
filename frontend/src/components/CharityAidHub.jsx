@@ -183,6 +183,32 @@ export default function CharityAidHub({ currentUser, onOpenAuth }) {
 
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Top Visual Hero Banner for Donor & Charity Aid Page */}
+      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+        <img
+          src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=1600"
+          alt="Charity Healthcare & Aid Distribution"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
+        
+        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 py-1 bg-emerald-500 text-slate-950 text-xs font-black rounded-full uppercase tracking-wider">
+              Humanitarian Healthcare Aid
+            </span>
+            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+              Verified NGO Partners
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+            Surplus Medicine & Medical Equipment Aid Hub
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
+            Connecting donors, verified health foundations, and underprivileged patients with donated wheelchairs, oxygen cylinders, surplus surgical supplies, and philanthropic medical grants.
+          </p>
+        </div>
+      </div>
       
       {/* Header Banner */}
       <div className="bg-[#2D3A5E] text-white rounded-2xl p-6 sm:p-8 border-2 border-[#8FA9FF] shadow-md mb-8">

@@ -123,6 +123,32 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
   // Authenticated Patient View
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Top Visual Hero Banner for Patient Records Portal */}
+      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+        <img
+          src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1600"
+          alt="Patient Health Records & Clinical Pipeline"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
+        
+        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+              Session-Isolated Health Portal
+            </span>
+            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-full uppercase tracking-wider">
+              Encrypted Patient Records
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+            My Clinical Records & Medical Tourism Pipeline
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
+            Track real-time doctor responses, download official hospital appointment vouchers, review diagnostic lab reports, and manage digital prescriptions under your isolated account.
+          </p>
+        </div>
+      </div>
       
       {/* Header */}
       <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
