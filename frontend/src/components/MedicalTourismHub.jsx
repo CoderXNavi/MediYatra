@@ -115,7 +115,7 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
       {/* Header Toolbar */}
       <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8">
         <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
-          MEDI'YATRA International Support Services
+          MEDIYATRA International Support Services
         </span>
         <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">
           e-Medical Visa, Translators & Travel Concierge

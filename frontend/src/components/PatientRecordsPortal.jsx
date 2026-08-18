@@ -71,7 +71,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
   }, [currentUser]);
 
   function handleDownloadPDF(title) {
-    const content = `MEDI'YATRA HEALTHCARE CONCIERGE\nOFFICIAL MEDICAL DOCUMENT\n================================\nDocument: ${title}\nPatient: ${currentUser?.name || 'Authenticated Patient'}\nPatient Email: ${currentUser?.email || 'N/A'}\nGenerated Date: ${new Date().toLocaleDateString()}\nStatus: Verified Identity-Protected Clinical Record\n================================\nMediYatra Healthcare Network - Saket, New Delhi, India.`;
+    const content = `MEDIYATRA HEALTHCARE CONCIERGE\nOFFICIAL MEDICAL DOCUMENT\n================================\nDocument: ${title}\nPatient: ${currentUser?.name || 'Authenticated Patient'}\nPatient Email: ${currentUser?.email || 'N/A'}\nGenerated Date: ${new Date().toLocaleDateString()}\nStatus: Verified Identity-Protected Clinical Record\n================================\nMediYatra Healthcare Network - Saket, New Delhi, India.`;
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

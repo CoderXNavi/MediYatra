@@ -14,13 +14,13 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
             <div className="flex items-center gap-3">
               <img 
                 src="/logo_clean.png" 
-                alt="MEDI'YATRA Logo" 
+                alt="MEDIYATRA Logo" 
                 className="h-10 w-auto object-contain shrink-0"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
               <div className="border-l-2 border-[#8FA9FF] pl-2">
                 <span className="text-xl font-black text-white tracking-tight block leading-none font-sans">
-                  MEDI'YATRA
+                  MEDIYATRA
                 </span>
                 <span className="text-[10px] font-bold text-[#8FA9FF] block mt-0.5">
                   Connecting Health, Facilitating Care
@@ -148,7 +148,7 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
 
         {/* Footer Bottom Bar */}
         <div className="pt-6 border-t border-[#1A233D] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300 font-bold">
-          <p>© {new Date().getFullYear()} MEDI'YATRA Healthcare Concierge. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} MEDIYATRA Healthcare Concierge. All Rights Reserved.</p>
           <div className="flex flex-wrap items-center gap-4 text-slate-300">
             <span className="hover:underline cursor-pointer">Privacy Policy</span>
             <span>•</span>

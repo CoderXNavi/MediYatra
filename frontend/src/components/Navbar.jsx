@@ -183,14 +183,14 @@ export default function Navbar({
           >
             <img 
               src="/logo_clean.png" 
-              alt="MEDI'YATRA Logo" 
+              alt="MEDIYATRA Logo" 
               className="h-8 sm:h-10 w-auto object-contain shrink-0"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
 
             <div className="border-l-2 border-slate-300 pl-2 sm:pl-3">
               <span className="text-lg sm:text-2xl font-black text-[#2D3A5E] tracking-tight block leading-none font-sans">
-                MEDI'YATRA
+                MEDIYATRA
               </span>
               <span className="text-[9px] sm:text-[11px] font-extrabold text-[#2D3A5E] tracking-tight block mt-0.5 hidden xs:block">
                 Connecting Health, Facilitating Care

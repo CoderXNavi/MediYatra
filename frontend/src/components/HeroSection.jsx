@@ -34,7 +34,7 @@ export default function HeroSection({
               <div className="flex items-center gap-2 border-b border-[#8FA9FF] pb-2">
                 <ShieldCheck className="w-5 h-5 text-[#8FA9FF] shrink-0" />
                 <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
-                  MEDI'YATRA HERITAGE
+                  MEDIYATRA HERITAGE
                 </span>
               </div>
               
@@ -159,7 +159,7 @@ export default function HeroSection({
               <div className="bg-white rounded-lg p-1.5 shadow-2xl flex flex-col sm:flex-row items-stretch gap-2 border-4 border-[#8FA9FF]">
                 <input
                   type="text"
-                  placeholder="Search MEDI'YATRA Portal (e.g. Max Hospital, Cardiology, CABG)..."
+                  placeholder="Search MEDIYATRA Portal (e.g. Max Hospital, Cardiology, CABG)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full text-[#2D3A5E] font-black placeholder-[#2D3A5E] text-xs sm:text-sm px-3 py-2 focus:outline-none"
@@ -182,7 +182,7 @@ export default function HeroSection({
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-4">
           <h3 className="text-lg sm:text-xl font-black text-[#2D3A5E] uppercase tracking-tight font-sans">
-            Official MEDI'YATRA Concierge Services
+            Official MEDIYATRA Concierge Services
           </h3>
           <p className="text-xs text-[#2D3A5E] font-black">
             Select a service portal below for immediate assistance, specialist bookings, or surgical tariffs.
