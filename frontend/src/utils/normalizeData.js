@@ -8,11 +8,12 @@ export function normalizeDoctor(doc) {
 
   const hospitalObj = typeof doc.hospitalId === 'object' && doc.hospitalId ? doc.hospitalId : null;
   const hospitalName = hospitalObj?.name || doc.hospitalName || 'Accredited Partner Hospital';
-  const hospitalCity = hospitalObj?.city || doc.hospitalCity || 'New Delhi, India';
+  const hospitalCity = hospitalObj?.city || doc.hospitalCity || 'India';
 
-  // Fee normalization (Handles both USD and INR cleanly)
-  const usdFee = doc.consultationFeeUSD ?? doc.consultationFee ?? doc.feeUSD ?? 50;
-  const inrFee = doc.consultationFeeINR ?? (typeof usdFee === 'number' ? Math.round(usdFee * 83) : 4150);
+  // Fee normalization (Handles USD, INR, OPD Fee)
+  const opdFee = doc.opdFee ?? null;
+  const usdFee = doc.consultationFeeUSD ?? (doc.opdFee ? Math.round(doc.opdFee / 83) : null) ?? doc.consultationFee ?? doc.feeUSD ?? null;
+  const inrFee = doc.consultationFeeINR ?? doc.opdFee ?? (typeof usdFee === 'number' ? Math.round(usdFee * 83) : null);
 
   // Image URL fallback
   const image = doc.imageUrl || doc.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400';
@@ -22,49 +23,70 @@ export function normalizeDoctor(doc) {
     ? doc.languages
     : Array.isArray(doc.languagesSpoken) && doc.languagesSpoken.length > 0
       ? doc.languagesSpoken
-      : ['English', 'Hindi'];
+      : [];
 
   return {
     _id: doc._id || `doc_${Math.random()}`,
-    name: doc.name || 'Senior Specialist',
-    title: doc.title || `${doc.specialty || 'Senior Specialist'} Consultant`,
+    name: doc.name || 'Specialist Doctor',
+    designation: doc.designation || doc.title || 'Senior Consultant',
+    department: doc.department || doc.specialty || 'General Medicine',
+    subSpecialty: doc.subSpecialty || null,
     hospitalId: typeof doc.hospitalId === 'string' ? doc.hospitalId : hospitalObj?._id || 'hosp_default',
     hospitalName,
     hospitalCity,
     specialty: doc.specialty || 'General Medicine',
-    experienceYears: doc.experienceYears ?? 15,
-    qualifications: doc.qualifications || 'MBBS, MD',
-    rating: doc.rating ?? 4.9,
+    experienceYears: doc.experienceYears ?? null,
+    qualifications: doc.qualifications || null,
+    rating: doc.rating ?? null,
     consultationFeeUSD: usdFee,
     consultationFeeINR: inrFee,
-    availableDays: Array.isArray(doc.availableDays) ? doc.availableDays : ['Mon', 'Wed', 'Fri'],
+    opdFee: opdFee,
+    availableDays: Array.isArray(doc.availableDays) ? doc.availableDays : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
     image,
     languagesSpoken: languages,
-    biography: doc.biography || `Board-certified ${doc.specialty || 'medical'} specialist dedicated to international patient care.`
+    biography: doc.biography || doc.professionalBio || null,
+    sourceUrl: doc.sourceUrl || null
   };
 }
 
 export function normalizeHospital(hosp) {
   if (!hosp) return null;
 
+  const centers = Array.isArray(hosp.keyCentersOfExcellence) && hosp.keyCentersOfExcellence.length > 0
+    ? hosp.keyCentersOfExcellence
+    : Array.isArray(hosp.specialties) ? hosp.specialties : [];
+
   return {
     _id: hosp._id || `hosp_${Math.random()}`,
-    name: hosp.name || 'Accredited Medical Center',
+    name: hosp.name || hosp.hospitalName || 'Accredited Medical Center',
+    hospitalType: hosp.hospitalType || 'Multi-Specialty Medical Center',
     city: hosp.city || 'New Delhi',
-    state: hosp.state || 'NCR',
+    state: hosp.state || 'Delhi',
     country: hosp.country || 'India',
-    address: hosp.address || 'Medical Enclave, India',
+    address: hosp.address || 'India',
+    pincode: hosp.pincode || null,
+    latitude: hosp.latitude || null,
+    longitude: hosp.longitude || null,
+    contactPhone: hosp.contactPhone || hosp.phone || null,
+    contactEmail: hosp.contactEmail || hosp.email || null,
+    officialWebsite: hosp.officialWebsite || null,
     accreditation: Array.isArray(hosp.accreditation) && hosp.accreditation.length > 0
       ? hosp.accreditation
-      : ['JCI Accredited', 'NABH Certified'],
-    rating: hosp.rating ?? 4.8,
-    reviewCount: hosp.reviewCount ?? 850,
-    establishedYear: hosp.establishedYear ?? 2005,
-    beds: hosp.beds ?? 500,
+      : ['JCI Accredited', 'NABH Accredited'],
+    rating: hosp.rating ?? null,
+    ratingSource: hosp.ratingSource || null,
+    reviewCount: hosp.reviewCount ?? null,
+    establishedYear: hosp.establishedYear ?? null,
+    beds: hosp.beds ?? hosp.numberOfBeds ?? null,
+    numberOfBeds: hosp.beds ?? hosp.numberOfBeds ?? null,
     image: hosp.image || hosp.imageUrl || 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200',
-    specialties: Array.isArray(hosp.specialties) ? hosp.specialties : ['Cardiology', 'Oncology', 'Orthopaedics'],
-    facilities: Array.isArray(hosp.facilities) ? hosp.facilities : ['24/7 ICU', 'VIP Lounge', 'Interpreter Desk'],
-    description: hosp.description || 'Modern quaternary medical care center with advanced surgical technology.'
+    specialties: Array.isArray(hosp.specialties) ? hosp.specialties : [],
+    keyCentersOfExcellence: centers,
+    facilities: Array.isArray(hosp.facilities) ? hosp.facilities : [],
+    emergencyAvailable: hosp.emergencyAvailable ?? true,
+    internationalPatientServices: hosp.internationalPatientServices ?? true,
+    description: hosp.description || 'Modern accredited tertiary medical center.',
+    sourceUrl: hosp.sourceUrl || null
   };
 }
 

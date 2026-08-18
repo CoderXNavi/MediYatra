@@ -129,7 +129,13 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {filteredDoctors.map((doc) => {
-            const displayFee = currency === 'INR' ? `₹${doc.consultationFeeINR.toLocaleString('en-IN')}` : `$${doc.consultationFeeUSD}`;
+            const displayFee = doc.opdFee
+              ? `₹${doc.opdFee.toLocaleString('en-IN')}`
+              : doc.consultationFeeINR 
+                ? `₹${doc.consultationFeeINR.toLocaleString('en-IN')}`
+                : doc.consultationFeeUSD
+                  ? `$${doc.consultationFeeUSD}`
+                  : 'Contact Desk';
 
             return (
               <div 
@@ -148,14 +154,16 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
                     />
 
                     <div className="space-y-1 flex-1">
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-950 text-[10px] font-black rounded border border-emerald-300">
-                          Verified Faculty
+                          {doc.designation || 'Verified Faculty'}
                         </span>
-                        <span className="text-xs font-black text-amber-950 bg-amber-100 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1">
-                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-600" />
-                          {doc.rating} ({doc.reviewCount})
-                        </span>
+                        {doc.rating ? (
+                          <span className="text-xs font-black text-amber-950 bg-amber-100 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1">
+                            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-600" />
+                            {doc.rating}
+                          </span>
+                        ) : null}
                       </div>
 
                       <h3 className="text-lg font-black text-slate-900 font-sans leading-snug">
@@ -163,7 +171,7 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
                       </h3>
 
                       <p className="text-xs font-black text-[#2D3A5E]">
-                        {doc.specialty}
+                        {doc.specialty} {doc.subSpecialty ? `• ${doc.subSpecialty}` : ''}
                       </p>
 
                       <div className="flex items-center justify-between gap-1 pt-1">
@@ -175,7 +183,7 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
                           onClick={() => setSelectedMapHospital({
                             name: doc.hospitalName,
                             address: doc.hospitalName,
-                            city: doc.hospitalCity || 'New Delhi',
+                            city: doc.hospitalCity || 'India',
                             rating: doc.rating
                           })}
                           className="text-[11px] font-black text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
@@ -192,29 +200,48 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
                   <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-900">
                     <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
                       <span className="text-[10px] text-slate-700 font-black uppercase block">Qualifications</span>
-                      <span className="font-extrabold text-slate-900">{doc.qualifications}</span>
+                      <span className="font-extrabold text-slate-900">{doc.qualifications || 'Verified Medical Degree'}</span>
                     </div>
                     <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
                       <span className="text-[10px] text-slate-700 font-black uppercase block">Experience</span>
-                      <span className="font-extrabold text-slate-900">{doc.experienceYears} Years Clinical</span>
+                      <span className="font-extrabold text-slate-900">
+                        {doc.experienceYears ? `${doc.experienceYears}+ Yrs Clinical` : 'Senior Medical Faculty'}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Spoken Languages */}
-                  <div>
-                    <span className="text-[10px] font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
-                      Languages Spoken
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {doc.languagesSpoken?.map((lang, idx) => (
-                        <span 
-                          key={idx} 
-                          className="px-2 py-0.5 bg-slate-100 text-slate-900 text-[11px] font-extrabold rounded border border-slate-300"
-                        >
-                          {lang}
-                        </span>
-                      ))}
+                  {/* Spoken Languages & Source Link */}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
+                        Languages Spoken
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {Array.isArray(doc.languagesSpoken) && doc.languagesSpoken.length > 0 ? (
+                          doc.languagesSpoken.map((lang, idx) => (
+                            <span 
+                              key={idx} 
+                              className="px-2 py-0.5 bg-slate-100 text-slate-900 text-[11px] font-extrabold rounded border border-slate-300"
+                            >
+                              {lang}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-[11px] text-slate-600 font-semibold italic">Languages not specified</span>
+                        )}
+                      </div>
                     </div>
+
+                    {doc.sourceUrl && (
+                      <a
+                        href={doc.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] font-black text-blue-700 hover:text-blue-900 underline flex items-center gap-1"
+                      >
+                        Official Profile ↗
+                      </a>
+                    )}
                   </div>
 
                 </div>

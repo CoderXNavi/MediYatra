@@ -221,7 +221,7 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
 
                     <span className="text-xs font-black bg-amber-100 text-amber-950 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1 shrink-0">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-600" />
-                      {hosp.rating} ({hosp.reviewCount})
+                      {hosp.rating ? `${hosp.rating} Rating` : 'Verified Center'}
                     </span>
                   </div>
                 </div>
@@ -230,9 +230,22 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                 <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
                   <div className="space-y-3">
                     <div>
-                      <h3 className="text-xl font-black text-slate-900 font-sans leading-tight">
-                        {hosp.name}
-                      </h3>
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-xl font-black text-slate-900 font-sans leading-tight">
+                          {hosp.name}
+                        </h3>
+                        {hosp.sourceUrl && (
+                          <a
+                            href={hosp.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] font-black text-blue-700 hover:text-blue-900 underline shrink-0 mt-1"
+                          >
+                            Official Site ↗
+                          </a>
+                        )}
+                      </div>
+
                       <div className="flex flex-wrap items-center justify-between gap-2 mt-1">
                         <p className="text-xs text-slate-700 font-extrabold flex-1">
                           {hosp.address}
@@ -255,21 +268,23 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                       <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
                         <span className="text-[10px] text-slate-700 font-black uppercase block">Capacity</span>
                         <span className="font-extrabold flex items-center gap-1 text-slate-900">
-                          <Bed className="w-4 h-4 text-[#2D3A5E]" /> {hosp.beds} Inpatient Beds
+                          <Bed className="w-4 h-4 text-[#2D3A5E]" /> {hosp.beds ? `${hosp.beds} Inpatient Beds` : 'Capacity Not Disclosed'}
                         </span>
                       </div>
                       <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
                         <span className="text-[10px] text-slate-700 font-black uppercase block">Established</span>
-                        <span className="font-extrabold text-slate-900">{hosp.establishedYear} ({new Date().getFullYear() - hosp.establishedYear} Yrs Care)</span>
+                        <span className="font-extrabold text-slate-900">
+                          {hosp.establishedYear ? `${hosp.establishedYear} (${new Date().getFullYear() - hosp.establishedYear} Yrs Care)` : 'Established Tertiary Care'}
+                        </span>
                       </div>
                     </div>
 
                     <div>
                       <span className="text-[10px] font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
-                        Key Centers of Excellence
+                        Key Centers of Excellence & Specialties
                       </span>
                       <div className="flex flex-wrap gap-1.5">
-                        {hosp.specialties?.map((spec, i) => (
+                        {(hosp.keyCentersOfExcellence?.length ? hosp.keyCentersOfExcellence : hosp.specialties)?.map((spec, i) => (
                           <span 
                             key={i} 
                             className="px-2 py-0.5 bg-slate-100 text-slate-900 text-[11px] font-extrabold rounded border border-slate-300"

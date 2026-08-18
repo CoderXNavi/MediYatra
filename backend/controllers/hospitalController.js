@@ -1,73 +1,6 @@
 const Hospital = require('../models/Hospital');
 const mongoose = require('mongoose');
-
-// Fallback in-memory dataset when MongoDB is offline during initial local dev setup
-const fallbackHospitals = [
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d1',
-    name: 'Apollo Hospitals',
-    city: 'New Delhi',
-    state: 'Delhi',
-    country: 'India',
-    address: 'Sarita Vihar, Mathura Road, New Delhi, Delhi 110076',
-    specialties: ['Cardiology', 'Orthopedics', 'Oncology', 'Organ Transplant'],
-    facilities: ['VIP International Suites', 'Translators', 'Airport Pickup', 'Visa Assistance'],
-    beds: 500,
-    rating: 4.9,
-    contactEmail: 'international@apollohospitals.com',
-    contactPhone: '+91-11-26925858',
-    imageUrl: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=800',
-    description: 'Apollo Hospitals New Delhi is a JCI-accredited flagship hospital offering world-class tertiary care.'
-  },
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d2',
-    name: 'Fortis Memorial Research Institute',
-    city: 'Gurugram',
-    state: 'Haryana',
-    country: 'India',
-    address: 'Sector 44, Opposite HUDA City Centre, Gurugram, Haryana 122002',
-    specialties: ['Oncology', 'Cardiology', 'Neurosciences', 'Bone Marrow Transplant'],
-    facilities: ['International Patient Lounge', 'Customized Dietary Menu', 'Currency Exchange'],
-    beds: 500,
-    rating: 4.8,
-    contactEmail: 'fmri.international@fortishealthcare.com',
-    contactPhone: '+91-124-4921021',
-    imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800',
-    description: 'Fortis Memorial Research Institute is a multi-super-specialty quaternary care hospital boasting top-tier medical faculty.'
-  },
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d3',
-    name: 'Max Super Speciality Hospital',
-    city: 'New Delhi',
-    state: 'Delhi',
-    country: 'India',
-    address: '1, 2, Press Enclave Marg, Saket, New Delhi, Delhi 110017',
-    specialties: ['Cardiac Sciences', 'Orthopedics & Joint Replacement', 'Dental Sciences'],
-    facilities: ['Dedicated International Desk', 'Interpreter Support', '5-Star Accommodation Partner'],
-    beds: 500,
-    rating: 4.7,
-    contactEmail: 'intl.service@maxhealthcare.com',
-    contactPhone: '+91-11-26515050',
-    imageUrl: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800',
-    description: 'Max Super Speciality Hospital Saket is renowned across Asia for high success rates in cardiac and orthopedic procedures.'
-  },
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d4',
-    name: 'Manipal Hospital',
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    country: 'India',
-    address: '98, HAL Old Airport Rd, Kodihalli, Bengaluru, Karnataka 560017',
-    specialties: ['Cosmetic Surgery', 'Dental Surgery', 'Hair Transplantation', 'Fertility Care'],
-    facilities: ['Private Patient Suites', 'Concierge Service', 'In-house Pharmacy'],
-    beds: 500,
-    rating: 4.8,
-    contactEmail: 'info@manipalhospitals.com',
-    contactPhone: '+91-80-25024444',
-    imageUrl: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=800',
-    description: 'Manipal Hospital Bengaluru is a pioneer in wellness and aesthetic medical tourism.'
-  }
-];
+const { verifiedHospitals } = require('../data/verifiedIndianHealthcareData');
 
 // @desc    Get all hospitals with optional filtering
 // @route   GET /api/hospitals
@@ -92,8 +25,7 @@ const getHospitals = async (req, res, next) => {
       let hospitals = await Hospital.find(query).sort({ rating: -1, createdAt: -1 });
 
       if (hospitals.length === 0 && !city && !specialty && !search) {
-        // Auto seed DB with fallback hospitals if empty
-        hospitals = await Hospital.insertMany(fallbackHospitals);
+        hospitals = await Hospital.insertMany(verifiedHospitals);
       }
 
       return res.status(200).json({
@@ -103,7 +35,7 @@ const getHospitals = async (req, res, next) => {
       });
     }
 
-    let filtered = [...fallbackHospitals];
+    let filtered = [...verifiedHospitals];
     if (city) filtered = filtered.filter((h) => h.city.toLowerCase().includes(city.toLowerCase()));
     if (specialty) filtered = filtered.filter((h) => h.specialties.some((s) => s.toLowerCase().includes(specialty.toLowerCase())));
     if (search) {
@@ -119,7 +51,7 @@ const getHospitals = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: filtered.length,
-      dataSource: 'fallback-cache',
+      dataSource: 'verified-cache',
       data: filtered
     });
   } catch (error) {
@@ -141,12 +73,12 @@ const getHospitalById = async (req, res, next) => {
       }
     }
 
-    const hospital = fallbackHospitals.find((h) => h._id === id);
+    const hospital = verifiedHospitals.find((h) => h._id === id || h.name.toLowerCase() === id.toLowerCase());
     if (!hospital) {
       return res.status(404).json({ success: false, error: `Hospital not found with id of ${id}` });
     }
 
-    res.status(200).json({ success: true, dataSource: 'fallback-cache', data: hospital });
+    res.status(200).json({ success: true, dataSource: 'verified-cache', data: hospital });
   } catch (error) {
     next(error);
   }
@@ -186,12 +118,12 @@ const createHospital = async (req, res, next) => {
       state: state || 'Delhi NCR',
       country: country || 'India',
       address: address || `${name}, ${city || 'New Delhi'}`,
-      specialties: specialties ? (Array.isArray(specialties) ? specialties : specialties.split(',').map((s) => s.trim())) : ['Cardiology', 'Orthopedics', 'Oncology', 'Organ Transplant'],
+      specialties: specialties ? (Array.isArray(specialties) ? specialties : specialties.split(',').map((s) => s.trim())) : ['Cardiology', 'Orthopaedics', 'Oncology', 'Organ Transplant'],
       facilities: facilities ? (Array.isArray(facilities) ? facilities : facilities.split(',').map((f) => f.trim())) : ['VIP International Suites', 'Translators', 'Airport Transfer'],
       beds: beds ? Number(beds) : 450,
       rating: rating ? Number(rating) : 4.8,
       contactEmail: contactEmail || `info@${name.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`,
-      contactPhone: contactPhone || '+91 11 4000 8888',
+      contactPhone: contactPhone || '+91-11-40008888',
       imageUrl: imageUrl || 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=800',
       description: description || `${name} is a premier accredited tertiary medical center for international healthcare.`
     };
@@ -205,11 +137,11 @@ const createHospital = async (req, res, next) => {
       _id: `hosp_${Date.now()}`,
       ...hospitalObj
     };
-    fallbackHospitals.unshift(newHospital);
+    verifiedHospitals.unshift(newHospital);
 
     res.status(201).json({
       success: true,
-      dataSource: 'fallback-cache',
+      dataSource: 'verified-cache',
       data: newHospital
     });
   } catch (error) {

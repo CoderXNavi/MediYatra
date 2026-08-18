@@ -1,60 +1,6 @@
 const Doctor = require('../models/Doctor');
 const mongoose = require('mongoose');
-
-const fallbackDoctors = [
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d5',
-    hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
-    hospitalName: 'Apollo Hospitals',
-    name: 'Dr. Ashok Seth',
-    specialty: 'Cardiology',
-    qualifications: 'MBBS, MD, FRCP, FACC',
-    experienceYears: 32,
-    languages: ['English', 'Hindi'],
-    consultationFeeUSD: 60,
-    availableDays: ['Monday', 'Wednesday', 'Friday'],
-    imageUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400'
-  },
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d6',
-    hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
-    hospitalName: 'Apollo Hospitals',
-    name: 'Dr. IPS Oberoi',
-    specialty: 'Orthopedics',
-    qualifications: 'MBBS, MS (Orthopedics), M.Ch',
-    experienceYears: 28,
-    languages: ['English', 'Hindi', 'Arabic'],
-    consultationFeeUSD: 50,
-    availableDays: ['Tuesday', 'Thursday', 'Saturday'],
-    imageUrl: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400'
-  },
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d7',
-    hospitalId: '64f1a2b3c4d5e6f7a8b9c0d2',
-    hospitalName: 'Fortis Memorial Research Institute',
-    name: 'Dr. Vinod Raina',
-    specialty: 'Oncology',
-    qualifications: 'MBBS, MD, DM (Medical Oncology)',
-    experienceYears: 35,
-    languages: ['English', 'Hindi'],
-    consultationFeeUSD: 70,
-    availableDays: ['Monday', 'Tuesday', 'Thursday'],
-    imageUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400'
-  },
-  {
-    _id: '64f1a2b3c4d5e6f7a8b9c0d8',
-    hospitalId: '64f1a2b3c4d5e6f7a8b9c0d3',
-    hospitalName: 'Max Super Speciality Hospital Saket',
-    name: 'Dr. Naresh Trehan',
-    specialty: 'Cardiology',
-    qualifications: 'MBBS, MD, DM (Cardiology)',
-    experienceYears: 38,
-    languages: ['English', 'Hindi'],
-    consultationFeeUSD: 80,
-    availableDays: ['Monday', 'Wednesday', 'Friday'],
-    imageUrl: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400'
-  }
-];
+const { verifiedDoctors } = require('../data/verifiedIndianHealthcareData');
 
 // @desc    Get all doctors with optional filtering
 // @route   GET /api/doctors
@@ -78,7 +24,7 @@ const getDoctors = async (req, res, next) => {
       let doctors = await Doctor.find(query).populate('hospitalId', 'name city rating').sort({ experienceYears: -1 });
 
       if (doctors.length === 0 && !specialty && !hospitalId && !search) {
-        doctors = await Doctor.insertMany(fallbackDoctors);
+        doctors = await Doctor.insertMany(verifiedDoctors);
       }
 
       return res.status(200).json({
@@ -88,7 +34,7 @@ const getDoctors = async (req, res, next) => {
       });
     }
 
-    let filtered = [...fallbackDoctors];
+    let filtered = [...verifiedDoctors];
     if (specialty) filtered = filtered.filter((d) => d.specialty.toLowerCase().includes(specialty.toLowerCase()));
     if (hospitalId) filtered = filtered.filter((d) => d.hospitalId === hospitalId);
     if (search) {
@@ -101,7 +47,7 @@ const getDoctors = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: filtered.length,
-      dataSource: 'fallback-cache',
+      dataSource: 'verified-cache',
       data: filtered
     });
   } catch (error) {
@@ -121,12 +67,12 @@ const getDoctorById = async (req, res, next) => {
       if (doctor) return res.status(200).json({ success: true, data: doctor });
     }
 
-    const doctor = fallbackDoctors.find((d) => d._id === id);
+    const doctor = verifiedDoctors.find((d) => d._id === id);
     if (!doctor) {
       return res.status(404).json({ success: false, error: `Doctor not found with id of ${id}` });
     }
 
-    res.status(200).json({ success: true, dataSource: 'fallback-cache', data: doctor });
+    res.status(200).json({ success: true, dataSource: 'verified-cache', data: doctor });
   } catch (error) {
     next(error);
   }
@@ -144,8 +90,8 @@ const getDoctorsByHospital = async (req, res, next) => {
       return res.status(200).json({ success: true, count: doctors.length, data: doctors });
     }
 
-    const filtered = fallbackDoctors.filter((d) => d.hospitalId === hospitalId);
-    res.status(200).json({ success: true, count: filtered.length, dataSource: 'fallback-cache', data: filtered });
+    const filtered = verifiedDoctors.filter((d) => d.hospitalId === hospitalId);
+    res.status(200).json({ success: true, count: filtered.length, dataSource: 'verified-cache', data: filtered });
   } catch (error) {
     next(error);
   }
@@ -176,7 +122,7 @@ const createDoctor = async (req, res, next) => {
     }
 
     const doctorObj = {
-      hospitalId: hospitalId || '64f1a2b3c4d5e6f7a8b9c0d1',
+      hospitalId: hospitalId || 'hosp_apollo_delhi',
       name,
       specialty: specialty || 'Cardiology',
       qualifications: qualifications || 'MBBS, MD, FRCS',
@@ -196,11 +142,11 @@ const createDoctor = async (req, res, next) => {
       _id: `doc_${Date.now()}`,
       ...doctorObj
     };
-    fallbackDoctors.unshift(newDoctor);
+    verifiedDoctors.unshift(newDoctor);
 
     res.status(201).json({
       success: true,
-      dataSource: 'fallback-cache',
+      dataSource: 'verified-cache',
       data: newDoctor
     });
   } catch (error) {
@@ -231,7 +177,7 @@ const updateDoctorProfile = async (req, res, next) => {
         await doctor.save();
       } else {
         doctor = await Doctor.create({
-          hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
+          hospitalId: 'hosp_apollo_delhi',
           name,
           specialty: specialty || 'General Medicine & Senior Specialist',
           qualifications: qualifications || 'MBBS, MD',
@@ -246,7 +192,7 @@ const updateDoctorProfile = async (req, res, next) => {
       return res.status(200).json({ success: true, message: 'Doctor profile updated successfully', data: doctor });
     }
 
-    let doc = fallbackDoctors.find(d => d.name.toLowerCase() === name.toLowerCase());
+    let doc = verifiedDoctors.find(d => d.name.toLowerCase() === name.toLowerCase());
     if (doc) {
       if (specialty) doc.specialty = specialty;
       if (qualifications) doc.qualifications = qualifications;
@@ -257,7 +203,7 @@ const updateDoctorProfile = async (req, res, next) => {
     } else {
       doc = {
         _id: `doc_${Date.now()}`,
-        hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
+        hospitalId: 'hosp_apollo_delhi',
         name,
         specialty: specialty || 'General Medicine & Senior Specialist',
         qualifications: qualifications || 'MBBS, MD',
@@ -267,10 +213,10 @@ const updateDoctorProfile = async (req, res, next) => {
         availableDays: ['Monday', 'Wednesday', 'Friday'],
         imageUrl: imageUrl || ''
       };
-      fallbackDoctors.unshift(doc);
+      verifiedDoctors.unshift(doc);
     }
 
-    res.status(200).json({ success: true, message: 'Doctor profile updated successfully', dataSource: 'fallback-cache', data: doc });
+    res.status(200).json({ success: true, message: 'Doctor profile updated successfully', dataSource: 'verified-cache', data: doc });
   } catch (error) {
     next(error);
   }

@@ -11,7 +11,8 @@ const doctorSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Doctor name is required'],
-      trim: true
+      trim: true,
+      index: true
     },
     specialty: {
       type: String,
@@ -19,34 +20,61 @@ const doctorSchema = new mongoose.Schema(
       trim: true,
       index: true
     },
+    department: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    subSpecialty: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    designation: {
+      type: String,
+      default: 'Senior Specialist',
+      trim: true
+    },
     qualifications: {
       type: String,
-      required: [true, 'Qualifications are required'],
+      default: 'Not publicly available',
       trim: true
     },
     experienceYears: {
       type: Number,
-      required: [true, 'Years of experience is required'],
-      min: [0, 'Experience cannot be negative']
+      default: null
     },
     languages: {
       type: [String],
-      required: [true, 'Spoken languages are required'],
-      default: ['English', 'Hindi']
+      default: []
     },
     consultationFeeUSD: {
       type: Number,
-      required: [true, 'Consultation fee in USD is required'],
-      min: [0, 'Fee cannot be negative']
+      default: null
+    },
+    consultationFeeINR: {
+      type: Number,
+      default: null
+    },
+    opdFee: {
+      type: Number,
+      default: null
     },
     availableDays: {
       type: [String],
-      required: [true, 'Available days are required'],
       default: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     },
     imageUrl: {
       type: String,
       default: ''
+    },
+    biography: {
+      type: String,
+      default: null
+    },
+    sourceUrl: {
+      type: String,
+      default: null
     }
   },
   {
@@ -54,6 +82,6 @@ const doctorSchema = new mongoose.Schema(
   }
 );
 
-doctorSchema.index({ name: 'text', specialty: 'text' });
+doctorSchema.index({ name: 'text', specialty: 'text', department: 'text' });
 
 module.exports = mongoose.model('Doctor', doctorSchema);

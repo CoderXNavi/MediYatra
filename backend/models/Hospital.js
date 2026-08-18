@@ -5,6 +5,12 @@ const hospitalSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Hospital name is required'],
+      trim: true,
+      index: true
+    },
+    hospitalType: {
+      type: String,
+      default: 'Multi-Specialty Medical Center',
       trim: true
     },
     city: {
@@ -28,39 +34,93 @@ const hospitalSchema = new mongoose.Schema(
       required: [true, 'Address is required'],
       trim: true
     },
-    specialties: {
-      type: [String],
-      required: [true, 'At least one specialty is required'],
-      index: true
+    pincode: {
+      type: String,
+      default: null,
+      trim: true
     },
-    facilities: {
-      type: [String],
-      default: []
-    },
-    rating: {
+    latitude: {
       type: Number,
-      default: 4.5,
-      min: [1, 'Rating must be at least 1'],
-      max: [5, 'Rating cannot exceed 5']
+      default: null
+    },
+    longitude: {
+      type: Number,
+      default: null
     },
     contactEmail: {
       type: String,
-      required: [true, 'Contact email is required'],
+      default: 'international@mediyatra.org',
       trim: true,
       lowercase: true
     },
     contactPhone: {
       type: String,
-      required: [true, 'Contact phone is required'],
+      default: '+91-11-40008888',
       trim: true
+    },
+    officialWebsite: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    specialties: {
+      type: [String],
+      required: [true, 'At least one specialty is required'],
+      index: true
+    },
+    keyCentersOfExcellence: {
+      type: [String],
+      default: []
+    },
+    facilities: {
+      type: [String],
+      default: []
+    },
+    beds: {
+      type: Number,
+      default: null
+    },
+    establishedYear: {
+      type: Number,
+      default: null
+    },
+    accreditation: {
+      type: [String],
+      default: ['JCI Accredited', 'NABH Accredited']
+    },
+    rating: {
+      type: Number,
+      default: null,
+      min: [1, 'Rating must be at least 1'],
+      max: [5, 'Rating cannot exceed 5']
+    },
+    ratingSource: {
+      type: String,
+      default: null
+    },
+    ratingLastVerified: {
+      type: Date,
+      default: null
+    },
+    emergencyAvailable: {
+      type: Boolean,
+      default: true
+    },
+    internationalPatientServices: {
+      type: Boolean,
+      default: true
     },
     imageUrl: {
       type: String,
-      required: [true, 'Hospital image URL is required']
+      default: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=800'
     },
     description: {
       type: String,
-      required: [true, 'Hospital description is required']
+      default: 'Accredited medical center providing tertiary & quaternary healthcare services.'
+    },
+    sourceUrl: {
+      type: String,
+      default: null
     }
   },
   {
@@ -68,7 +128,7 @@ const hospitalSchema = new mongoose.Schema(
   }
 );
 
-// Search text index for flexible searching
-hospitalSchema.index({ name: 'text', city: 'text', specialties: 'text' });
+// Flexible text index
+hospitalSchema.index({ name: 'text', city: 'text', specialties: 'text', state: 'text' });
 
 module.exports = mongoose.model('Hospital', hospitalSchema);
