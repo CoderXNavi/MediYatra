@@ -276,7 +276,7 @@ export default function AdminDashboard({ currentUser }) {
       {activeTab === 'analytics' && (
         <div className="space-y-6">
           <h3 className="text-lg font-black text-slate-900 font-sans">Real-Time MongoDB Platform Statistics</h3>
-          <div className="grid sm:grid-cols-3 md:grid-cols-6 gap-4 font-bold text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 font-bold text-xs">
             <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
               <span className="text-slate-600 block text-[10px] uppercase font-black">Total Patients</span>
               <span className="text-2xl font-black text-slate-900 font-mono">{stats.totalPatients}</span>

@@ -224,7 +224,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
                     </div>
 
                     {/* Visual 4-Step Pipeline Bar */}
-                    <div className="grid grid-cols-4 gap-2 pt-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
                       {/* Step 1 */}
                       <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${
                         isStep1Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-slate-50 border-slate-200 text-slate-500'
