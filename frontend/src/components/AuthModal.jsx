@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Lock, Mail, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, User, Lock, Mail, ShieldCheck, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -7,12 +7,29 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
   if (!isOpen) return null;
+
+  const demoCredentials = {
+    'Patient': { email: 'patient@mediyatra.org', name: 'Demo Patient' },
+    'Doctor': { email: 'doctor@mediyatra.org', name: 'Dr. Naresh Trehan' },
+    'Hospital': { email: 'hospital@mediyatra.org', name: 'Max Hospital Admin' },
+    'Admin': { email: 'admin@mediyatra.org', name: 'System Admin' }
+  };
+
+  function handleSelectRole(selectedRole) {
+    setRole(selectedRole);
+    setErrorMsg('');
+    if (!isRegister) {
+      setEmail(demoCredentials[selectedRole]?.email || '');
+      setPassword('password123');
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -43,18 +60,16 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
         if (response.ok && json.success) {
           data = json.data;
         } else {
-          // If server explicitly returns validation error (e.g. invalid password or user exists)
           throw new Error(json.error || json.message || 'Authentication failed');
         }
       } catch (err) {
-        // If it's an explicit validation error from backend, rethrow to display
         if (err.message.includes('registered') || err.message.includes('password') || err.message.includes('provide')) {
           throw err;
         }
         // Fallback resilience user creation
         data = {
           _id: `u_${Date.now()}`,
-          name: name || email.split('@')[0],
+          name: name || demoCredentials[role]?.name || email.split('@')[0],
           email: email.trim().toLowerCase(),
           role: role || 'Patient',
           token: `jwt_fallback_${Date.now()}`
@@ -120,7 +135,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                     <button
                       key={r}
                       type="button"
-                      onClick={() => setRole(r)}
+                      onClick={() => handleSelectRole(r)}
                       className={`py-1.5 rounded transition ${
                         role === r 
                           ? 'bg-[#2D3A5E] text-white shadow' 
@@ -170,13 +185,21 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg pl-9 pr-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
+                    className="w-full border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg pl-9 pr-10 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-slate-500 hover:text-slate-950 transition"
+                    title={showPassword ? 'Hide Password' : 'Show Password'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 

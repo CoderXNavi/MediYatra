@@ -12,6 +12,7 @@ const fallbackHospitals = [
     address: 'Sarita Vihar, Mathura Road, New Delhi, Delhi 110076',
     specialties: ['Cardiology', 'Orthopedics', 'Oncology', 'Organ Transplant'],
     facilities: ['VIP International Suites', 'Translators', 'Airport Pickup', 'Visa Assistance'],
+    beds: 500,
     rating: 4.9,
     contactEmail: 'international@apollohospitals.com',
     contactPhone: '+91-11-26925858',
@@ -27,6 +28,7 @@ const fallbackHospitals = [
     address: 'Sector 44, Opposite HUDA City Centre, Gurugram, Haryana 122002',
     specialties: ['Oncology', 'Cardiology', 'Neurosciences', 'Bone Marrow Transplant'],
     facilities: ['International Patient Lounge', 'Customized Dietary Menu', 'Currency Exchange'],
+    beds: 500,
     rating: 4.8,
     contactEmail: 'fmri.international@fortishealthcare.com',
     contactPhone: '+91-124-4921021',
@@ -42,6 +44,7 @@ const fallbackHospitals = [
     address: '1, 2, Press Enclave Marg, Saket, New Delhi, Delhi 110017',
     specialties: ['Cardiac Sciences', 'Orthopedics & Joint Replacement', 'Dental Sciences'],
     facilities: ['Dedicated International Desk', 'Interpreter Support', '5-Star Accommodation Partner'],
+    beds: 500,
     rating: 4.7,
     contactEmail: 'intl.service@maxhealthcare.com',
     contactPhone: '+91-11-26515050',
@@ -57,6 +60,7 @@ const fallbackHospitals = [
     address: '98, HAL Old Airport Rd, Kodihalli, Bengaluru, Karnataka 560017',
     specialties: ['Cosmetic Surgery', 'Dental Surgery', 'Hair Transplantation', 'Fertility Care'],
     facilities: ['Private Patient Suites', 'Concierge Service', 'In-house Pharmacy'],
+    beds: 500,
     rating: 4.8,
     contactEmail: 'info@manipalhospitals.com',
     contactPhone: '+91-80-25024444',
@@ -65,23 +69,17 @@ const fallbackHospitals = [
   }
 ];
 
-// @desc    Get all hospitals with optional filtering (city, specialty, search)
+// @desc    Get all hospitals with optional filtering
 // @route   GET /api/hospitals
 // @access  Public
 const getHospitals = async (req, res, next) => {
   try {
     const { city, specialty, search } = req.query;
 
-    // Check DB connection status (1 = connected)
     if (mongoose.connection.readyState === 1) {
       let query = {};
-
-      if (city) {
-        query.city = { $regex: city, $options: 'i' };
-      }
-      if (specialty) {
-        query.specialties = { $regex: specialty, $options: 'i' };
-      }
+      if (city) query.city = { $regex: city, $options: 'i' };
+      if (specialty) query.specialties = { $regex: specialty, $options: 'i' };
       if (search) {
         query.$or = [
           { name: { $regex: search, $options: 'i' } },
@@ -91,7 +89,12 @@ const getHospitals = async (req, res, next) => {
         ];
       }
 
-      const hospitals = await Hospital.find(query).sort({ rating: -1, createdAt: -1 });
+      let hospitals = await Hospital.find(query).sort({ rating: -1, createdAt: -1 });
+
+      if (hospitals.length === 0 && !city && !specialty && !search) {
+        // Auto seed DB with fallback hospitals if empty
+        hospitals = await Hospital.insertMany(fallbackHospitals);
+      }
 
       return res.status(200).json({
         success: true,
@@ -100,14 +103,9 @@ const getHospitals = async (req, res, next) => {
       });
     }
 
-    // Fallback mode if MongoDB daemon isn't running
     let filtered = [...fallbackHospitals];
-    if (city) {
-      filtered = filtered.filter((h) => h.city.toLowerCase().includes(city.toLowerCase()));
-    }
-    if (specialty) {
-      filtered = filtered.filter((h) => h.specialties.some((s) => s.toLowerCase().includes(specialty.toLowerCase())));
-    }
+    if (city) filtered = filtered.filter((h) => h.city.toLowerCase().includes(city.toLowerCase()));
+    if (specialty) filtered = filtered.filter((h) => h.specialties.some((s) => s.toLowerCase().includes(specialty.toLowerCase())));
     if (search) {
       const q = search.toLowerCase();
       filtered = filtered.filter(
@@ -138,32 +136,17 @@ const getHospitalById = async (req, res, next) => {
 
     if (mongoose.connection.readyState === 1) {
       const hospital = await Hospital.findById(id);
-      if (!hospital) {
-        return res.status(404).json({
-          success: false,
-          error: `Hospital not found with id of ${id}`
-        });
+      if (hospital) {
+        return res.status(200).json({ success: true, data: hospital });
       }
-      return res.status(200).json({
-        success: true,
-        data: hospital
-      });
     }
 
-    // Fallback mode
     const hospital = fallbackHospitals.find((h) => h._id === id);
     if (!hospital) {
-      return res.status(404).json({
-        success: false,
-        error: `Hospital not found with id of ${id}`
-      });
+      return res.status(404).json({ success: false, error: `Hospital not found with id of ${id}` });
     }
 
-    res.status(200).json({
-      success: true,
-      dataSource: 'fallback-cache',
-      data: hospital
-    });
+    res.status(200).json({ success: true, dataSource: 'fallback-cache', data: hospital });
   } catch (error) {
     next(error);
   }
@@ -182,6 +165,7 @@ const createHospital = async (req, res, next) => {
       address,
       specialties,
       facilities,
+      beds,
       rating,
       contactEmail,
       contactPhone,
@@ -189,50 +173,37 @@ const createHospital = async (req, res, next) => {
       description
     } = req.body;
 
-    if (!name || !city || !state || !address || !specialties || !contactEmail || !contactPhone || !imageUrl || !description) {
+    if (!name) {
       return res.status(400).json({
         success: false,
-        error: 'Please provide all mandatory fields: name, city, state, address, specialties, contactEmail, contactPhone, imageUrl, description'
+        error: 'Please provide hospital name'
       });
     }
+
+    const hospitalObj = {
+      name,
+      city: city || 'New Delhi',
+      state: state || 'Delhi NCR',
+      country: country || 'India',
+      address: address || `${name}, ${city || 'New Delhi'}`,
+      specialties: specialties ? (Array.isArray(specialties) ? specialties : specialties.split(',').map((s) => s.trim())) : ['Cardiology', 'Orthopedics', 'Oncology', 'Organ Transplant'],
+      facilities: facilities ? (Array.isArray(facilities) ? facilities : facilities.split(',').map((f) => f.trim())) : ['VIP International Suites', 'Translators', 'Airport Transfer'],
+      beds: beds ? Number(beds) : 450,
+      rating: rating ? Number(rating) : 4.8,
+      contactEmail: contactEmail || `info@${name.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`,
+      contactPhone: contactPhone || '+91 11 4000 8888',
+      imageUrl: imageUrl || 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=800',
+      description: description || `${name} is a premier accredited tertiary medical center for international healthcare.`
+    };
 
     if (mongoose.connection.readyState === 1) {
-      const hospital = await Hospital.create({
-        name,
-        city,
-        state,
-        country: country || 'India',
-        address,
-        specialties: Array.isArray(specialties) ? specialties : specialties.split(',').map((s) => s.trim()),
-        facilities: Array.isArray(facilities) ? facilities : facilities ? facilities.split(',').map((f) => f.trim()) : [],
-        rating: rating || 4.5,
-        contactEmail,
-        contactPhone,
-        imageUrl,
-        description
-      });
-
-      return res.status(201).json({
-        success: true,
-        data: hospital
-      });
+      const hospital = await Hospital.create(hospitalObj);
+      return res.status(201).json({ success: true, data: hospital });
     }
 
-    // Fallback mode
     const newHospital = {
       _id: `hosp_${Date.now()}`,
-      name,
-      city,
-      state,
-      country: country || 'India',
-      address,
-      specialties: Array.isArray(specialties) ? specialties : specialties.split(',').map((s) => s.trim()),
-      facilities: Array.isArray(facilities) ? facilities : [],
-      rating: rating || 4.5,
-      contactEmail,
-      contactPhone,
-      imageUrl,
-      description
+      ...hospitalObj
     };
     fallbackHospitals.unshift(newHospital);
 

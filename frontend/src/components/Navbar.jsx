@@ -52,7 +52,10 @@ export default function Navbar({
     baseNavLinks.push({ id: 'records', label: 'My Health Portal', icon: FileText });
   }
 
+  const isDoctor = currentUser?.role === 'Doctor';
+  const isHospital = currentUser?.role === 'Hospital';
   const isAdmin = currentUser?.role === 'Admin';
+  const isNonPatient = isDoctor || isHospital || isAdmin;
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-md w-full border-b border-slate-200">
@@ -136,7 +139,7 @@ export default function Navbar({
           {/* Logo Emblem & Brand Title */}
           <div 
             className="flex items-center gap-3 cursor-pointer select-none" 
-            onClick={() => setActiveTab(isAdmin ? 'admin' : 'hospitals')}
+            onClick={() => setActiveTab(isAdmin ? 'admin' : isDoctor ? 'doctor-portal' : isHospital ? 'hospital-portal' : 'hospitals')}
           >
             <img 
               src="/logo_clean.png" 
@@ -169,9 +172,25 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Header Action Button - Show 'Admin Panel' for Admin, 'Book Appointment' for Patients */}
+          {/* Header Action Button - Role Specific CTA */}
           <div className="flex items-center gap-2">
-            {isAdmin ? (
+            {isDoctor ? (
+              <button
+                onClick={() => setActiveTab('doctor-portal')}
+                className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center gap-2 transition"
+              >
+                <Stethoscope className="w-4 h-4 text-[#8FA9FF] shrink-0" />
+                <span className="text-white font-black whitespace-nowrap">Doctor Desk</span>
+              </button>
+            ) : isHospital ? (
+              <button
+                onClick={() => setActiveTab('hospital-portal')}
+                className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center gap-2 transition"
+              >
+                <Building2 className="w-4 h-4 text-[#8FA9FF] shrink-0" />
+                <span className="text-white font-black whitespace-nowrap">Hospital Desk</span>
+              </button>
+            ) : isAdmin ? (
               <button
                 onClick={() => setActiveTab('admin')}
                 className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center gap-2 transition"
@@ -220,7 +239,7 @@ export default function Navbar({
                 );
               })}
 
-              {!isAdmin && (
+              {!isNonPatient && (
                 <button
                   onClick={onOpenAITriage}
                   className="flex items-center gap-1.5 px-2.5 sm:px-3.5 h-full text-xs font-black text-[#D7C6FF] hover:text-white border-b-4 border-transparent bg-transparent shadow-none shrink-0 transition"
@@ -234,7 +253,7 @@ export default function Navbar({
             </nav>
 
             <div className="text-[11px] text-[#8FA9FF] font-black hidden xl:block whitespace-nowrap pl-4 shrink-0">
-              {isAdmin ? 'System Admin Operations Active' : '24/7 International Desk'}
+              {isDoctor ? 'Doctor Clinical Operations Active' : isHospital ? 'Hospital Administrative Operations Active' : isAdmin ? 'System Admin Operations Active' : '24/7 International Desk'}
             </div>
 
             {/* Mobile Menu Toggle Button */}

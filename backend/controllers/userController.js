@@ -138,6 +138,41 @@ const loginUser = async (req, res, next) => {
 
     const cleanEmail = email.trim().toLowerCase();
 
+    // Check pre-seeded demo users first for instant guaranteed login
+    const preSeededUser = registeredUsersCache.find(u => u.email === cleanEmail);
+    if (preSeededUser && password === preSeededUser.password) {
+      const activeRole = role || preSeededUser.role;
+      const activeUser = {
+        _id: preSeededUser._id,
+        name: preSeededUser.name,
+        email: preSeededUser.email,
+        role: activeRole
+      };
+      const token = generateToken(activeUser);
+
+      // Ensure synced in MongoDB if connected
+      if (mongoose.connection.readyState === 1) {
+        try {
+          await User.findOneAndUpdate(
+            { email: cleanEmail },
+            { name: preSeededUser.name, email: cleanEmail, password: preSeededUser.password, role: activeRole },
+            { upsert: true, new: true }
+          );
+        } catch (e) {
+          console.warn('Sync demo user to MongoDB skipped:', e.message);
+        }
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Sign in successful',
+        data: {
+          ...activeUser,
+          token
+        }
+      });
+    }
+
     if (mongoose.connection.readyState === 1) {
       const user = await User.findOne({ email: cleanEmail });
       if (!user) {

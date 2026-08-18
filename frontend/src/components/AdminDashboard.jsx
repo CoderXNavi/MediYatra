@@ -19,7 +19,8 @@ import {
   AlertCircle,
   Activity,
   Send,
-  Edit3
+  Edit3,
+  MessageSquare
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
@@ -226,7 +227,7 @@ export default function AdminDashboard({ currentUser }) {
 
         <button
           onClick={loadAdminData}
-          className="px-4 py-2 bg-[#1A233D] text-[#8FA9FF] border border-[#8FA9FF] text-xs font-black rounded-lg shadow hover:bg-black flex items-center gap-1.5 shrink-0"
+          className="px-4 py-2 bg-[#1A233D] text-[#8FA9FF] border border-[#8FA9FF] text-xs font-black rounded-lg shadow hover:bg-black flex items-center gap-1.5 shrink-0 font-sans"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Refresh Real DB Metrics</span>

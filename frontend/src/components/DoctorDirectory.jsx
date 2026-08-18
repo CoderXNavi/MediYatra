@@ -10,14 +10,20 @@ import {
   PhoneCall,
   CheckCircle2,
   Filter,
-  MessageSquare
+  MessageSquare,
+  Lock,
+  ChevronRight
 } from 'lucide-react';
 import { normalizeDoctor } from '../utils/normalizeData';
 
-export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery, currentUser }) {
+export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedDept, setSelectedDept] = useState('All');
 
+  const isDoctor = currentUser?.role === 'Doctor';
+  const isHospital = currentUser?.role === 'Hospital';
   const isAdmin = currentUser?.role === 'Admin';
+  const isNonPatient = isDoctor || isHospital || isAdmin;
+
   const normalizedDoctors = (Array.isArray(doctors) ? doctors : []).map(normalizeDoctor).filter(Boolean);
 
   const allDepartments = [
@@ -195,10 +201,30 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
                     <span className="text-base font-black text-slate-900 font-mono">{displayFee}</span>
                   </div>
 
-                  {isAdmin ? (
-                    <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-2 rounded border-2 border-slate-300">
-                      Managed via Admin Control Panel
-                    </span>
+                  {isDoctor ? (
+                    <button
+                      onClick={() => setActiveTab && setActiveTab('doctor-portal')}
+                      className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <Stethoscope className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                      <span>Go to Doctor Portal</span>
+                    </button>
+                  ) : isHospital ? (
+                    <button
+                      onClick={() => setActiveTab && setActiveTab('hospital-portal')}
+                      className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <Building2 className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                      <span>Go to Hospital Portal</span>
+                    </button>
+                  ) : isAdmin ? (
+                    <button
+                      onClick={() => onOpenAdminTab && onOpenAdminTab('doctors')}
+                      className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                      <span>Manage via Admin Control Panel</span>
+                    </button>
                   ) : (
                     <div className="flex items-center gap-2">
                       <button

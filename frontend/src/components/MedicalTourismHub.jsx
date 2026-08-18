@@ -11,17 +11,22 @@ import {
   CheckCircle2,
   CalendarCheck,
   Check,
-  Star
+  Star,
+  Lock,
+  Stethoscope
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
-export default function MedicalTourismHub({ currency, onSelectService, currentUser }) {
+export default function MedicalTourismHub({ currency, onSelectService, currentUser, onOpenAdminTab, setActiveTab }) {
   const [accommodations, setAccommodations] = useState([]);
   const [translators, setTranslators] = useState([]);
-  const [activeTab, setActiveTab] = useState('visa');
+  const [activeTab, setActiveTabLocal] = useState('visa');
   const [bookingNotice, setBookingNotice] = useState('');
 
+  const isDoctor = currentUser?.role === 'Doctor';
+  const isHospital = currentUser?.role === 'Hospital';
   const isAdmin = currentUser?.role === 'Admin';
+  const isNonPatient = isDoctor || isHospital || isAdmin;
 
   useEffect(() => {
     async function loadData() {
@@ -49,7 +54,7 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
   };
 
   async function handleBookTourismService(serviceTitle) {
-    if (isAdmin) return;
+    if (isNonPatient) return;
 
     try {
       const userObj = JSON.parse(localStorage.getItem('mediyatra_user') || '{}');
@@ -90,7 +95,7 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
           e-Medical Visa, Translators & Travel Concierge
         </h2>
         <p className="text-slate-900 text-xs sm:text-sm mt-1 font-bold">
-          Hospital visa invitation letters, certified language interpreters, serviced recovery suites, and airport transfers.
+          Hospital visa invitation letters, certified language interpreters, serviced recovery guest houses, and airport transfers.
         </p>
       </div>
 
@@ -114,7 +119,7 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => setActiveTabLocal(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-black transition ${
                 isActive
                   ? 'bg-[#2D3A5E] text-white shadow border-2 border-[#2D3A5E]'
@@ -156,10 +161,30 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
               </li>
             </ul>
 
-            {isAdmin ? (
-              <span className="inline-block mt-2 px-4 py-2 bg-slate-100 text-[#2D3A5E] text-xs font-black rounded-lg border-2 border-slate-300">
-                Managed via Admin Concierge Operations Desk
-              </span>
+            {isDoctor ? (
+              <button
+                onClick={() => setActiveTab && setActiveTab('doctor-portal')}
+                className="mt-2 px-5 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 transition cursor-pointer"
+              >
+                <Stethoscope className="w-4 h-4 text-[#8FA9FF]" />
+                <span>Go to Doctor Portal</span>
+              </button>
+            ) : isHospital ? (
+              <button
+                onClick={() => setActiveTab && setActiveTab('hospital-portal')}
+                className="mt-2 px-5 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 transition cursor-pointer"
+              >
+                <Building2 className="w-4 h-4 text-[#8FA9FF]" />
+                <span>Go to Hospital Portal</span>
+              </button>
+            ) : isAdmin ? (
+              <button
+                onClick={() => onOpenAdminTab && onOpenAdminTab('tourism')}
+                className="mt-2 px-5 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 transition cursor-pointer"
+              >
+                <Lock className="w-4 h-4 text-[#8FA9FF]" />
+                <span>Manage via Admin Desk</span>
+              </button>
             ) : (
               <button
                 onClick={() => handleBookTourismService('Medical Visa Invitation Letter')}
@@ -226,10 +251,27 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
 
                   <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
                     <span className="text-[11px] text-slate-700 font-extrabold">Dedicated Clinical Companion</span>
-                    {isAdmin ? (
-                      <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-1 rounded border border-slate-300">
-                        Managed via Admin Desk
-                      </span>
+                    {isDoctor ? (
+                      <button
+                        onClick={() => setActiveTab && setActiveTab('doctor-portal')}
+                        className="px-3 py-1 bg-[#2D3A5E] text-white text-xs font-black rounded border border-[#8FA9FF] flex items-center gap-1 cursor-pointer"
+                      >
+                        <Stethoscope className="w-3 h-3 text-[#8FA9FF]" /> Doctor Portal
+                      </button>
+                    ) : isHospital ? (
+                      <button
+                        onClick={() => setActiveTab && setActiveTab('hospital-portal')}
+                        className="px-3 py-1 bg-[#2D3A5E] text-white text-xs font-black rounded border border-[#8FA9FF] flex items-center gap-1 cursor-pointer"
+                      >
+                        <Building2 className="w-3 h-3 text-[#8FA9FF]" /> Hospital Portal
+                      </button>
+                    ) : isAdmin ? (
+                      <button
+                        onClick={() => onOpenAdminTab && onOpenAdminTab('tourism')}
+                        className="px-3 py-1 bg-[#2D3A5E] text-white text-xs font-black rounded border border-[#8FA9FF] flex items-center gap-1 cursor-pointer"
+                      >
+                        <Lock className="w-3 h-3 text-[#8FA9FF]" /> Admin Desk
+                      </button>
                     ) : (
                       <button
                         onClick={() => handleBookTourismService(`Medical Interpreter: ${trans.name}`)}
@@ -296,10 +338,27 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
 
                     <div className="pt-3 border-t-2 border-slate-100 flex items-center justify-between">
                       <span className="text-base font-black text-slate-900 font-mono">{displayPrice}</span>
-                      {isAdmin ? (
-                        <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-1 rounded border border-slate-300">
-                          Managed via Admin Desk
-                        </span>
+                      {isDoctor ? (
+                        <button
+                          onClick={() => setActiveTab && setActiveTab('doctor-portal')}
+                          className="px-3 py-1 bg-[#2D3A5E] text-white text-xs font-black rounded border border-[#8FA9FF] flex items-center gap-1 cursor-pointer"
+                        >
+                          <Stethoscope className="w-3 h-3 text-[#8FA9FF]" /> Doctor Portal
+                        </button>
+                      ) : isHospital ? (
+                        <button
+                          onClick={() => setActiveTab && setActiveTab('hospital-portal')}
+                          className="px-3 py-1 bg-[#2D3A5E] text-white text-xs font-black rounded border border-[#8FA9FF] flex items-center gap-1 cursor-pointer"
+                        >
+                          <Building2 className="w-3 h-3 text-[#8FA9FF]" /> Hospital Portal
+                        </button>
+                      ) : isAdmin ? (
+                        <button
+                          onClick={() => onOpenAdminTab && onOpenAdminTab('tourism')}
+                          className="px-3 py-1 bg-[#2D3A5E] text-white text-xs font-black rounded border border-[#8FA9FF] flex items-center gap-1 cursor-pointer"
+                        >
+                          <Lock className="w-3 h-3 text-[#8FA9FF]" /> Admin Desk
+                        </button>
                       ) : (
                         <button
                           onClick={() => handleBookTourismService(`Serviced Suite: ${acc.name}`)}
@@ -350,10 +409,30 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
             </div>
           </div>
 
-          {isAdmin ? (
-            <span className="inline-block px-4 py-2 bg-slate-100 text-[#2D3A5E] text-xs font-black rounded-lg border-2 border-slate-300">
-              Managed via Admin Concierge Operations Desk
-            </span>
+          {isDoctor ? (
+            <button
+              onClick={() => setActiveTab && setActiveTab('doctor-portal')}
+              className="px-6 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 cursor-pointer"
+            >
+              <Stethoscope className="w-4 h-4 text-[#8FA9FF]" />
+              <span>Go to Doctor Portal</span>
+            </button>
+          ) : isHospital ? (
+            <button
+              onClick={() => setActiveTab && setActiveTab('hospital-portal')}
+              className="px-6 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 cursor-pointer"
+            >
+              <Building2 className="w-4 h-4 text-[#8FA9FF]" />
+              <span>Go to Hospital Portal</span>
+            </button>
+          ) : isAdmin ? (
+            <button
+              onClick={() => onOpenAdminTab && onOpenAdminTab('tourism')}
+              className="px-6 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 cursor-pointer"
+            >
+              <Lock className="w-4 h-4 text-[#8FA9FF]" />
+              <span>Manage via Admin Concierge Desk</span>
+            </button>
           ) : (
             <button
               onClick={() => handleBookTourismService('Airport Pickup & Private Transfer')}

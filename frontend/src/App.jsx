@@ -59,6 +59,8 @@ export default function App() {
   const [selectedTreatment, setSelectedTreatment] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
 
+  const isNonPatientRole = currentUser?.role === 'Doctor' || currentUser?.role === 'Hospital' || currentUser?.role === 'Admin';
+
   // Scroll to Top on tab change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -84,7 +86,7 @@ export default function App() {
   }, []);
 
   function handleConsultDoctor(doctor) {
-    if (currentUser?.role === 'Admin') return;
+    if (isNonPatientRole) return;
 
     if (!currentUser) {
       setPendingAction({ type: 'CONSULT_DOCTOR', doctor });
@@ -97,7 +99,7 @@ export default function App() {
   }
 
   function handleBookDoctor(doctor) {
-    if (currentUser?.role === 'Admin') return;
+    if (isNonPatientRole) return;
 
     if (!currentUser) {
       setPendingAction({ type: 'BOOK_DOCTOR', doctor });
@@ -113,7 +115,7 @@ export default function App() {
   }
 
   function handleBookHospital(hospital) {
-    if (currentUser?.role === 'Admin') return;
+    if (isNonPatientRole) return;
 
     if (!currentUser) {
       setPendingAction({ type: 'BOOK_HOSPITAL', hospital });
@@ -129,7 +131,7 @@ export default function App() {
   }
 
   function handleBookTreatment(treatment) {
-    if (currentUser?.role === 'Admin') return;
+    if (isNonPatientRole) return;
 
     if (!currentUser) {
       setPendingAction({ type: 'BOOK_TREATMENT', treatment });
@@ -145,10 +147,14 @@ export default function App() {
   }
 
   function handleOpenTourismModal(serviceTitle) {
-    if (currentUser?.role === 'Admin') return;
+    if (isNonPatientRole) return;
 
     setTourismModalService(serviceTitle || 'Fast-Track e-Medical Visa Invitation Letter');
     setIsTourismModalOpen(true);
+  }
+
+  function handleOpenAdminTab(targetTab) {
+    setActiveTab('admin');
   }
 
   // Auth Success Return Flow Handler
@@ -204,7 +210,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         currency={currency}
         setCurrency={setCurrency}
-        onOpenBooking={() => setIsBookingOpen(true)}
+        onOpenBooking={() => !isNonPatientRole && setIsBookingOpen(true)}
         onOpenEmergency={() => setIsEmergencyOpen(true)}
         onOpenAITriage={() => setIsAITriageOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
@@ -224,7 +230,7 @@ export default function App() {
             setSearchQuery={setSearchQuery}
             setActiveTab={setActiveTab}
             onOpenAITriage={() => setIsAITriageOpen(true)}
-            onOpenBooking={() => setIsBookingOpen(true)}
+            onOpenBooking={() => !isNonPatientRole && setIsBookingOpen(true)}
             onOpenEmergency={() => setIsEmergencyOpen(true)}
           />
         )}
@@ -288,6 +294,8 @@ export default function App() {
             onBookHospital={handleBookHospital}
             searchQuery={searchQuery}
             currentUser={currentUser}
+            onOpenAdminTab={handleOpenAdminTab}
+            setActiveTab={setActiveTab}
           />
         )}
 
@@ -299,6 +307,8 @@ export default function App() {
             onBookDoctor={handleBookDoctor}
             searchQuery={searchQuery}
             currentUser={currentUser}
+            onOpenAdminTab={handleOpenAdminTab}
+            setActiveTab={setActiveTab}
           />
         )}
 
@@ -308,6 +318,9 @@ export default function App() {
             currency={currency}
             onBookTreatment={handleBookTreatment}
             searchQuery={searchQuery}
+            currentUser={currentUser}
+            onOpenAdminTab={handleOpenAdminTab}
+            setActiveTab={setActiveTab}
           />
         )}
 
@@ -316,6 +329,8 @@ export default function App() {
             currency={currency}
             onSelectService={handleOpenTourismModal}
             currentUser={currentUser}
+            onOpenAdminTab={handleOpenAdminTab}
+            setActiveTab={setActiveTab}
           />
         )}
 
@@ -362,46 +377,50 @@ export default function App() {
       />
 
       {/* Modals */}
-      <ConsultationModal 
-        isOpen={isConsultationOpen}
-        onClose={() => {
-          setIsConsultationOpen(false);
-          setConsultationDoctor(null);
-        }}
-        currentUser={currentUser}
-        doctor={consultationDoctor}
-        onConsultationSubmitted={() => {
-          setActiveTab('records');
-        }}
-      />
+      {!isNonPatientRole && (
+        <>
+          <ConsultationModal 
+            isOpen={isConsultationOpen}
+            onClose={() => {
+              setIsConsultationOpen(false);
+              setConsultationDoctor(null);
+            }}
+            currentUser={currentUser}
+            doctor={consultationDoctor}
+            onConsultationSubmitted={() => {
+              setActiveTab('records');
+            }}
+          />
 
-      <TourismBookingModal
-        isOpen={isTourismModalOpen}
-        onClose={() => setIsTourismModalOpen(false)}
-        currentUser={currentUser}
-        initialService={tourismModalService}
-        hospitals={hospitals}
-        doctors={doctors}
-        onSuccess={() => {
-          setActiveTab('records');
-        }}
-      />
+          <TourismBookingModal
+            isOpen={isTourismModalOpen}
+            onClose={() => setIsTourismModalOpen(false)}
+            currentUser={currentUser}
+            initialService={tourismModalService}
+            hospitals={hospitals}
+            doctors={doctors}
+            onSuccess={() => {
+              setActiveTab('records');
+            }}
+          />
 
-      <AppointmentModal 
-        isOpen={isBookingOpen}
-        onClose={() => {
-          setIsBookingOpen(false);
-          setSelectedDoctor(null);
-          setSelectedHospital(null);
-          setSelectedTreatment(null);
-          setSelectedService(null);
-        }}
-        currentUser={currentUser}
-        preselectedDoctor={selectedDoctor}
-        preselectedHospital={selectedHospital}
-        preselectedTreatment={selectedTreatment}
-        preselectedService={selectedService}
-      />
+          <AppointmentModal 
+            isOpen={isBookingOpen}
+            onClose={() => {
+              setIsBookingOpen(false);
+              setSelectedDoctor(null);
+              setSelectedHospital(null);
+              setSelectedTreatment(null);
+              setSelectedService(null);
+            }}
+            currentUser={currentUser}
+            preselectedDoctor={selectedDoctor}
+            preselectedHospital={selectedHospital}
+            preselectedTreatment={selectedTreatment}
+            preselectedService={selectedService}
+          />
+        </>
+      )}
 
       <EmergencySOSModal 
         isOpen={isEmergencyOpen}

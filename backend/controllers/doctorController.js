@@ -5,6 +5,7 @@ const fallbackDoctors = [
   {
     _id: '64f1a2b3c4d5e6f7a8b9c0d5',
     hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
+    hospitalName: 'Apollo Hospitals',
     name: 'Dr. Ashok Seth',
     specialty: 'Cardiology',
     qualifications: 'MBBS, MD, FRCP, FACC',
@@ -17,6 +18,7 @@ const fallbackDoctors = [
   {
     _id: '64f1a2b3c4d5e6f7a8b9c0d6',
     hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
+    hospitalName: 'Apollo Hospitals',
     name: 'Dr. IPS Oberoi',
     specialty: 'Orthopedics',
     qualifications: 'MBBS, MS (Orthopedics), M.Ch',
@@ -29,6 +31,7 @@ const fallbackDoctors = [
   {
     _id: '64f1a2b3c4d5e6f7a8b9c0d7',
     hospitalId: '64f1a2b3c4d5e6f7a8b9c0d2',
+    hospitalName: 'Fortis Memorial Research Institute',
     name: 'Dr. Vinod Raina',
     specialty: 'Oncology',
     qualifications: 'MBBS, MD, DM (Medical Oncology)',
@@ -41,18 +44,19 @@ const fallbackDoctors = [
   {
     _id: '64f1a2b3c4d5e6f7a8b9c0d8',
     hospitalId: '64f1a2b3c4d5e6f7a8b9c0d3',
-    name: 'Dr. Anurag Krishna',
-    specialty: 'Dental Sciences',
-    qualifications: 'BDS, MDS (Prosthodontics)',
-    experienceYears: 18,
+    hospitalName: 'Max Super Speciality Hospital Saket',
+    name: 'Dr. Naresh Trehan',
+    specialty: 'Cardiology',
+    qualifications: 'MBBS, MD, DM (Cardiology)',
+    experienceYears: 38,
     languages: ['English', 'Hindi'],
-    consultationFeeUSD: 35,
-    availableDays: ['Monday', 'Wednesday', 'Saturday'],
+    consultationFeeUSD: 80,
+    availableDays: ['Monday', 'Wednesday', 'Friday'],
     imageUrl: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400'
   }
 ];
 
-// @desc    Get all doctors with optional filtering (specialty, hospitalId, search)
+// @desc    Get all doctors with optional filtering
 // @route   GET /api/doctors
 // @access  Public
 const getDoctors = async (req, res, next) => {
@@ -61,12 +65,8 @@ const getDoctors = async (req, res, next) => {
 
     if (mongoose.connection.readyState === 1) {
       let query = {};
-      if (specialty) {
-        query.specialty = { $regex: specialty, $options: 'i' };
-      }
-      if (hospitalId) {
-        query.hospitalId = hospitalId;
-      }
+      if (specialty) query.specialty = { $regex: specialty, $options: 'i' };
+      if (hospitalId) query.hospitalId = hospitalId;
       if (search) {
         query.$or = [
           { name: { $regex: search, $options: 'i' } },
@@ -75,7 +75,11 @@ const getDoctors = async (req, res, next) => {
         ];
       }
 
-      const doctors = await Doctor.find(query).populate('hospitalId', 'name city rating').sort({ experienceYears: -1 });
+      let doctors = await Doctor.find(query).populate('hospitalId', 'name city rating').sort({ experienceYears: -1 });
+
+      if (doctors.length === 0 && !specialty && !hospitalId && !search) {
+        doctors = await Doctor.insertMany(fallbackDoctors);
+      }
 
       return res.status(200).json({
         success: true,
@@ -84,14 +88,9 @@ const getDoctors = async (req, res, next) => {
       });
     }
 
-    // Fallback mode
     let filtered = [...fallbackDoctors];
-    if (specialty) {
-      filtered = filtered.filter((d) => d.specialty.toLowerCase().includes(specialty.toLowerCase()));
-    }
-    if (hospitalId) {
-      filtered = filtered.filter((d) => d.hospitalId === hospitalId);
-    }
+    if (specialty) filtered = filtered.filter((d) => d.specialty.toLowerCase().includes(specialty.toLowerCase()));
+    if (hospitalId) filtered = filtered.filter((d) => d.hospitalId === hospitalId);
     if (search) {
       const q = search.toLowerCase();
       filtered = filtered.filter(
@@ -119,31 +118,15 @@ const getDoctorById = async (req, res, next) => {
 
     if (mongoose.connection.readyState === 1) {
       const doctor = await Doctor.findById(id).populate('hospitalId');
-      if (!doctor) {
-        return res.status(404).json({
-          success: false,
-          error: `Doctor not found with id of ${id}`
-        });
-      }
-      return res.status(200).json({
-        success: true,
-        data: doctor
-      });
+      if (doctor) return res.status(200).json({ success: true, data: doctor });
     }
 
     const doctor = fallbackDoctors.find((d) => d._id === id);
     if (!doctor) {
-      return res.status(404).json({
-        success: false,
-        error: `Doctor not found with id of ${id}`
-      });
+      return res.status(404).json({ success: false, error: `Doctor not found with id of ${id}` });
     }
 
-    res.status(200).json({
-      success: true,
-      dataSource: 'fallback-cache',
-      data: doctor
-    });
+    res.status(200).json({ success: true, dataSource: 'fallback-cache', data: doctor });
   } catch (error) {
     next(error);
   }
@@ -158,20 +141,11 @@ const getDoctorsByHospital = async (req, res, next) => {
 
     if (mongoose.connection.readyState === 1) {
       const doctors = await Doctor.find({ hospitalId }).sort({ experienceYears: -1 });
-      return res.status(200).json({
-        success: true,
-        count: doctors.length,
-        data: doctors
-      });
+      return res.status(200).json({ success: true, count: doctors.length, data: doctors });
     }
 
     const filtered = fallbackDoctors.filter((d) => d.hospitalId === hospitalId);
-    res.status(200).json({
-      success: true,
-      count: filtered.length,
-      dataSource: 'fallback-cache',
-      data: filtered
-    });
+    res.status(200).json({ success: true, count: filtered.length, dataSource: 'fallback-cache', data: filtered });
   } catch (error) {
     next(error);
   }
@@ -194,43 +168,33 @@ const createDoctor = async (req, res, next) => {
       imageUrl
     } = req.body;
 
-    if (!hospitalId || !name || !specialty || !qualifications || experienceYears === undefined || !consultationFeeUSD) {
+    if (!name) {
       return res.status(400).json({
         success: false,
-        error: 'Please provide all mandatory fields: hospitalId, name, specialty, qualifications, experienceYears, consultationFeeUSD'
+        error: 'Please provide doctor name'
       });
     }
 
-    if (mongoose.connection.readyState === 1) {
-      const doctor = await Doctor.create({
-        hospitalId,
-        name,
-        specialty,
-        qualifications,
-        experienceYears,
-        languages: Array.isArray(languages) ? languages : ['English', 'Hindi'],
-        consultationFeeUSD,
-        availableDays: Array.isArray(availableDays) ? availableDays : ['Monday', 'Wednesday', 'Friday'],
-        imageUrl: imageUrl || ''
-      });
+    const doctorObj = {
+      hospitalId: hospitalId || '64f1a2b3c4d5e6f7a8b9c0d1',
+      name,
+      specialty: specialty || 'Cardiology',
+      qualifications: qualifications || 'MBBS, MD, FRCS',
+      experienceYears: experienceYears !== undefined ? Number(experienceYears) : 18,
+      languages: Array.isArray(languages) ? languages : ['English', 'Hindi'],
+      consultationFeeUSD: consultationFeeUSD !== undefined ? Number(consultationFeeUSD) : 60,
+      availableDays: Array.isArray(availableDays) ? availableDays : ['Monday', 'Wednesday', 'Friday'],
+      imageUrl: imageUrl || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400'
+    };
 
-      return res.status(201).json({
-        success: true,
-        data: doctor
-      });
+    if (mongoose.connection.readyState === 1) {
+      const doctor = await Doctor.create(doctorObj);
+      return res.status(201).json({ success: true, data: doctor });
     }
 
     const newDoctor = {
       _id: `doc_${Date.now()}`,
-      hospitalId,
-      name,
-      specialty,
-      qualifications,
-      experienceYears,
-      languages: Array.isArray(languages) ? languages : ['English', 'Hindi'],
-      consultationFeeUSD,
-      availableDays: Array.isArray(availableDays) ? availableDays : ['Monday', 'Wednesday', 'Friday'],
-      imageUrl: imageUrl || ''
+      ...doctorObj
     };
     fallbackDoctors.unshift(newDoctor);
 
@@ -279,14 +243,9 @@ const updateDoctorProfile = async (req, res, next) => {
         });
       }
 
-      return res.status(200).json({
-        success: true,
-        message: 'Doctor profile updated successfully',
-        data: doctor
-      });
+      return res.status(200).json({ success: true, message: 'Doctor profile updated successfully', data: doctor });
     }
 
-    // Fallback cache update
     let doc = fallbackDoctors.find(d => d.name.toLowerCase() === name.toLowerCase());
     if (doc) {
       if (specialty) doc.specialty = specialty;
@@ -311,12 +270,7 @@ const updateDoctorProfile = async (req, res, next) => {
       fallbackDoctors.unshift(doc);
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Doctor profile updated successfully',
-      dataSource: 'fallback-cache',
-      data: doc
-    });
+    res.status(200).json({ success: true, message: 'Doctor profile updated successfully', dataSource: 'fallback-cache', data: doc });
   } catch (error) {
     next(error);
   }

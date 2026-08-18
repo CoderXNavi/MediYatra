@@ -10,17 +10,23 @@ import {
   ShieldCheck,
   Check,
   X,
-  Filter
+  Filter,
+  Lock,
+  Stethoscope
 } from 'lucide-react';
 import { normalizeHospital } from '../utils/normalizeData';
 
-export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery, currentUser }) {
+export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedCity, setSelectedCity] = useState('All');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
 
+  const isDoctor = currentUser?.role === 'Doctor';
+  const isHospital = currentUser?.role === 'Hospital';
   const isAdmin = currentUser?.role === 'Admin';
+  const isNonPatient = isDoctor || isHospital || isAdmin;
+
   const normalizedHospitals = (Array.isArray(hospitals) ? hospitals : []).map(normalizeHospital).filter(Boolean);
 
   const allCities = ['All', 'New Delhi', 'Gurugram', 'Chennai', 'Mumbai', 'Bengaluru', 'Hyderabad', 'Kolkata'];
@@ -261,10 +267,30 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                       </span>
                     </div>
 
-                    {isAdmin ? (
-                      <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-2 rounded border-2 border-slate-300">
-                        Managed via Admin Control Panel
-                      </span>
+                    {isDoctor ? (
+                      <button
+                        onClick={() => setActiveTab && setActiveTab('doctor-portal')}
+                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        <Stethoscope className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                        <span>Go to Doctor Portal</span>
+                      </button>
+                    ) : isHospital ? (
+                      <button
+                        onClick={() => setActiveTab && setActiveTab('hospital-portal')}
+                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        <Building2 className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                        <span>Go to Hospital Portal</span>
+                      </button>
+                    ) : isAdmin ? (
+                      <button
+                        onClick={() => onOpenAdminTab && onOpenAdminTab('hospitals')}
+                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        <Lock className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                        <span>Manage via Admin Control Panel</span>
+                      </button>
                     ) : (
                       <button
                         onClick={() => onBookHospital(hosp)}
@@ -304,7 +330,7 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                     <p><span className="text-slate-500">Established:</span> {h.establishedYear}</p>
                   </div>
 
-                  {!isAdmin && (
+                  {!isNonPatient && (
                     <button
                       onClick={() => {
                         setShowCompareModal(false);

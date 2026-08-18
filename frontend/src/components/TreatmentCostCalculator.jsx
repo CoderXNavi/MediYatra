@@ -3,11 +3,19 @@ import {
   Calculator, 
   CheckCircle2, 
   CalendarCheck,
-  TrendingDown
+  TrendingDown,
+  Lock,
+  Stethoscope,
+  Building2
 } from 'lucide-react';
 import { normalizeTreatment } from '../utils/normalizeData';
 
-export default function TreatmentCostCalculator({ treatments = [], currency, onBookTreatment }) {
+export default function TreatmentCostCalculator({ treatments = [], currency, onBookTreatment, currentUser, onOpenAdminTab, setActiveTab }) {
+  const isDoctor = currentUser?.role === 'Doctor';
+  const isHospital = currentUser?.role === 'Hospital';
+  const isAdmin = currentUser?.role === 'Admin';
+  const isNonPatient = isDoctor || isHospital || isAdmin;
+
   const normalizedTreatments = (Array.isArray(treatments) ? treatments : []).map(normalizeTreatment).filter(Boolean);
 
   return (
@@ -97,13 +105,39 @@ export default function TreatmentCostCalculator({ treatments = [], currency, onB
                       <span className="text-2xl font-black text-white font-sans">{indiaPrice}</span>
                     </div>
 
-                    <button
-                      onClick={() => onBookTreatment(treatment)}
-                      className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0"
-                    >
-                      <CalendarCheck className="w-4 h-4 text-[#2D3A5E]" />
-                      <span>Get Package Estimate</span>
-                    </button>
+                    {isDoctor ? (
+                      <button
+                        onClick={() => setActiveTab && setActiveTab('doctor-portal')}
+                        className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+                      >
+                        <Stethoscope className="w-4 h-4 text-[#2D3A5E]" />
+                        <span>Doctor Portal</span>
+                      </button>
+                    ) : isHospital ? (
+                      <button
+                        onClick={() => setActiveTab && setActiveTab('hospital-portal')}
+                        className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+                      >
+                        <Building2 className="w-4 h-4 text-[#2D3A5E]" />
+                        <span>Hospital Portal</span>
+                      </button>
+                    ) : isAdmin ? (
+                      <button
+                        onClick={() => onOpenAdminTab && onOpenAdminTab('treatments')}
+                        className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+                      >
+                        <Lock className="w-4 h-4 text-[#2D3A5E]" />
+                        <span>Admin Panel</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => onBookTreatment(treatment)}
+                        className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0"
+                      >
+                        <CalendarCheck className="w-4 h-4 text-[#2D3A5E]" />
+                        <span>Get Package Estimate</span>
+                      </button>
+                    )}
                   </div>
                 </div>
 
