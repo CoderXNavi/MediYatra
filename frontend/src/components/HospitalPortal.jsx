@@ -12,12 +12,13 @@ import {
   Award,
   Clock,
   Plane,
-  FileText
+  FileText,
+  CheckCircle2
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
 export default function HospitalPortal({ currentUser }) {
-  const [activeTab, setActiveTab] = useState('appointments'); // 'appointments' | 'doctors' | 'facilities' | 'visa-support'
+  const [activeTab, setActiveTab] = useState('visa-approval'); // 'visa-approval' | 'appointments' | 'doctors' | 'facilities'
   const [appointments, setAppointments] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [tourismOrders, setTourismOrders] = useState([]);
@@ -54,6 +55,24 @@ export default function HospitalPortal({ currentUser }) {
     }
   }
 
+  async function handleApproveVisaByHospital(id) {
+    try {
+      const res = await fetch(`/api/tourism/${id}/hospital-approve`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          hospitalNotes: 'Official Embassy Visa Invitation Letter (VIL) generated & Inpatient ICU Bed reserved.'
+        })
+      });
+      if (res.ok) {
+        setStatusMsg(`✅ Step 2 Complete: Hospital approved VIL & Bed Readiness for Request #${id}! Sent to Admin Logistics.`);
+        loadHospitalData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async function handleConfirmAppointment(id, newStatus) {
     try {
       const res = await fetch(`/api/appointments/${id}/status`, {
@@ -63,22 +82,6 @@ export default function HospitalPortal({ currentUser }) {
       });
       if (res.ok) {
         setStatusMsg(`✅ Hospital appointment #${id} status updated to ${newStatus}`);
-        loadHospitalData();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function handleApproveVisaLetter(id) {
-    try {
-      const res = await fetch(`/api/tourism/${id}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'Confirmed' })
-      });
-      if (res.ok) {
-        setStatusMsg(`✅ Visa Invitation Letter #${id} approved by Hospital Desk!`);
         loadHospitalData();
       }
     } catch (err) {
@@ -123,14 +126,14 @@ export default function HospitalPortal({ currentUser }) {
           <div className="flex items-center gap-2 mb-1">
             <Building2 className="w-5 h-5 text-[#8FA9FF]" />
             <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
-              Partner Hospital Operations Desk • {currentUser?.name || 'Max Healthcare Admin'}
+              Step 2 Pipeline Host • {currentUser?.name || 'Max Healthcare Admin'}
             </span>
           </div>
           <h2 className="text-2xl font-black text-white tracking-tight font-sans">
-            Hospital Provider Desk & Operations Portal
+            Hospital Desk: VIL & Bed Approvals
           </h2>
           <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-            Manage hospital medical staff, confirm patient appointment requests, clear visa letters, and oversee clinical bed facilities.
+            Approve official Embassy Visa Invitation Letters (VIL), reserve inpatient bed capacity, and manage doctor rosters.
           </p>
         </div>
 
@@ -153,10 +156,10 @@ export default function HospitalPortal({ currentUser }) {
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {[
+          { id: 'visa-approval', label: `Step 2: VIL & Bed Approvals (${tourismOrders.length})`, icon: Plane },
           { id: 'appointments', label: `Hospital Appointments (${appointments.length})`, icon: Calendar },
           { id: 'doctors', label: `Hospital Doctor Roster (${doctors.length})`, icon: UserCheck },
-          { id: 'facilities', label: 'Hospital Facilities & Bed Management', icon: Bed },
-          { id: 'visa-support', label: `Visa Letters & Travel Support (${tourismOrders.length})`, icon: Plane },
+          { id: 'facilities', label: 'Hospital Facilities & Bed Capacity', icon: Bed },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -177,7 +180,76 @@ export default function HospitalPortal({ currentUser }) {
         })}
       </div>
 
-      {/* 1. Appointments */}
+      {/* Step 2: Visa & Bed Approvals */}
+      {activeTab === 'visa-approval' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-black text-slate-900 font-sans font-bold">Step 2: International Patient VIL & Bed Readiness Requests</h3>
+            <span className="text-xs font-black text-[#2D3A5E]">Hospital Approval Desk</span>
+          </div>
+
+          <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-900 font-bold">
+                <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
+                  <tr>
+                    <th className="p-3">Pipeline ID</th>
+                    <th className="p-3">Patient Name</th>
+                    <th className="p-3">Requested Service</th>
+                    <th className="p-3">Assigned Doctor</th>
+                    <th className="p-3">Status</th>
+                    <th className="p-3 text-right">Step 2 Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {tourismOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-6 text-center text-slate-600 font-bold">No international patient requests pending hospital VIL approval.</td>
+                    </tr>
+                  ) : (
+                    tourismOrders.map((ord) => {
+                      const isApproved = ord.status === 'Approved by Hospital' || ord.status === 'Dispatched by Admin' || ord.status === 'Completed';
+
+                      return (
+                        <tr key={ord._id} className="hover:bg-slate-50">
+                          <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
+                          <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
+                          <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
+                          <td className="p-3 text-slate-800">{ord.doctorName}</td>
+                          <td className="p-3">
+                            <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
+                              isApproved ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                            }`}>
+                              {ord.status}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right">
+                            {isApproved ? (
+                              <span className="text-emerald-700 font-black text-xs flex items-center justify-end gap-1">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                                <span>VIL Approved</span>
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => handleApproveVisaByHospital(ord._id)}
+                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black rounded-lg shadow"
+                              >
+                                Approve Embassy VIL & Bed Readiness
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Appointments */}
       {activeTab === 'appointments' && (
         <div className="space-y-4">
           <h3 className="text-lg font-black text-slate-900 font-sans font-bold">Patient Consultation Requests for Hospital</h3>
@@ -246,7 +318,7 @@ export default function HospitalPortal({ currentUser }) {
         </div>
       )}
 
-      {/* 2. Doctor Roster */}
+      {/* Doctor Roster */}
       {activeTab === 'doctors' && (
         <div className="space-y-6">
           <form onSubmit={handleAddDoctorToHospital} className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-3">
@@ -309,7 +381,7 @@ export default function HospitalPortal({ currentUser }) {
         </div>
       )}
 
-      {/* 3. Facilities */}
+      {/* Facilities */}
       {activeTab === 'facilities' && (
         <div className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl space-y-4">
           <h3 className="text-lg font-black text-slate-900 font-sans">Hospital Facilities & Bed Capacity</h3>
@@ -325,58 +397,6 @@ export default function HospitalPortal({ currentUser }) {
             <div className="p-4 bg-slate-100 rounded-xl border-2 border-slate-300">
               <span className="text-slate-600 block text-[10px] uppercase font-black">International Patient Lounges</span>
               <span className="text-2xl font-black text-[#2D3A5E] font-mono">3 VIP Suites</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 4. Visa & Travel Support (NEW) */}
-      {activeTab === 'visa-support' && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-black text-slate-900 font-sans">International Patient Visa Invitations & Travel Orders</h3>
-          <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-900 font-bold">
-                <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
-                  <tr>
-                    <th className="p-3">Order ID</th>
-                    <th className="p-3">Patient Name</th>
-                    <th className="p-3">Service Requested</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3 text-right">Hospital Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {tourismOrders.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="p-6 text-center text-slate-600 font-bold">No international visa or travel requests pending.</td>
-                    </tr>
-                  ) : (
-                    tourismOrders.map((ord) => (
-                      <tr key={ord._id} className="hover:bg-slate-50">
-                        <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
-                        <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
-                        <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
-                        <td className="p-3">
-                          <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                            ord.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
-                          }`}>
-                            {ord.status || 'Pending'}
-                          </span>
-                        </td>
-                        <td className="p-3 text-right">
-                          <button
-                            onClick={() => handleApproveVisaLetter(ord._id)}
-                            className="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black rounded"
-                          >
-                            Approve VIL Letter
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
             </div>
           </div>
         </div>

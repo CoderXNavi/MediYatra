@@ -10,13 +10,17 @@ import {
   Send,
   Building2,
   Globe,
-  Edit3
+  Edit3,
+  Plane
 } from 'lucide-react';
 
 export default function DoctorPortal({ currentUser }) {
-  const [activeTab, setActiveTab] = useState('cases'); // 'cases' | 'profile'
+  const [activeTab, setActiveTab] = useState('pipeline-cases'); // 'pipeline-cases' | 'consultations' | 'profile'
+  const [tourismPipelineCases, setTourismPipelineCases] = useState([]);
   const [consultations, setConsultations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const [selectedCase, setSelectedCase] = useState(null);
   const [selectedConsultation, setSelectedConsultation] = useState(null);
   const [responseText, setResponseText] = useState('');
   const [statusMsg, setStatusMsg] = useState('');
@@ -32,39 +36,51 @@ export default function DoctorPortal({ currentUser }) {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   useEffect(() => {
-    loadDoctorConsultations();
+    loadDoctorData();
   }, [currentUser]);
 
-  async function loadDoctorConsultations() {
+  async function loadDoctorData() {
     setIsLoading(true);
     try {
       const docName = currentUser?.name || '';
       const docId = currentUser?.doctorId || currentUser?._id;
-      
-      const params = new URLSearchParams();
-      if (docName) params.append('doctorName', docName);
-      if (docId) params.append('doctorId', docId);
 
-      const response = await fetch(`/api/consultations?${params.toString()}`);
-      if (response.ok) {
-        const json = await response.json();
-        const list = json.data || [];
-        if (list.length > 0) {
-          setConsultations(list);
-          return;
-        }
-      }
+      const [conRes, tourRes] = await Promise.all([
+        fetch(`/api/consultations?doctorName=${encodeURIComponent(docName)}`).then(r => r.ok ? r.json() : null),
+        fetch(`/api/tourism?doctorName=${encodeURIComponent(docName)}`).then(r => r.ok ? r.json() : null)
+      ]);
 
-      // Fallback query all consultations if initial query returned empty
-      const resAll = await fetch('/api/consultations');
-      if (resAll.ok) {
-        const jsonAll = await resAll.json();
-        setConsultations(jsonAll.data || []);
-      }
+      if (conRes?.data) setConsultations(conRes.data);
+      if (tourRes?.data) setTourismPipelineCases(tourRes.data);
     } catch (err) {
-      console.warn('Error loading doctor consultations:', err);
+      console.warn('Error loading doctor data:', err);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleDoctorCompletePipeline(e) {
+    e.preventDefault();
+    if (!selectedCase || !responseText) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`/api/tourism/${selectedCase._id}/doctor-complete`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ doctorNotes: responseText })
+      });
+
+      if (res.ok) {
+        setStatusMsg(`✅ Step 4 Complete: Clinical advice issued for Patient ${selectedCase.patientName}!`);
+        setSelectedCase(null);
+        setResponseText('');
+        loadDoctorData();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -87,7 +103,7 @@ export default function DoctorPortal({ currentUser }) {
         setStatusMsg(`Clinical response dispatched for consultation #${selectedConsultation._id}`);
         setSelectedConsultation(null);
         setResponseText('');
-        loadDoctorConsultations();
+        loadDoctorData();
       }
     } catch (err) {
       console.error(err);
@@ -119,7 +135,7 @@ export default function DoctorPortal({ currentUser }) {
       const data = await response.json();
       if (response.ok && data.success) {
         setStatusMsg(`✅ Doctor profile for ${currentUser?.name} updated! Your profile is live on the Find Doctors main directory.`);
-        setActiveTab('cases');
+        setActiveTab('pipeline-cases');
       } else {
         throw new Error(data.error || 'Failed to update profile');
       }
@@ -139,41 +155,24 @@ export default function DoctorPortal({ currentUser }) {
           <div className="flex items-center gap-2 mb-1">
             <Stethoscope className="w-5 h-5 text-[#8FA9FF]" />
             <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
-              Senior Specialist Clinical Portal • {currentUser?.name || 'Dr. Naresh Trehan'}
+              Step 4 Clinical Desk • {currentUser?.name || 'Dr. Naresh Trehan'}
             </span>
           </div>
           <h2 className="text-2xl font-black text-white tracking-tight font-sans">
-            Doctor Clinical Desk & Profile Manager
+            Doctor Desk: Step 4 Clinical Evaluation
           </h2>
           <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-            Manage incoming patient consultation cases and update your specialist profile on the main website directory.
+            Review hospital-approved & admin-dispatched international cases, issue clinical treatment advice, and customize directory profile.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setActiveTab('cases')}
-            className={`px-4 py-2 text-xs font-black rounded-lg border-2 transition ${
-              activeTab === 'cases'
-                ? 'bg-[#8FA9FF] text-[#2D3A5E] border-[#8FA9FF]'
-                : 'bg-[#1A233D] text-white border-slate-600 hover:border-[#8FA9FF]'
-            }`}
-          >
-            Consultation Queue ({consultations.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`px-4 py-2 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
-              activeTab === 'profile'
-                ? 'bg-[#8FA9FF] text-[#2D3A5E] border-[#8FA9FF]'
-                : 'bg-[#1A233D] text-white border-slate-600 hover:border-[#8FA9FF]'
-            }`}
-          >
-            <Edit3 className="w-4 h-4" />
-            <span>Complete My Directory Profile</span>
-          </button>
-        </div>
+        <button
+          onClick={loadDoctorData}
+          className="px-4 py-2 bg-[#1A233D] text-[#8FA9FF] border border-[#8FA9FF] text-xs font-black rounded-lg shadow hover:bg-black flex items-center gap-1.5 shrink-0"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>Refresh Queue</span>
+        </button>
       </div>
 
       {statusMsg && (
@@ -183,77 +182,96 @@ export default function DoctorPortal({ currentUser }) {
         </div>
       )}
 
-      {/* View 1: Consultation Queue */}
-      {activeTab === 'cases' && (
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        <button
+          onClick={() => setActiveTab('pipeline-cases')}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
+            activeTab === 'pipeline-cases' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E]' : 'bg-white text-slate-900 border-slate-300'
+          }`}
+        >
+          <Plane className="w-4 h-4 text-[#8FA9FF]" />
+          <span>Step 4: Ready for Treatment Cases ({tourismPipelineCases.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('consultations')}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
+            activeTab === 'consultations' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E]' : 'bg-white text-slate-900 border-slate-300'
+          }`}
+        >
+          <MessageSquare className="w-4 h-4 text-[#8FA9FF]" />
+          <span>Direct Patient Consultations ({consultations.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('profile')}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
+            activeTab === 'profile' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E]' : 'bg-white text-slate-900 border-slate-300'
+          }`}
+        >
+          <Edit3 className="w-4 h-4 text-[#8FA9FF]" />
+          <span>Complete My Directory Profile</span>
+        </button>
+      </div>
+
+      {/* View 1: Step 4 Pipeline Cases */}
+      {activeTab === 'pipeline-cases' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-black text-slate-900 font-sans">Incoming Patient Consultations</h3>
-            <button
-              onClick={loadDoctorConsultations}
-              className="px-3.5 py-1.5 bg-[#2D3A5E] text-white text-xs font-black rounded-lg flex items-center gap-1.5"
-            >
-              <RefreshCw className="w-3.5 h-3.5 text-[#8FA9FF]" />
-              <span>Refresh Queue</span>
-            </button>
+            <h3 className="text-lg font-black text-slate-900 font-sans">Step 4: Dispatched International Cases Awaiting Clinical Advice</h3>
+            <span className="text-xs font-black text-[#2D3A5E]">Assigned Doctor: {currentUser?.name || 'Dr. Naresh Trehan'}</span>
           </div>
-          
+
           {isLoading ? (
-            <div className="p-8 text-center text-slate-600 font-bold">Loading incoming consultation requests...</div>
-          ) : consultations.length === 0 ? (
+            <div className="p-8 text-center text-slate-600 font-bold">Loading clinical cases...</div>
+          ) : tourismPipelineCases.length === 0 ? (
             <div className="portal-card p-12 text-center bg-white border-2 border-slate-300 rounded-xl space-y-3">
-              <MessageSquare className="w-12 h-12 text-slate-400 mx-auto" />
-              <h4 className="text-base font-black text-slate-900">No Consultations in Queue</h4>
-              <p className="text-xs text-slate-700 font-bold">New consultation requests submitted by patients will appear here in real-time.</p>
+              <Plane className="w-12 h-12 text-slate-400 mx-auto" />
+              <h4 className="text-base font-black text-slate-900">No Dispatched Cases Pending Clinical Evaluation</h4>
+              <p className="text-xs text-slate-700 font-bold">Cases dispatched by Admin Logistics will automatically land here for clinical advice.</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
-              {consultations.map((con) => {
-                const isResponded = con.status === 'Responded';
+              {tourismPipelineCases.map((cas) => {
+                const isCompleted = cas.status === 'Completed';
 
                 return (
-                  <div key={con._id} className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl flex flex-col justify-between space-y-4">
+                  <div key={cas._id} className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl flex flex-col justify-between space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                        <span className="font-mono text-xs font-black text-[#2D3A5E]">
-                          Case ID: {con._id}
-                        </span>
+                        <span className="font-mono text-xs font-black text-[#2D3A5E]">Pipeline Ref: {cas._id}</span>
                         <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
-                          isResponded ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                          isCompleted ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-blue-100 text-blue-950 border-blue-300'
                         }`}>
-                          {con.status}
+                          {cas.status}
                         </span>
                       </div>
 
                       <div className="space-y-1 text-xs font-bold text-slate-900">
-                        <p className="text-sm font-black text-slate-900 flex items-center gap-1.5">
-                          <UserCheck className="w-4 h-4 text-[#2D3A5E]" />
-                          <span>Patient: {con.patientName}</span>
-                        </p>
-                        <p className="text-slate-700 flex items-center gap-1.5">
-                          <Globe className="w-3.5 h-3.5 text-[#2D3A5E]" />
-                          <span>Email: {con.patientEmail} • Country: {con.patientCountry}</span>
-                        </p>
-                        <p className="text-slate-700 flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-[#2D3A5E]" />
-                          <span>Preferred Date: {new Date(con.preferredDate).toLocaleDateString()}</span>
-                        </p>
-                        {con.doctorName && (
-                          <p className="text-[#2D3A5E] font-black text-xs">
-                            Doctor: {con.doctorName}
-                          </p>
-                        )}
+                        <p className="text-sm font-black text-slate-900">Patient: {cas.patientName} ({cas.patientCountry})</p>
+                        <p className="text-slate-700">Hospital: {cas.hospitalName}</p>
+                        <p className="text-slate-700">Medical Reason: {cas.medicalReason}</p>
                       </div>
 
-                      <div className="bg-slate-100 p-3 rounded-lg border border-slate-200 text-xs font-semibold text-slate-900">
-                        <span className="text-[10px] font-black uppercase text-[#2D3A5E] block mb-1">Subject / Symptoms:</span>
-                        <p className="font-black text-slate-900 mb-1">{con.subject}</p>
-                        <p className="text-slate-800 leading-relaxed">{con.message}</p>
-                      </div>
+                      {cas.hospitalNotes && (
+                        <div className="bg-purple-50 p-2.5 rounded border border-purple-200 text-[11px] text-purple-950">
+                          <span className="font-black block uppercase text-[9px] text-purple-900">Hospital VIL Clearance:</span>
+                          <p>{cas.hospitalNotes}</p>
+                        </div>
+                      )}
 
-                      {con.doctorResponse && (
-                        <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-300 text-xs font-semibold text-emerald-950">
-                          <span className="text-[10px] font-black uppercase text-emerald-900 block mb-1">Your Doctor Response:</span>
-                          <p>{con.doctorResponse}</p>
+                      {cas.adminLogisticsNotes && (
+                        <div className="bg-blue-50 p-2.5 rounded border border-blue-200 text-[11px] text-blue-950">
+                          <span className="font-black block uppercase text-[9px] text-blue-900">Admin Logistics Clearance:</span>
+                          <p>{cas.adminLogisticsNotes}</p>
+                        </div>
+                      )}
+
+                      {cas.doctorNotes && (
+                        <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-300 text-xs text-emerald-950 font-semibold">
+                          <span className="font-black block text-[10px] uppercase text-emerald-900">Your Clinical Response:</span>
+                          <p>{cas.doctorNotes}</p>
                         </div>
                       )}
                     </div>
@@ -261,13 +279,13 @@ export default function DoctorPortal({ currentUser }) {
                     <div className="pt-3 border-t border-slate-200">
                       <button
                         onClick={() => {
-                          setSelectedConsultation(con);
-                          setResponseText(con.doctorResponse || '');
+                          setSelectedCase(cas);
+                          setResponseText(cas.doctorNotes || '');
                         }}
                         className="w-full py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center justify-center gap-2"
                       >
                         <Send className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                        <span>{isResponded ? 'Update Clinical Response' : 'Respond to Patient'}</span>
+                        <span>{isCompleted ? 'Update Treatment Advice' : 'Issue Clinical Advice & Complete Case'}</span>
                       </button>
                     </div>
                   </div>
@@ -278,7 +296,31 @@ export default function DoctorPortal({ currentUser }) {
         </div>
       )}
 
-      {/* View 2: Profile Form */}
+      {/* View 2: Direct Consultations */}
+      {activeTab === 'consultations' && (
+        <div className="space-y-6">
+          <h3 className="text-lg font-black text-slate-900 font-sans font-bold">Direct Patient Consultations</h3>
+          
+          {consultations.length === 0 ? (
+            <div className="portal-card p-12 text-center bg-white border-2 border-slate-300 rounded-xl space-y-3">
+              <MessageSquare className="w-12 h-12 text-slate-400 mx-auto" />
+              <h4 className="text-base font-black text-slate-900">No Direct Consultation Requests</h4>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {consultations.map((con) => (
+                <div key={con._id} className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl space-y-3">
+                  <h4 className="text-sm font-black text-slate-900">Patient: {con.patientName}</h4>
+                  <p className="text-xs font-bold text-slate-700">{con.subject}</p>
+                  <p className="text-xs text-slate-800 bg-slate-100 p-2.5 rounded border">{con.message}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* View 3: Profile Form */}
       {activeTab === 'profile' && (
         <div className="portal-card p-8 bg-white border-2 border-slate-300 rounded-xl space-y-6 max-w-3xl mx-auto shadow-md">
           <div className="space-y-1 border-b border-slate-200 pb-4">
@@ -288,13 +330,9 @@ export default function DoctorPortal({ currentUser }) {
                 Complete & Customize Directory Profile
               </h3>
             </div>
-            <p className="text-xs text-slate-700 font-bold">
-              Update your department specialty, medical degrees, OPD fees, and profile photo so patients can view your profile on the main page directory.
-            </p>
           </div>
 
           <form onSubmit={handleSaveProfile} className="space-y-4">
-            
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-black text-slate-900 block mb-1">Doctor Name (Registered)</label>
@@ -315,127 +353,46 @@ export default function DoctorPortal({ currentUser }) {
                 >
                   <option value="Cardiology">Cardiology</option>
                   <option value="Oncology">Oncology</option>
-                  <option value="Organ Transplant">Organ Transplant</option>
-                  <option value="Orthopaedics">Orthopaedics</option>
                   <option value="Neurosurgery">Neurosurgery</option>
-                  <option value="Dental Sciences">Dental Sciences</option>
-                  <option value="Gastroenterology">Gastroenterology</option>
-                  <option value="Urology">Urology</option>
-                  <option value="Paediatrics">Paediatrics</option>
-                  <option value="General Medicine & Senior Specialist">General Medicine & Senior Specialist</option>
+                  <option value="Orthopaedics">Orthopaedics</option>
                 </select>
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">Medical Qualifications & Degrees *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. MBBS, MD, DM (Cardiology), FACC"
-                  value={qualifications}
-                  onChange={(e) => setQualifications(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg px-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">Clinical Experience (Years) *</label>
-                <input
-                  type="number"
-                  required
-                  min={1}
-                  max={60}
-                  value={experienceYears}
-                  onChange={(e) => setExperienceYears(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg px-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">OPD Consultation Fee (USD $) *</label>
-                <input
-                  type="number"
-                  required
-                  min={10}
-                  max={1000}
-                  value={consultationFeeUSD}
-                  onChange={(e) => setConsultationFeeUSD(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg px-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">Languages Spoken (Comma Separated) *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="English, Hindi, Punjabi, Arabic"
-                  value={languages}
-                  onChange={(e) => setLanguages(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg px-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-black text-slate-900 block mb-1">Profile Photo Image URL</label>
-              <input
-                type="url"
-                placeholder="https://images.unsplash.com/..."
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full bg-white border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg px-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
-              />
-            </div>
-
-            <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setActiveTab('cases')}
-                className="px-4 py-2.5 bg-slate-200 text-slate-900 text-xs font-black rounded-lg"
-              >
-                Cancel
-              </button>
-              
+            <div className="pt-4 border-t border-slate-200 flex justify-end gap-3">
               <button
                 type="submit"
                 disabled={isSavingProfile}
-                className="px-6 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow disabled:opacity-50 transition"
+                className="px-6 py-2.5 bg-[#2D3A5E] text-white font-black text-xs sm:text-sm rounded-lg shadow"
               >
-                {isSavingProfile ? 'Saving & Publishing...' : 'Publish Profile to Directory'}
+                {isSavingProfile ? 'Saving...' : 'Publish Profile to Directory'}
               </button>
             </div>
-
           </form>
         </div>
       )}
 
-      {/* Response Modal */}
-      {selectedConsultation && (
+      {/* Doctor Case Response Modal */}
+      {selectedCase && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
           <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-lg w-full p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="text-lg font-black text-slate-900 font-sans">Respond to {selectedConsultation.patientName}</h3>
-              <button onClick={() => setSelectedConsultation(null)} className="p-1 font-mono">X</button>
+              <h3 className="text-lg font-black text-slate-900 font-sans">Step 4 Clinical Response for {selectedCase.patientName}</h3>
+              <button onClick={() => setSelectedCase(null)} className="p-1 font-mono">X</button>
             </div>
 
             <div className="bg-slate-100 p-3 rounded-lg text-xs space-y-1 font-bold">
-              <p><span className="text-slate-600">Patient:</span> {selectedConsultation.patientName} ({selectedConsultation.patientEmail})</p>
-              <p><span className="text-slate-600">Subject:</span> {selectedConsultation.subject}</p>
-              <p className="text-slate-800 font-semibold">{selectedConsultation.message}</p>
+              <p><span className="text-slate-600">Patient:</span> {selectedCase.patientName} ({selectedCase.patientCountry})</p>
+              <p><span className="text-slate-600">Medical Reason:</span> {selectedCase.medicalReason}</p>
             </div>
 
-            <form onSubmit={handleSendResponse} className="space-y-3">
+            <form onSubmit={handleDoctorCompletePipeline} className="space-y-3">
               <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">Doctor Clinical Response & Treatment Advice *</label>
+                <label className="text-xs font-black text-slate-900 block mb-1">Doctor Treatment Plan & Pre-Surgical Advice *</label>
                 <textarea
                   rows={4}
                   required
-                  placeholder="Enter medical evaluation, recommended diagnostic tests, or preliminary treatment plan..."
+                  placeholder="Enter medical evaluation, pre-op instructions, diagnostic recommendations..."
                   value={responseText}
                   onChange={(e) => setResponseText(e.target.value)}
                   className="w-full border-2 border-slate-300 rounded-lg p-3 text-xs font-bold text-slate-900 focus:border-[#8FA9FF] focus:outline-none"
@@ -445,7 +402,7 @@ export default function DoctorPortal({ currentUser }) {
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setSelectedConsultation(null)}
+                  onClick={() => setSelectedCase(null)}
                   className="px-4 py-2 bg-slate-200 text-slate-900 text-xs font-black rounded-lg"
                 >
                   Cancel
@@ -455,7 +412,7 @@ export default function DoctorPortal({ currentUser }) {
                   disabled={isSubmitting}
                   className="px-6 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded-lg shadow disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Sending Response...' : 'Submit Doctor Response'}
+                  {isSubmitting ? 'Sending...' : 'Complete Step 4 Clinical Evaluation'}
                 </button>
               </div>
             </form>

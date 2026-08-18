@@ -12,12 +12,14 @@ import {
   RefreshCw,
   Clock,
   Plane,
-  FileText
+  FileText,
+  CheckCircle2,
+  Send
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
 export default function AdminDashboard({ currentUser }) {
-  const [activeTab, setActiveTab] = useState('appointments'); // 'appointments' | 'tourism' | 'hospitals' | 'doctors' | 'treatments'
+  const [activeTab, setActiveTab] = useState('tourism-dispatch'); // 'tourism-dispatch' | 'appointments' | 'hospitals' | 'doctors' | 'treatments'
   
   const [appointments, setAppointments] = useState([]);
   const [tourismOrders, setTourismOrders] = useState([]);
@@ -57,6 +59,24 @@ export default function AdminDashboard({ currentUser }) {
     }
   }
 
+  async function handleDispatchByAdmin(id) {
+    try {
+      const res = await fetch(`/api/tourism/${id}/admin-dispatch`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          adminLogisticsNotes: 'Certified Language Translator assigned, Serviced Recovery Suite reserved, Airport Driver scheduled. Case forwarded to Doctor Desk.'
+        })
+      });
+      if (res.ok) {
+        setStatusMessage(`✅ Step 3 Complete: Travel logistics & translators dispatched for Request #${id}! Case forwarded to Doctor Desk.`);
+        loadData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async function handleUpdateAppointmentStatus(id, newStatus) {
     try {
       const res = await fetch(`/api/appointments/${id}/status`, {
@@ -66,22 +86,6 @@ export default function AdminDashboard({ currentUser }) {
       });
       if (res.ok) {
         setStatusMessage(`Appointment #${id} status updated to ${newStatus}`);
-        loadData();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function handleUpdateTourismStatus(id, newStatus) {
-    try {
-      const res = await fetch(`/api/tourism/${id}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (res.ok) {
-        setStatusMessage(`Tourism order #${id} status updated to ${newStatus}`);
         loadData();
       }
     } catch (err) {
@@ -154,14 +158,14 @@ export default function AdminDashboard({ currentUser }) {
           <div className="flex items-center gap-2 mb-1">
             <ShieldCheck className="w-5 h-5 text-[#8FA9FF]" />
             <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
-              System Admin Platform Control Panel
+              Step 3 Pipeline Coordinator • System Admin
             </span>
           </div>
           <h2 className="text-2xl font-black text-white tracking-tight font-sans">
-            Global Admin Operations Dashboard
+            Admin Desk: Logistics & Translator Dispatch
           </h2>
           <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-            Manage network-wide hospitals, doctors, surgical tariffs, patient appointments, and travel concierge orders.
+            Dispatch language translators, confirm recovery guest suites, schedule airport drivers, and forward cases to assigned Doctors.
           </p>
         </div>
 
@@ -184,8 +188,8 @@ export default function AdminDashboard({ currentUser }) {
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {[
+          { id: 'tourism-dispatch', label: `Step 3: Travel Logistics Dispatch (${tourismOrders.length})`, icon: Plane },
           { id: 'appointments', label: `Manage Appointments (${appointments.length})`, icon: Calendar },
-          { id: 'tourism', label: `Manage Tourism Orders (${tourismOrders.length})`, icon: Plane },
           { id: 'hospitals', label: 'Manage Hospitals (CRUD)', icon: Building2 },
           { id: 'doctors', label: 'Manage Doctors (CRUD)', icon: UserCheck },
           { id: 'treatments', label: 'Manage Surgical Tariffs', icon: Calculator },
@@ -209,7 +213,79 @@ export default function AdminDashboard({ currentUser }) {
         })}
       </div>
 
-      {/* Tab 1: Appointments */}
+      {/* Step 3: Travel Logistics Dispatch */}
+      {activeTab === 'tourism-dispatch' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-black text-slate-900 font-sans">Step 3: Hospital-Approved Cases Awaiting Travel Logistics Dispatch</h3>
+            <span className="text-xs font-black text-[#2D3A5E]">Admin Concierge Operations Desk</span>
+          </div>
+
+          <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-900 font-bold">
+                <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
+                  <tr>
+                    <th className="p-3">Order ID</th>
+                    <th className="p-3">Patient Name</th>
+                    <th className="p-3">Booked Service</th>
+                    <th className="p-3">Approved Hospital</th>
+                    <th className="p-3">Assigned Doctor</th>
+                    <th className="p-3">Status</th>
+                    <th className="p-3 text-right">Step 3 Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {tourismOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="p-6 text-center text-slate-600 font-bold">No hospital-approved cases awaiting logistics dispatch.</td>
+                    </tr>
+                  ) : (
+                    tourismOrders.map((ord) => {
+                      const isDispatched = ord.status === 'Dispatched by Admin' || ord.status === 'Completed';
+
+                      return (
+                        <tr key={ord._id} className="hover:bg-slate-50">
+                          <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
+                          <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
+                          <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
+                          <td className="p-3 text-slate-800">{ord.hospitalName}</td>
+                          <td className="p-3 text-slate-800">{ord.doctorName}</td>
+                          <td className="p-3">
+                            <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
+                              isDispatched ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-purple-100 text-purple-950 border-purple-300'
+                            }`}>
+                              {ord.status}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right">
+                            {isDispatched ? (
+                              <span className="text-emerald-700 font-black text-xs flex items-center justify-end gap-1">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                                <span>Dispatched to Doctor Desk</span>
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => handleDispatchByAdmin(ord._id)}
+                                className="px-3.5 py-1.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-[10px] font-black rounded-lg shadow flex items-center gap-1 ml-auto"
+                              >
+                                <Send className="w-3 h-3 text-[#8FA9FF]" />
+                                <span>Dispatch Logistics & Forward Case</span>
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Appointments */}
       {activeTab === 'appointments' && (
         <div className="space-y-4">
           <h3 className="text-lg font-black text-slate-900 font-sans">Patient Consultation Requests</h3>
@@ -278,69 +354,7 @@ export default function AdminDashboard({ currentUser }) {
         </div>
       )}
 
-      {/* Tab 2: Tourism & Travel Concierge Orders (NEW) */}
-      {activeTab === 'tourism' && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-black text-slate-900 font-sans">Booked Medical Tourism & Concierge Orders</h3>
-          <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-900 font-bold">
-                <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
-                  <tr>
-                    <th className="p-3">Order ID</th>
-                    <th className="p-3">Patient</th>
-                    <th className="p-3">Booked Service</th>
-                    <th className="p-3">Details / Phone</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {tourismOrders.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="p-6 text-center text-slate-600 font-bold">No medical tourism orders recorded.</td>
-                    </tr>
-                  ) : (
-                    tourismOrders.map((ord) => (
-                      <tr key={ord._id} className="hover:bg-slate-50">
-                        <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
-                        <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
-                        <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
-                        <td className="p-3 text-slate-700">{ord.serviceDetails || 'Standard Service'}<br/>{ord.contactPhone}</td>
-                        <td className="p-3">
-                          <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                            ord.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
-                            ord.status === 'Completed' ? 'bg-blue-100 text-blue-950 border-blue-300' :
-                            'bg-amber-100 text-amber-950 border-amber-300'
-                          }`}>
-                            {ord.status || 'Pending'}
-                          </span>
-                        </td>
-                        <td className="p-3 text-right space-x-1">
-                          <button
-                            onClick={() => handleUpdateTourismStatus(ord._id, 'Confirmed')}
-                            className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black rounded"
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() => handleUpdateTourismStatus(ord._id, 'Completed')}
-                            className="px-2.5 py-1 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-[10px] font-black rounded"
-                          >
-                            Complete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tab 3: Hospitals */}
+      {/* Hospitals */}
       {activeTab === 'hospitals' && (
         <div className="space-y-6">
           <form onSubmit={handleAddHospital} className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-3">
@@ -386,7 +400,7 @@ export default function AdminDashboard({ currentUser }) {
         </div>
       )}
 
-      {/* Tab 4: Doctors */}
+      {/* Doctors */}
       {activeTab === 'doctors' && (
         <div className="space-y-6">
           <form onSubmit={handleAddDoctor} className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-3">
@@ -438,7 +452,7 @@ export default function AdminDashboard({ currentUser }) {
         </div>
       )}
 
-      {/* Tab 5: Treatments */}
+      {/* Treatments */}
       {activeTab === 'treatments' && (
         <div className="space-y-4">
           <h3 className="text-lg font-black text-slate-900 font-sans">Active Surgical Tariffs</h3>
