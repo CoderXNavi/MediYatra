@@ -104,9 +104,6 @@ export default function HeroSection({
                   <p className="text-[#2D3A5E] font-black leading-tight hover:text-[#8FA9FF] cursor-pointer">
                     Fast-Track e-Medical Visa Processing Guidelines 2026
                   </p>
-                  <span className="inline-block mt-1 px-1.5 py-0.2 bg-red-700 text-white text-[9px] font-black rounded">
-                    New!
-                  </span>
                 </div>
 
                 <div className="border-b border-slate-200 pb-2">
@@ -114,9 +111,6 @@ export default function HeroSection({
                   <p className="text-[#2D3A5E] font-black leading-tight hover:text-[#8FA9FF] cursor-pointer">
                     Updated Package Pricing for Cardiac & Robotic Procedures
                   </p>
-                  <span className="inline-block mt-1 px-1.5 py-0.2 bg-red-700 text-white text-[9px] font-black rounded">
-                    New!
-                  </span>
                 </div>
 
                 <div>
@@ -201,8 +195,8 @@ export default function HeroSection({
                 <div className="icon-circle">
                   <UserCheck className="w-6 h-6 sm:w-7 sm:h-7 text-[#2D3A5E]" />
                 </div>
-                <span className="px-2 py-0.5 bg-red-700 text-white text-[10px] font-black rounded">
-                  New!
+                <span className="px-2 py-0.5 bg-[#FBE7F1] text-[#2D3A5E] text-[10px] font-black rounded border border-[#D7C6FF]">
+                  Specialist Registry
                 </span>
               </div>
               <div>
