@@ -120,16 +120,16 @@ export default function TreatmentCostCalculator({ treatments = [], currency, onB
                       <span className="line-through text-slate-300 font-black">{usPrice}</span>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
                       <div>
                         <span className="text-[11px] text-[#8FA9FF] font-black block">Accredited India Tariff:</span>
-                        <span className="text-2xl font-black text-white font-sans">{indiaPrice}</span>
+                        <span className="text-xl sm:text-2xl font-black text-white font-sans">{indiaPrice}</span>
                       </div>
 
                       {isDoctor ? (
                         <button
                           onClick={() => setActiveTab && setActiveTab('doctor-portal')}
-                          className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+                          className="w-full sm:w-auto px-3.5 py-2 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center justify-center gap-1.5 transition shrink-0 cursor-pointer"
                         >
                           <Stethoscope className="w-4 h-4 text-[#2D3A5E]" />
                           <span>Doctor Portal</span>
@@ -137,7 +137,7 @@ export default function TreatmentCostCalculator({ treatments = [], currency, onB
                       ) : isHospital ? (
                         <button
                           onClick={() => setActiveTab && setActiveTab('hospital-portal')}
-                          className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+                          className="w-full sm:w-auto px-3.5 py-2 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center justify-center gap-1.5 transition shrink-0 cursor-pointer"
                         >
                           <Building2 className="w-4 h-4 text-[#2D3A5E]" />
                           <span>Hospital Portal</span>
@@ -145,7 +145,7 @@ export default function TreatmentCostCalculator({ treatments = [], currency, onB
                       ) : isAdmin ? (
                         <button
                           onClick={() => onOpenAdminTab && onOpenAdminTab('treatments')}
-                          className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+                          className="w-full sm:w-auto px-3.5 py-2 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center justify-center gap-1.5 transition shrink-0 cursor-pointer"
                         >
                           <Lock className="w-4 h-4 text-[#2D3A5E]" />
                           <span>Admin Panel</span>
@@ -153,7 +153,7 @@ export default function TreatmentCostCalculator({ treatments = [], currency, onB
                       ) : (
                         <button
                           onClick={() => onBookTreatment(treatment)}
-                          className="px-4 py-2.5 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center gap-1.5 transition shrink-0"
+                          className="w-full sm:w-auto px-3.5 py-2 bg-[#8FA9FF] hover:bg-blue-400 text-[#2D3A5E] font-black text-xs rounded shadow flex items-center justify-center gap-1.5 transition shrink-0"
                         >
                           <CalendarCheck className="w-4 h-4 text-[#2D3A5E]" />
                           <span>Get Package Estimate</span>

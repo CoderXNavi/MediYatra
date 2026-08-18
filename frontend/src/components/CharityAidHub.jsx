@@ -472,12 +472,12 @@ export default function CharityAidHub({ currentUser, onOpenAuth }) {
       {showDonateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs">
           <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-md w-full overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="bg-[#2D3A5E] text-white p-4 flex items-center justify-between border-b border-[#1A233D]">
+            <div className="bg-[#1E293B] text-white p-4 flex items-center justify-between border-b border-slate-700">
               <div className="flex items-center gap-2">
-                <PlusCircle className="w-5 h-5 text-[#8FA9FF]" />
-                <h3 className="font-black text-base">Donate Surplus Medicines or Equipment</h3>
+                <PlusCircle className="w-5 h-5 text-[#8FA9FF] shrink-0" />
+                <h3 className="font-black text-base text-white tracking-wide">Donate Surplus Medicines or Equipment</h3>
               </div>
-              <button onClick={() => setShowDonateModal(false)} className="text-slate-300 hover:text-white font-mono">
+              <button onClick={() => setShowDonateModal(false)} className="text-slate-300 hover:text-white font-mono p-1 cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -561,12 +561,12 @@ export default function CharityAidHub({ currentUser, onOpenAuth }) {
       {showRequestModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs">
           <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-md w-full overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="bg-emerald-800 text-white p-4 flex items-center justify-between border-b border-emerald-950">
+            <div className="bg-[#047857] text-white p-4 flex items-center justify-between border-b border-emerald-800">
               <div className="flex items-center gap-2">
-                <Send className="w-5 h-5 text-emerald-300" />
-                <h3 className="font-black text-base">Request Free Medical Aid</h3>
+                <Send className="w-5 h-5 text-emerald-200 shrink-0" />
+                <h3 className="font-black text-base text-white tracking-wide">Request Free Medical Aid</h3>
               </div>
-              <button onClick={() => setShowRequestModal(false)} className="text-emerald-200 hover:text-white font-mono">
+              <button onClick={() => setShowRequestModal(false)} className="text-emerald-100 hover:text-white font-mono p-1 cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>

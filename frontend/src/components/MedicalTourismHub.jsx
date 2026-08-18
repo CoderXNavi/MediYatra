@@ -196,13 +196,17 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
             )}
           </div>
 
-          <div className="rounded-xl overflow-hidden border-2 border-slate-300 shadow min-h-[260px] bg-slate-100">
+          <div className="rounded-xl overflow-hidden border-2 border-slate-300 shadow h-64 sm:h-80 w-full relative bg-slate-900">
             <img
               src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=800"
               alt="Medical Travel Assistance"
               onError={handleImageError}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-95"
             />
+            <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-slate-950/90 via-slate-900/60 to-transparent text-white">
+              <span className="text-xs font-black uppercase text-[#8FA9FF] tracking-wider block">Global Travel Concierge</span>
+              <p className="text-xs font-bold text-slate-200">Dedicated assistance from departure airport to hospital desk</p>
+            </div>
           </div>
         </div>
       )}
