@@ -7,7 +7,7 @@ import {
 } from '../data/mockData';
 import { normalizeDoctor, normalizeHospital, normalizeTreatment } from '../utils/normalizeData';
 
-const BASE_URL = '/api';
+const BASE_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api` : '/api';
 
 async function fetchWithFallback(url, options = {}, fallbackData = null) {
   try {
