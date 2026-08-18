@@ -108,7 +108,7 @@ export default function TourismBookingModal({ isOpen, onClose, currentUser, init
             <Plane className="w-6 h-6 text-[#8FA9FF]" />
             <div>
               <h3 className="font-black text-base font-sans">Request Medical Tourism & Visa Service</h3>
-              <p className="text-[11px] text-[#D7C6FF] font-bold">Step 1: Patient Service Submission</p>
+              <p className="text-xs text-[#8FA9FF] font-black">Step 1: Patient Service Submission</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1 text-slate-300 hover:text-white font-mono">

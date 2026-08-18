@@ -85,7 +85,7 @@ export default function Navbar({
               <ShieldCheck className="w-4 h-4 text-[#8FA9FF] shrink-0" /> 
               <span className="truncate">MediYatra Global Health Network</span>
             </span>
-            <span className="hidden md:inline text-[#D7C6FF] font-bold">|</span>
+            <span className="hidden md:inline text-slate-300 font-bold">|</span>
             <span className="hidden md:inline text-white font-extrabold text-xs">
               International Desk: +91 11 4000 8888
             </span>
@@ -115,7 +115,7 @@ export default function Navbar({
 
             {/* Currency Switcher */}
             <div className="flex items-center bg-[#1A233D] rounded px-2 py-0.5 border border-[#8FA9FF]">
-              <span className="text-[10px] sm:text-[11px] text-[#D7C6FF] mr-1 font-black">Currency:</span>
+              <span className="text-[10px] sm:text-[11px] text-[#8FA9FF] mr-1 font-black">Currency:</span>
               <button
                 onClick={() => setCurrency('USD')}
                 className={`px-1.5 py-0.5 text-[10px] sm:text-[11px] font-black rounded transition ${
@@ -309,7 +309,7 @@ export default function Navbar({
                     className={`flex items-center gap-1.5 px-3 h-full text-xs font-black transition border-b-4 bg-transparent shadow-none shrink-0 ${
                       isActive
                         ? 'text-[#8FA9FF] border-[#8FA9FF]'
-                        : 'text-white hover:text-[#D7C6FF] border-transparent'
+                        : 'text-white hover:text-[#8FA9FF] border-transparent'
                     }`}
                   >
                     <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#8FA9FF]' : 'text-white'}`} />
@@ -323,10 +323,10 @@ export default function Navbar({
               {!isNonPatient && (
                 <button
                   onClick={onOpenAITriage}
-                  className="flex items-center gap-1.5 px-3 h-full text-xs font-black text-[#D7C6FF] hover:text-white border-b-4 border-transparent bg-transparent shadow-none shrink-0 transition"
+                  className="flex items-center gap-1.5 px-3 h-full text-xs font-black text-white hover:text-[#8FA9FF] border-b-4 border-transparent bg-transparent shadow-none shrink-0 transition"
                 >
-                  <Stethoscope className="w-3.5 h-3.5 text-[#D7C6FF] shrink-0" />
-                  <span className="text-[#D7C6FF] hover:text-white font-black text-xs whitespace-nowrap">
+                  <Stethoscope className="w-3.5 h-3.5 text-[#8FA9FF] shrink-0" />
+                  <span className="text-white hover:text-[#8FA9FF] font-black text-xs whitespace-nowrap">
                     AI Triage Desk
                   </span>
                 </button>
@@ -372,7 +372,7 @@ export default function Navbar({
                 onOpenAITriage();
                 setMobileMenuOpen(false);
               }}
-              className="w-full text-left flex items-center gap-3 px-3.5 py-3 rounded-lg text-xs font-black text-[#D7C6FF] hover:bg-[#1A233D]/50 border border-slate-700 mt-2"
+              className="w-full text-left flex items-center gap-3 px-3.5 py-3 rounded-lg text-xs font-black text-white hover:bg-[#1A233D]/50 border border-slate-700 mt-2"
             >
               <Stethoscope className="w-4 h-4 text-[#8FA9FF]" />
               <span>AI Symptom Triage Desk</span>

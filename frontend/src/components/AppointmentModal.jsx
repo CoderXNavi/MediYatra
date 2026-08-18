@@ -117,7 +117,7 @@ export default function AppointmentModal({
             </div>
             <div>
               <h3 className="font-black text-base text-white font-sans">Book Medical Consultation</h3>
-              <p className="text-xs text-[#D7C6FF] font-bold">MediYatra International Patient Desk</p>
+              <p className="text-xs text-[#8FA9FF] font-black">MediYatra International Patient Desk</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1 rounded-md text-slate-300 hover:text-white">

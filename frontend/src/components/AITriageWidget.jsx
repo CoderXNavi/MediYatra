@@ -53,8 +53,8 @@ export default function AITriageWidget({ isOpen, onClose, onBookDoctor }) {
               <Stethoscope className="w-5 h-5 text-[#8FA9FF]" />
             </div>
             <div>
-              <h3 className="font-black text-sm text-white font-sans">Clinical Symptom Triage Assistant</h3>
-              <p className="text-[11px] text-[#D7C6FF] font-bold">Department & Specialist Matcher</p>
+              <h3 className="font-black text-base text-white font-sans">AI Symptom Triage Desk</h3>
+              <p className="text-xs text-[#8FA9FF] font-black">Department & Specialist Matcher</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1 text-slate-300 hover:text-white rounded">

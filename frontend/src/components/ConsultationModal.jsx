@@ -113,7 +113,7 @@ export default function ConsultationModal({
             </div>
             <div>
               <h3 className="font-black text-base text-white font-sans">Consult {doctor.name}</h3>
-              <p className="text-xs text-[#D7C6FF] font-bold">{doctor.specialty} • {doctor.hospitalName}</p>
+              <p className="text-xs text-[#8FA9FF] font-black">{doctor.specialty} • {doctor.hospitalName}</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1 text-slate-300 hover:text-white">
