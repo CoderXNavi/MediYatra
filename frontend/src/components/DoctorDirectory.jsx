@@ -14,9 +14,10 @@ import {
 } from 'lucide-react';
 import { normalizeDoctor } from '../utils/normalizeData';
 
-export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery }) {
+export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery, currentUser }) {
   const [selectedDept, setSelectedDept] = useState('All');
 
+  const isAdmin = currentUser?.role === 'Admin';
   const normalizedDoctors = (Array.isArray(doctors) ? doctors : []).map(normalizeDoctor).filter(Boolean);
 
   const allDepartments = [
@@ -194,23 +195,29 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
                     <span className="text-base font-black text-slate-900 font-mono">{displayFee}</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => onConsultDoctor(doc)}
-                      className="px-3 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition shrink-0"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                      <span>Consult Doctor</span>
-                    </button>
+                  {isAdmin ? (
+                    <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-2 rounded border-2 border-slate-300">
+                      Managed via Admin Control Panel
+                    </span>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => onConsultDoctor(doc)}
+                        className="px-3 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition shrink-0"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                        <span>Consult Doctor</span>
+                      </button>
 
-                    <button
-                      onClick={() => onBookDoctor(doc)}
-                      className="px-3 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition shrink-0"
-                    >
-                      <CalendarCheck className="w-3.5 h-3.5 text-white" />
-                      <span>Book OPD</span>
-                    </button>
-                  </div>
+                      <button
+                        onClick={() => onBookDoctor(doc)}
+                        className="px-3 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition shrink-0"
+                      >
+                        <CalendarCheck className="w-3.5 h-3.5 text-white" />
+                        <span>Book OPD</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
               </div>

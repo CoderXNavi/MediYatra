@@ -46,11 +46,13 @@ export default function Navbar({
   } else if (currentUser?.role === 'Hospital') {
     baseNavLinks.push({ id: 'hospital-portal', label: 'Hospital Desk', icon: Building2 });
   } else if (currentUser?.role === 'Admin') {
-    baseNavLinks.push({ id: 'admin', label: 'Admin Panel', icon: Lock });
+    baseNavLinks.push({ id: 'admin', label: 'Admin Control Panel', icon: Lock });
   } else {
     // Patient or Guest view
     baseNavLinks.push({ id: 'records', label: 'My Health Portal', icon: FileText });
   }
+
+  const isAdmin = currentUser?.role === 'Admin';
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-md w-full border-b border-slate-200">
@@ -100,8 +102,8 @@ export default function Navbar({
               <div className="flex items-center gap-2 bg-[#1A233D] px-2.5 py-1 rounded border border-[#8FA9FF]">
                 <User className="w-3.5 h-3.5 text-[#8FA9FF]" />
                 <span className="text-white text-[11px] font-black">{currentUser.name} ({currentUser.role})</span>
-                <button onClick={onLogout} title="Log Out" className="text-slate-300 hover:text-red-400 ml-1">
-                  <LogOut className="w-3.5 h-3.5" />
+                <button onClick={onLogout} title="Log Out" className="text-slate-300 hover:text-red-400 ml-1 font-black">
+                  <LogOut className="w-3.5 h-3.5 inline" /> Sign Out
                 </button>
               </div>
             ) : (
@@ -134,7 +136,7 @@ export default function Navbar({
           {/* Logo Emblem & Brand Title */}
           <div 
             className="flex items-center gap-3 cursor-pointer select-none" 
-            onClick={() => setActiveTab('hospitals')}
+            onClick={() => setActiveTab(isAdmin ? 'admin' : 'hospitals')}
           >
             <img 
               src="/logo_clean.png" 
@@ -167,15 +169,25 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Book Appointment CTA Button */}
+          {/* Header Action Button - Show 'Admin Panel' for Admin, 'Book Appointment' for Patients */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => onOpenBooking()}
-              className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center gap-2 transition"
-            >
-              <CalendarCheck className="w-4 h-4 text-[#8FA9FF] shrink-0" />
-              <span className="text-white font-black whitespace-nowrap">Book Appointment</span>
-            </button>
+            {isAdmin ? (
+              <button
+                onClick={() => setActiveTab('admin')}
+                className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center gap-2 transition"
+              >
+                <Lock className="w-4 h-4 text-[#8FA9FF] shrink-0" />
+                <span className="text-white font-black whitespace-nowrap">Admin Control Panel</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => onOpenBooking()}
+                className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center gap-2 transition"
+              >
+                <CalendarCheck className="w-4 h-4 text-[#8FA9FF] shrink-0" />
+                <span className="text-white font-black whitespace-nowrap">Book Appointment</span>
+              </button>
+            )}
           </div>
 
         </div>
@@ -208,20 +220,21 @@ export default function Navbar({
                 );
               })}
 
-              {/* Symptom Triage Link */}
-              <button
-                onClick={onOpenAITriage}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 h-full text-xs font-black text-[#D7C6FF] hover:text-white border-b-4 border-transparent bg-transparent shadow-none shrink-0 transition"
-              >
-                <Stethoscope className="w-3.5 h-3.5 text-[#D7C6FF] shrink-0" />
-                <span className="text-[#D7C6FF] hover:text-white font-black text-xs whitespace-nowrap">
-                  AI Triage Desk
-                </span>
-              </button>
+              {!isAdmin && (
+                <button
+                  onClick={onOpenAITriage}
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3.5 h-full text-xs font-black text-[#D7C6FF] hover:text-white border-b-4 border-transparent bg-transparent shadow-none shrink-0 transition"
+                >
+                  <Stethoscope className="w-3.5 h-3.5 text-[#D7C6FF] shrink-0" />
+                  <span className="text-[#D7C6FF] hover:text-white font-black text-xs whitespace-nowrap">
+                    AI Triage Desk
+                  </span>
+                </button>
+              )}
             </nav>
 
             <div className="text-[11px] text-[#8FA9FF] font-black hidden xl:block whitespace-nowrap pl-4 shrink-0">
-              24/7 International Desk
+              {isAdmin ? 'System Admin Operations Active' : '24/7 International Desk'}
             </div>
 
             {/* Mobile Menu Toggle Button */}
@@ -258,16 +271,6 @@ export default function Navbar({
               </span>
             </button>
           ))}
-          <button
-            onClick={() => {
-              onOpenAITriage();
-              setMobileMenuOpen(false);
-            }}
-            className="w-full text-left flex items-center gap-2 px-3 py-2.5 rounded text-xs font-black text-[#D7C6FF] bg-[#1A233D]"
-          >
-            <Stethoscope className="w-4 h-4 text-[#D7C6FF]" />
-            <span className="text-[#D7C6FF]">AI Triage Desk</span>
-          </button>
         </div>
       )}
 

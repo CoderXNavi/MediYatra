@@ -84,6 +84,8 @@ export default function App() {
   }, []);
 
   function handleConsultDoctor(doctor) {
+    if (currentUser?.role === 'Admin') return;
+
     if (!currentUser) {
       setPendingAction({ type: 'CONSULT_DOCTOR', doctor });
       setIsAuthOpen(true);
@@ -95,6 +97,8 @@ export default function App() {
   }
 
   function handleBookDoctor(doctor) {
+    if (currentUser?.role === 'Admin') return;
+
     if (!currentUser) {
       setPendingAction({ type: 'BOOK_DOCTOR', doctor });
       setIsAuthOpen(true);
@@ -109,6 +113,8 @@ export default function App() {
   }
 
   function handleBookHospital(hospital) {
+    if (currentUser?.role === 'Admin') return;
+
     if (!currentUser) {
       setPendingAction({ type: 'BOOK_HOSPITAL', hospital });
       setIsAuthOpen(true);
@@ -123,6 +129,8 @@ export default function App() {
   }
 
   function handleBookTreatment(treatment) {
+    if (currentUser?.role === 'Admin') return;
+
     if (!currentUser) {
       setPendingAction({ type: 'BOOK_TREATMENT', treatment });
       setIsAuthOpen(true);
@@ -137,6 +145,8 @@ export default function App() {
   }
 
   function handleOpenTourismModal(serviceTitle) {
+    if (currentUser?.role === 'Admin') return;
+
     setTourismModalService(serviceTitle || 'Fast-Track e-Medical Visa Invitation Letter');
     setIsTourismModalOpen(true);
   }
@@ -277,6 +287,7 @@ export default function App() {
             currency={currency} 
             onBookHospital={handleBookHospital}
             searchQuery={searchQuery}
+            currentUser={currentUser}
           />
         )}
 
@@ -287,6 +298,7 @@ export default function App() {
             onConsultDoctor={handleConsultDoctor}
             onBookDoctor={handleBookDoctor}
             searchQuery={searchQuery}
+            currentUser={currentUser}
           />
         )}
 
@@ -303,6 +315,7 @@ export default function App() {
           <MedicalTourismHub 
             currency={currency}
             onSelectService={handleOpenTourismModal}
+            currentUser={currentUser}
           />
         )}
 

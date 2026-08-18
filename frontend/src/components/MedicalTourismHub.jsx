@@ -15,11 +15,13 @@ import {
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
-export default function MedicalTourismHub({ currency, onSelectService }) {
+export default function MedicalTourismHub({ currency, onSelectService, currentUser }) {
   const [accommodations, setAccommodations] = useState([]);
   const [translators, setTranslators] = useState([]);
   const [activeTab, setActiveTab] = useState('visa');
   const [bookingNotice, setBookingNotice] = useState('');
+
+  const isAdmin = currentUser?.role === 'Admin';
 
   useEffect(() => {
     async function loadData() {
@@ -47,6 +49,8 @@ export default function MedicalTourismHub({ currency, onSelectService }) {
   };
 
   async function handleBookTourismService(serviceTitle) {
+    if (isAdmin) return;
+
     try {
       const userObj = JSON.parse(localStorage.getItem('mediyatra_user') || '{}');
       const patientEmail = userObj.email || 'guest@mediyatra.org';
@@ -152,13 +156,19 @@ export default function MedicalTourismHub({ currency, onSelectService }) {
               </li>
             </ul>
 
-            <button
-              onClick={() => handleBookTourismService('Medical Visa Invitation Letter')}
-              className="mt-2 px-5 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 transition"
-            >
-              <FileText className="w-4 h-4 text-[#8FA9FF]" />
-              <span>Request Visa Recommendation Letter</span>
-            </button>
+            {isAdmin ? (
+              <span className="inline-block mt-2 px-4 py-2 bg-slate-100 text-[#2D3A5E] text-xs font-black rounded-lg border-2 border-slate-300">
+                Managed via Admin Concierge Operations Desk
+              </span>
+            ) : (
+              <button
+                onClick={() => handleBookTourismService('Medical Visa Invitation Letter')}
+                className="mt-2 px-5 py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 transition"
+              >
+                <FileText className="w-4 h-4 text-[#8FA9FF]" />
+                <span>Request Visa Recommendation Letter</span>
+              </button>
+            )}
           </div>
 
           <div className="rounded-xl overflow-hidden border-2 border-slate-300 shadow min-h-[260px] bg-slate-100">
@@ -216,13 +226,19 @@ export default function MedicalTourismHub({ currency, onSelectService }) {
 
                   <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
                     <span className="text-[11px] text-slate-700 font-extrabold">Dedicated Clinical Companion</span>
-                    <button
-                      onClick={() => handleBookTourismService(`Medical Interpreter: ${trans.name}`)}
-                      className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition"
-                    >
-                      <Languages className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                      <span>Book Interpreter</span>
-                    </button>
+                    {isAdmin ? (
+                      <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-1 rounded border border-slate-300">
+                        Managed via Admin Desk
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleBookTourismService(`Medical Interpreter: ${trans.name}`)}
+                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition"
+                      >
+                        <Languages className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                        <span>Book Interpreter</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -280,13 +296,19 @@ export default function MedicalTourismHub({ currency, onSelectService }) {
 
                     <div className="pt-3 border-t-2 border-slate-100 flex items-center justify-between">
                       <span className="text-base font-black text-slate-900 font-mono">{displayPrice}</span>
-                      <button
-                        onClick={() => handleBookTourismService(`Serviced Suite: ${acc.name}`)}
-                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition"
-                      >
-                        <Hotel className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                        <span>Reserve Suite</span>
-                      </button>
+                      {isAdmin ? (
+                        <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-1 rounded border border-slate-300">
+                          Managed via Admin Desk
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleBookTourismService(`Serviced Suite: ${acc.name}`)}
+                          className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition"
+                        >
+                          <Hotel className="w-3.5 h-3.5 text-[#8FA9FF]" />
+                          <span>Reserve Suite</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -328,13 +350,19 @@ export default function MedicalTourismHub({ currency, onSelectService }) {
             </div>
           </div>
 
-          <button
-            onClick={() => handleBookTourismService('Airport Pickup & Private Transfer')}
-            className="px-6 py-3 bg-[#2D3A5E] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 hover:bg-[#1A233D] transition"
-          >
-            <Plane className="w-4 h-4 text-[#8FA9FF]" />
-            <span>Schedule Airport Pickup</span>
-          </button>
+          {isAdmin ? (
+            <span className="inline-block px-4 py-2 bg-slate-100 text-[#2D3A5E] text-xs font-black rounded-lg border-2 border-slate-300">
+              Managed via Admin Concierge Operations Desk
+            </span>
+          ) : (
+            <button
+              onClick={() => handleBookTourismService('Airport Pickup & Private Transfer')}
+              className="px-6 py-3 bg-[#2D3A5E] text-white text-xs sm:text-sm font-black rounded-lg shadow flex items-center gap-2 hover:bg-[#1A233D] transition"
+            >
+              <Plane className="w-4 h-4 text-[#8FA9FF]" />
+              <span>Schedule Airport Pickup</span>
+            </button>
+          )}
         </div>
       )}
 

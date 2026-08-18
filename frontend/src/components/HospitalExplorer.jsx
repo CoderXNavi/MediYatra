@@ -14,15 +14,15 @@ import {
 } from 'lucide-react';
 import { normalizeHospital } from '../utils/normalizeData';
 
-export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery }) {
+export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery, currentUser }) {
   const [selectedCity, setSelectedCity] = useState('All');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
 
+  const isAdmin = currentUser?.role === 'Admin';
   const normalizedHospitals = (Array.isArray(hospitals) ? hospitals : []).map(normalizeHospital).filter(Boolean);
 
-  // All possible filter options
   const allCities = ['All', 'New Delhi', 'Gurugram', 'Chennai', 'Mumbai', 'Bengaluru', 'Hyderabad', 'Kolkata'];
   const allSpecialties = [
     'All', 
@@ -70,7 +70,7 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
       <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
-            Accredited Hospital Network
+            Accredited Hospital Directory
           </span>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">
             Accredited Tertiary Medical Centers
@@ -126,7 +126,6 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
             </p>
           </div>
 
-          {/* All Filter Possibilities as Clickable Buttons */}
           <div className="space-y-4 pt-2 border-t border-slate-200">
             <div>
               <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-2">Browse All Hospital Specialties</span>
@@ -223,7 +222,6 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                       {hosp.description}
                     </p>
 
-                    {/* Quick Specs */}
                     <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-900">
                       <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
                         <span className="text-[10px] text-slate-700 font-black uppercase block">Capacity</span>
@@ -237,7 +235,6 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                       </div>
                     </div>
 
-                    {/* Specialties */}
                     <div>
                       <span className="text-[10px] font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
                         Key Centers of Excellence
@@ -264,13 +261,19 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                       </span>
                     </div>
 
-                    <button
-                      onClick={() => onBookHospital(hosp)}
-                      className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded shadow flex items-center gap-1.5 transition shrink-0"
-                    >
-                      <CalendarCheck className="w-4 h-4 text-[#8FA9FF]" />
-                      <span>Book Hospital OPD</span>
-                    </button>
+                    {isAdmin ? (
+                      <span className="text-xs font-black text-[#2D3A5E] bg-slate-100 px-3 py-2 rounded border-2 border-slate-300">
+                        Managed via Admin Control Panel
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => onBookHospital(hosp)}
+                        className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded shadow flex items-center gap-1.5 transition shrink-0"
+                      >
+                        <CalendarCheck className="w-4 h-4 text-[#8FA9FF]" />
+                        <span>Book Hospital OPD</span>
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -280,7 +283,7 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
         </div>
       )}
 
-      {/* Hospital Side-by-Side Comparison Modal */}
+      {/* Hospital Comparison Modal */}
       {showCompareModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
           <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
@@ -301,15 +304,17 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                     <p><span className="text-slate-500">Established:</span> {h.establishedYear}</p>
                   </div>
 
-                  <button
-                    onClick={() => {
-                      setShowCompareModal(false);
-                      onBookHospital(h);
-                    }}
-                    className="w-full py-2 bg-[#2D3A5E] text-white text-xs font-black rounded shadow"
-                  >
-                    Book OPD
-                  </button>
+                  {!isAdmin && (
+                    <button
+                      onClick={() => {
+                        setShowCompareModal(false);
+                        onBookHospital(h);
+                      }}
+                      className="w-full py-2 bg-[#2D3A5E] text-white text-xs font-black rounded shadow"
+                    >
+                      Book OPD
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
