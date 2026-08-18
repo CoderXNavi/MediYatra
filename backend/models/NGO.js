@@ -9,27 +9,39 @@ const ngoSchema = new mongoose.Schema(
     },
     focusArea: {
       type: String,
-      required: true // e.g. "Pediatric Cardiology", "Organ Transplant Subsidy", "Cancer Aid"
+      required: true // e.g. "Medicine Donation & Free Medical Equipment", "Pediatric Cancer Aid"
+    },
+    city: {
+      type: String,
+      default: 'New Delhi'
     },
     maxGrantUSD: {
       type: Number,
-      required: true
+      default: 5000
     },
     supportedCountries: {
       type: [String],
-      default: ['Global', 'Africa', 'SAARC', 'Southeast Asia']
+      default: ['Global', 'India', 'SAARC', 'Africa']
     },
     contactEmail: {
       type: String,
       required: true
     },
+    phone: {
+      type: String,
+      default: '+91 11 4000 9999'
+    },
     website: {
       type: String,
-      required: true
+      default: 'https://mediyatra.org/charity'
     },
     description: {
       type: String,
       required: true
+    },
+    isVerifiedByAdmin: {
+      type: Boolean,
+      default: true
     }
   },
   { timestamps: true }

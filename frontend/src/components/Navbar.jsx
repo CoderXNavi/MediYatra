@@ -14,7 +14,9 @@ import {
   FileText,
   Lock,
   User,
-  LogOut
+  LogOut,
+  HeartHandshake,
+  Languages
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -32,12 +34,31 @@ export default function Navbar({
   setSearchQuery
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [displayLang, setDisplayLang] = useState('EN');
+
+  function handleNavClick(tabId) {
+    setActiveTab(tabId);
+    if (tabId === 'hospitals') {
+      setTimeout(() => {
+        const el = document.getElementById('hospitals-explorer-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    }
+  }
+
+  function handleExecuteSearch() {
+    if (activeTab === 'hospitals') {
+      const el = document.getElementById('hospitals-explorer-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   const baseNavLinks = [
     { id: 'hospitals', label: 'Hospitals', icon: Building2 },
     { id: 'doctors', label: 'Doctors', icon: UserCheck },
     { id: 'treatments', label: 'Surgical Pricing', icon: Calculator },
     { id: 'tourism', label: 'Tourism Concierge', icon: Globe2 },
+    { id: 'charity', label: 'Charity & Aid', icon: HeartHandshake },
   ];
 
   // Role-specific navigation portals
@@ -75,6 +96,27 @@ export default function Navbar({
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            
+            {/* Display Language Dropdown (UI Component) */}
+            <div className="flex items-center bg-[#1A233D] rounded px-2 py-0.5 border border-[#8FA9FF]">
+              <Languages className="w-3.5 h-3.5 text-[#8FA9FF] mr-1 shrink-0" />
+              <select
+                value={displayLang}
+                onChange={(e) => setDisplayLang(e.target.value)}
+                aria-label="Display Language"
+                className="bg-transparent text-white text-[10px] sm:text-[11px] font-black focus:outline-none cursor-pointer border-none py-0.5 pr-1"
+              >
+                <option value="EN" className="bg-[#1A233D] text-white font-bold">English (EN)</option>
+                <option value="HI" className="bg-[#1A233D] text-white font-bold">Hindi (हिन्दी)</option>
+                <option value="ES" className="bg-[#1A233D] text-white font-bold">Spanish (Español)</option>
+                <option value="FR" className="bg-[#1A233D] text-white font-bold">French (Français)</option>
+                <option value="AR" className="bg-[#1A233D] text-white font-bold">Arabic (العربية)</option>
+                <option value="RU" className="bg-[#1A233D] text-white font-bold">Russian (Русский)</option>
+                <option value="ZH" className="bg-[#1A233D] text-white font-bold">Chinese (中文)</option>
+                <option value="DE" className="bg-[#1A233D] text-white font-bold">German (Deutsch)</option>
+              </select>
+            </div>
+
             {/* Currency Switcher */}
             <div className="flex items-center bg-[#1A233D] rounded px-2 py-0.5 border border-[#8FA9FF]">
               <span className="text-[10px] sm:text-[11px] text-[#D7C6FF] mr-1 font-black">Currency:</span>
@@ -141,7 +183,7 @@ export default function Navbar({
           {/* Logo Emblem & Brand Title */}
           <div 
             className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0" 
-            onClick={() => setActiveTab(isAdmin ? 'admin' : isDoctor ? 'doctor-portal' : isHospital ? 'hospital-portal' : 'hospitals')}
+            onClick={() => handleNavClick(isAdmin ? 'admin' : isDoctor ? 'doctor-portal' : isHospital ? 'hospital-portal' : 'hospitals')}
           >
             <img 
               src="/logo_clean.png" 
@@ -160,17 +202,26 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Desktop Search Bar */}
+          {/* Desktop Search Bar with Explicit Search CTA Button & Enter Key Trigger */}
           <div className="flex-1 max-w-md mx-2 sm:mx-4 hidden md:block">
-            <div className="relative">
+            <div className="relative flex items-center">
               <input
                 type="text"
                 placeholder="Search hospital, doctor, or surgical procedure..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-100 text-[#2D3A5E] placeholder-slate-500 text-xs font-bold rounded-md pl-9 pr-4 py-2 border-2 border-slate-300 focus:bg-white focus:border-[#8FA9FF] focus:outline-none"
+                onKeyDown={(e) => { if (e.key === 'Enter') handleExecuteSearch(); }}
+                className="w-full bg-slate-100 text-[#2D3A5E] placeholder-slate-500 text-xs font-bold rounded-xl pl-9 pr-24 py-2.5 border-2 border-slate-300 focus:bg-white focus:border-[#8FA9FF] focus:outline-none shadow-inner"
               />
-              <Search className="w-4 h-4 text-slate-500 absolute left-2.5 top-2.5" />
+              <Search className="w-4 h-4 text-slate-500 absolute left-2.5 top-3" />
+
+              <button
+                type="button"
+                onClick={handleExecuteSearch}
+                className="absolute right-1.5 px-3.5 py-1.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1 transition cursor-pointer"
+              >
+                <span>Search</span>
+              </button>
             </div>
           </div>
 
@@ -178,7 +229,7 @@ export default function Navbar({
           <div className="flex items-center gap-2 shrink-0">
             {isDoctor ? (
               <button
-                onClick={() => setActiveTab('doctor-portal')}
+                onClick={() => handleNavClick('doctor-portal')}
                 className="px-3 sm:px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs rounded-lg shadow flex items-center gap-1.5 transition"
               >
                 <Stethoscope className="w-3.5 h-3.5 text-[#8FA9FF] shrink-0" />
@@ -186,7 +237,7 @@ export default function Navbar({
               </button>
             ) : isHospital ? (
               <button
-                onClick={() => setActiveTab('hospital-portal')}
+                onClick={() => handleNavClick('hospital-portal')}
                 className="px-3 sm:px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs rounded-lg shadow flex items-center gap-1.5 transition"
               >
                 <Building2 className="w-3.5 h-3.5 text-[#8FA9FF] shrink-0" />
@@ -194,7 +245,7 @@ export default function Navbar({
               </button>
             ) : isAdmin ? (
               <button
-                onClick={() => setActiveTab('admin')}
+                onClick={() => handleNavClick('admin')}
                 className="px-3 sm:px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs rounded-lg shadow flex items-center gap-1.5 transition"
               >
                 <Lock className="w-3.5 h-3.5 text-[#8FA9FF] shrink-0" />
@@ -225,15 +276,23 @@ export default function Navbar({
 
         {/* Mobile Search Bar */}
         <div className="mt-2 md:hidden">
-          <div className="relative">
+          <div className="relative flex items-center">
             <input
               type="text"
               placeholder="Search hospital, doctor, or procedure..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-100 text-[#2D3A5E] placeholder-slate-500 text-xs font-bold rounded-md pl-9 pr-3 py-2 border border-slate-300 focus:bg-white focus:border-[#8FA9FF] focus:outline-none"
+              onKeyDown={(e) => { if (e.key === 'Enter') handleExecuteSearch(); }}
+              className="w-full bg-slate-100 text-[#2D3A5E] placeholder-slate-500 text-xs font-bold rounded-lg pl-9 pr-20 py-2 border border-slate-300 focus:bg-white focus:border-[#8FA9FF] focus:outline-none"
             />
             <Search className="w-4 h-4 text-slate-500 absolute left-2.5 top-2.5" />
+            <button
+              type="button"
+              onClick={handleExecuteSearch}
+              className="absolute right-1 px-2.5 py-1 bg-[#2D3A5E] text-white text-[11px] font-black rounded"
+            >
+              Search
+            </button>
           </div>
         </div>
       </div>
@@ -250,7 +309,7 @@ export default function Navbar({
                 return (
                   <button
                     key={link.id}
-                    onClick={() => setActiveTab(link.id)}
+                    onClick={() => handleNavClick(link.id)}
                     className={`flex items-center gap-1.5 px-3 h-full text-xs font-black transition border-b-4 bg-transparent shadow-none shrink-0 ${
                       isActive
                         ? 'text-[#8FA9FF] border-[#8FA9FF]'
@@ -296,7 +355,7 @@ export default function Navbar({
               <button
                 key={link.id}
                 onClick={() => {
-                  setActiveTab(link.id);
+                  handleNavClick(link.id);
                   setMobileMenuOpen(false);
                 }}
                 className={`w-full text-left flex items-center gap-3 px-3.5 py-3 rounded-lg text-xs font-black transition ${

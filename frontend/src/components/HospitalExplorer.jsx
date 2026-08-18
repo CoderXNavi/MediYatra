@@ -15,6 +15,7 @@ import {
   Stethoscope
 } from 'lucide-react';
 import { normalizeHospital } from '../utils/normalizeData';
+import { fuzzySearchMatch } from '../utils/fuzzySearch';
 
 export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedCity, setSelectedCity] = useState('All');
@@ -44,11 +45,16 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
   ];
 
   const filteredHospitals = normalizedHospitals.filter(h => {
-    const matchesSearch = 
-      !searchQuery ||
-      h.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      h.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (h.specialties && h.specialties.some(s => s.toLowerCase().includes(searchQuery.toLowerCase())));
+    const matchesSearch = fuzzySearchMatch(
+      { 
+        name: h.name, 
+        city: h.city, 
+        specialties: h.specialties?.join(' '), 
+        address: h.address, 
+        description: h.description 
+      },
+      searchQuery
+    );
 
     const matchesCity = selectedCity === 'All' || h.city === selectedCity;
     const matchesSpecialty = selectedSpecialty === 'All' || (h.specialties && h.specialties.includes(selectedSpecialty));
@@ -71,7 +77,7 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
   };
 
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="hospitals-explorer-section" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Header & Filter Toolbar */}
       <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
@@ -126,9 +132,9 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
         <div className="portal-card p-8 bg-white border-2 border-slate-300 rounded-xl space-y-6">
           <div className="text-center space-y-2">
             <Building2 className="w-12 h-12 text-[#2D3A5E] mx-auto" />
-            <h3 className="text-lg font-black text-slate-900 font-sans">No Exact Matches for "{searchQuery || selectedSpecialty}"</h3>
+            <h3 className="text-lg font-black text-slate-900 font-sans">No Matches Found for "{searchQuery || selectedSpecialty}"</h3>
             <p className="text-xs text-slate-800 font-extrabold max-w-md mx-auto">
-              Select one of our all available accredited departments or cities below to view verified medical centers:
+              Select one of our accredited departments or cities below to view verified medical centers:
             </p>
           </div>
 

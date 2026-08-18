@@ -9,6 +9,7 @@ import PatientRecordsPortal from './components/PatientRecordsPortal';
 import DoctorPortal from './components/DoctorPortal';
 import HospitalPortal from './components/HospitalPortal';
 import AdminDashboard from './components/AdminDashboard';
+import CharityAidHub from './components/CharityAidHub';
 import AccessDenied from './components/AccessDenied';
 import AITriageWidget from './components/AITriageWidget';
 import AppointmentModal from './components/AppointmentModal';
@@ -21,7 +22,7 @@ import Footer from './components/Footer';
 import { apiService } from './services/api';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('hospitals'); // 'hospitals' | 'doctors' | 'treatments' | 'tourism' | 'records' | 'doctor-portal' | 'hospital-portal' | 'admin'
+  const [activeTab, setActiveTab] = useState('hospitals'); // 'hospitals' | 'doctors' | 'treatments' | 'tourism' | 'charity' | 'records' | 'doctor-portal' | 'hospital-portal' | 'admin'
   const [currency, setCurrency] = useState('USD');
   const [searchQuery, setSearchQuery] = useState('');
   
@@ -235,57 +236,6 @@ export default function App() {
           />
         )}
 
-        {/* Find Doctors Page Header Banner */}
-        {activeTab === 'doctors' && (
-          <div className="bg-[#2D3A5E] text-white py-8 border-b-4 border-[#8FA9FF] mb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block mb-1">
-                Board-Certified Specialist Registry
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
-                Find Doctors & Senior Surgeons
-              </h1>
-              <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-                Browse verified department heads, medical qualifications, OPD fees, and consultation schedules.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Procedure Pricing Page Header Banner */}
-        {activeTab === 'treatments' && (
-          <div className="bg-[#2D3A5E] text-white py-8 border-b-4 border-[#8FA9FF] mb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block mb-1">
-                Transparent Surgical Package Pricing
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
-                Procedure Pricing & Tariff Comparisons
-              </h1>
-              <p className="text-[#D7C6FF] text-xs sm:text-sm mt-1 font-semibold">
-                Compare hospital surgical tariffs in India against US/UK hospital costs with up to 90% savings.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Medical Tourism Concierge Header Banner */}
-        {activeTab === 'tourism' && (
-          <div className="bg-[#2D3A5E] text-white py-8 border-b-4 border-[#8FA9FF] mb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block mb-1">
-                International Patient Support Services
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
-                Medical Tourism Concierge Services
-              </h1>
-              <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-                e-Medical Visa assistance, certified language interpreters, serviced recovery guest houses, and airport transfers.
-              </p>
-            </div>
-          </div>
-        )}
-
         {/* Tab Views */}
         {activeTab === 'hospitals' && (
           <HospitalExplorer 
@@ -331,6 +281,13 @@ export default function App() {
             currentUser={currentUser}
             onOpenAdminTab={handleOpenAdminTab}
             setActiveTab={setActiveTab}
+          />
+        )}
+
+        {activeTab === 'charity' && (
+          <CharityAidHub 
+            currentUser={currentUser}
+            onOpenAuth={() => setIsAuthOpen(true)}
           />
         )}
 

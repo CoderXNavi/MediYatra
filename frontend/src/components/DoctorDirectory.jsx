@@ -15,6 +15,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { normalizeDoctor } from '../utils/normalizeData';
+import { fuzzySearchMatch } from '../utils/fuzzySearch';
 
 export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedDept, setSelectedDept] = useState('All');
@@ -40,11 +41,16 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
   ];
 
   const filteredDoctors = normalizedDoctors.filter(doc => {
-    const matchesSearch = 
-      !searchQuery ||
-      doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (doc.hospitalName && doc.hospitalName.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesSearch = fuzzySearchMatch(
+      { 
+        name: doc.name, 
+        specialty: doc.specialty, 
+        hospitalName: doc.hospitalName, 
+        qualifications: doc.qualifications,
+        bio: doc.bio 
+      },
+      searchQuery
+    );
 
     const matchesDept = selectedDept === 'All' || doc.specialty.toLowerCase().includes(selectedDept.toLowerCase());
 

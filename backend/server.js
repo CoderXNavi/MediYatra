@@ -47,6 +47,8 @@ app.use('/api/search', require('./routes/searchRoutes'));
 // Enhanced Medical Tourism Feature Routes
 app.use('/api/ambulance', require('./routes/ambulanceRoutes'));
 app.use('/api/ngos', require('./routes/ngoRoutes'));
+app.use('/api/ngo', require('./routes/ngoRoutes'));
+app.use('/api/equipment', require('./routes/ngoRoutes'));
 app.use('/api/insurance', require('./routes/insuranceRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/translators', require('./routes/translatorRoutes'));

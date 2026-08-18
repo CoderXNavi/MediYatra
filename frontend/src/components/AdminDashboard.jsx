@@ -20,12 +20,13 @@ import {
   Activity,
   Send,
   Edit3,
-  MessageSquare
+  MessageSquare,
+  HeartHandshake
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
 export default function AdminDashboard({ currentUser }) {
-  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'users' | 'hospitals' | 'doctors' | 'appointments' | 'consultations' | 'tourism' | 'treatments'
+  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'users' | 'hospitals' | 'doctors' | 'appointments' | 'consultations' | 'tourism' | 'treatments' | 'charity'
   
   // Real Database Analytics Metrics
   const [stats, setStats] = useState({
@@ -44,6 +45,8 @@ export default function AdminDashboard({ currentUser }) {
   const [hospitals, setHospitals] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [treatments, setTreatments] = useState([]);
+  const [ngos, setNgos] = useState([]);
+  const [equipmentList, setEquipmentList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Form inputs for Management CRUD
@@ -69,7 +72,7 @@ export default function AdminDashboard({ currentUser }) {
         }
       };
 
-      const [statsRes, usersRes, hospList, docList, treatList, aptsRes, conRes, tourRes] = await Promise.all([
+      const [statsRes, usersRes, hospList, docList, treatList, aptsRes, conRes, tourRes, ngoRes, eqRes] = await Promise.all([
         fetch('/api/admin/stats', authHeader).then(r => r.ok ? r.json() : null),
         fetch('/api/admin/users', authHeader).then(r => r.ok ? r.json() : null),
         apiService.getHospitals(),
@@ -77,7 +80,9 @@ export default function AdminDashboard({ currentUser }) {
         apiService.getTreatments(),
         fetch('/api/appointments').then(r => r.ok ? r.json() : null),
         fetch('/api/consultations').then(r => r.ok ? r.json() : null),
-        fetch('/api/tourism').then(r => r.ok ? r.json() : null)
+        fetch('/api/tourism').then(r => r.ok ? r.json() : null),
+        fetch('/api/ngo').then(r => r.ok ? r.json() : null),
+        fetch('/api/equipment').then(r => r.ok ? r.json() : null)
       ]);
 
       if (statsRes?.data) setStats(statsRes.data);
@@ -88,6 +93,8 @@ export default function AdminDashboard({ currentUser }) {
       if (aptsRes?.data) setAppointments(aptsRes.data);
       if (conRes?.data) setConsultations(conRes.data);
       if (tourRes?.data) setTourismOrders(tourRes.data);
+      if (ngoRes?.data) setNgos(ngoRes.data);
+      if (eqRes?.data) setEquipmentList(eqRes.data);
     } catch (e) {
       console.warn('Failed loading admin management data:', e);
     } finally {
@@ -108,6 +115,23 @@ export default function AdminDashboard({ currentUser }) {
       });
       if (res.ok) {
         setStatusMessage(`User account status updated to ${newStatus}`);
+        loadAdminData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleVerifyNGO(ngoId) {
+    try {
+      const res = await fetch(`/api/ngo/${ngoId}/verify`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${currentUser?.token || ''}`
+        }
+      });
+      if (res.ok) {
+        setStatusMessage(`NGO Foundation verified successfully!`);
         loadAdminData();
       }
     } catch (err) {
@@ -251,6 +275,7 @@ export default function AdminDashboard({ currentUser }) {
           { id: 'appointments', label: `Appointments (${appointments.length})`, icon: Calendar },
           { id: 'consultations', label: `Consultations (${consultations.length})`, icon: MessageSquare },
           { id: 'tourism', label: `Logistics Orders (${tourismOrders.length})`, icon: Plane },
+          { id: 'charity', label: `NGO & Charity Aid (${ngos.length})`, icon: HeartHandshake },
           { id: 'treatments', label: 'Surgical Tariffs', icon: Calculator },
         ].map((tab) => {
           const Icon = tab.icon;
@@ -294,12 +319,12 @@ export default function AdminDashboard({ currentUser }) {
               <span className="text-2xl font-black text-blue-700 font-mono">{stats.totalAppointments}</span>
             </div>
             <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
-              <span className="text-slate-600 block text-[10px] uppercase font-black">Total Consultations</span>
-              <span className="text-2xl font-black text-purple-700 font-mono">{stats.totalConsultations}</span>
+              <span className="text-slate-600 block text-[10px] uppercase font-black">Registered NGOs</span>
+              <span className="text-2xl font-black text-emerald-700 font-mono">{ngos.length}</span>
             </div>
             <div className="p-4 bg-amber-50 rounded-xl border-2 border-amber-300 shadow-sm space-y-1">
-              <span className="text-amber-900 block text-[10px] uppercase font-black">Pending Requests</span>
-              <span className="text-2xl font-black text-amber-950 font-mono">{stats.pendingRequests}</span>
+              <span className="text-amber-900 block text-[10px] uppercase font-black">Donated Aid Items</span>
+              <span className="text-2xl font-black text-amber-950 font-mono">{equipmentList.length}</span>
             </div>
           </div>
         </div>
@@ -360,6 +385,37 @@ export default function AdminDashboard({ currentUser }) {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 8: NGO & Charity Aid Management */}
+      {activeTab === 'charity' && (
+        <div className="space-y-6">
+          <h3 className="text-lg font-black text-slate-900 font-sans">Verified Health NGO Partners & Donated Aid Approval</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {ngos.map((n) => (
+              <div key={n._id} className="p-4 bg-white border-2 border-slate-300 rounded-xl space-y-2 text-xs font-bold">
+                <div className="flex items-center justify-between border-b pb-2">
+                  <h5 className="text-sm font-black text-slate-900">{n.name}</h5>
+                  <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
+                    n.isVerifiedByAdmin ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                  }`}>
+                    {n.isVerifiedByAdmin ? 'Verified NGO' : 'Pending Verification'}
+                  </span>
+                </div>
+                <p>Focus: <span className="text-[#2D3A5E] font-black">{n.focusArea}</span> ({n.city})</p>
+                <p className="text-slate-700">{n.description}</p>
+                {!n.isVerifiedByAdmin && (
+                  <button
+                    onClick={() => handleVerifyNGO(n._id)}
+                    className="mt-2 px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black rounded"
+                  >
+                    Verify NGO Listing
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}
