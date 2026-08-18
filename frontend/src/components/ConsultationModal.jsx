@@ -9,8 +9,10 @@ import {
   Stethoscope, 
   CheckCircle2, 
   AlertCircle,
-  Calendar
+  Calendar,
+  Download
 } from 'lucide-react';
+import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
 
 export default function ConsultationModal({
   isOpen,
@@ -152,12 +154,44 @@ export default function ConsultationModal({
                 </div>
               </div>
 
-              <button
-                onClick={handleReset}
-                className="px-6 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow"
-              >
-                View Case in Patient Portal
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={() => {
+                    generateOfficialPDFReceipt({
+                      documentType: 'SPECIALIST CONSULTATION REQUEST VOUCHER',
+                      referenceNo: submitSuccess._id || 'MY-CON-9921',
+                      date: preferredDate || new Date().toLocaleDateString(),
+                      patientName,
+                      patientEmail,
+                      patientPhone,
+                      doctorName: doctor.name,
+                      doctorSpecialty: doctor.specialty,
+                      hospitalName: doctor.hospitalName || 'Accredited Partner Hospital',
+                      hospitalCity: 'New Delhi',
+                      amountPaid: doctor.consultationFeeUSD ? `$${doctor.consultationFeeUSD} / ₹${doctor.consultationFeeINR}` : 'PENDING EVALUATION',
+                      status: 'REGISTERED & DISPATCHED TO DOCTOR',
+                      details: [
+                        { label: `Specialist Department: ${doctor.specialty}`, value: 'ASSIGNED' },
+                        { label: 'Consultation Subject', value: subject || 'General Inquiry' },
+                        { label: 'Patient Country of Residence', value: country },
+                        { label: 'Doctor Review Status', value: 'PENDING CLINICAL RESPONSE' }
+                      ],
+                      notes: `Submitted Clinical Message:\n${message}\n\nThis consultation voucher is tracked live under your MEDIYATRA Patient Portal account.`
+                    });
+                  }}
+                  className="w-full sm:w-auto px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center justify-center gap-1.5 transition"
+                >
+                  <Download className="w-4 h-4 text-emerald-200" />
+                  <span>Download Consultation PDF Slip</span>
+                </button>
+
+                <button
+                  onClick={handleReset}
+                  className="w-full sm:w-auto px-6 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow"
+                >
+                  View Case in Patient Portal
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">

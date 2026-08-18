@@ -9,9 +9,11 @@ import {
   Stethoscope, 
   FileText, 
   CheckCircle2, 
-  AlertCircle 
+  AlertCircle,
+  Download 
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
 
 export default function AppointmentModal({ 
   isOpen, 
@@ -154,12 +156,44 @@ export default function AppointmentModal({
                 </div>
               </div>
 
-              <button
-                onClick={handleReset}
-                className="px-6 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow"
-              >
-                Close & View in Patient Portal
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={() => {
+                    generateOfficialPDFReceipt({
+                      documentType: 'OPD APPOINTMENT CONFIRMATION VOUCHER',
+                      referenceNo: submitSuccess.bookingReference || 'MY-APT-88421',
+                      date: preferredDate || new Date().toLocaleDateString(),
+                      patientName,
+                      patientEmail,
+                      patientPhone,
+                      doctorName: preselectedDoctor?.name || 'Senior Specialist',
+                      doctorSpecialty: preselectedDoctor?.specialty || 'General Medicine',
+                      hospitalName: preselectedHospital?.name || preselectedDoctor?.hospitalName || 'Indraprastha Apollo Hospitals',
+                      hospitalCity: preselectedHospital?.city || preselectedDoctor?.hospitalCity || 'New Delhi',
+                      amountPaid: 'CONFIRMED & REGISTERED',
+                      status: 'VERIFIED & APPOINTMENT SCHEDULED',
+                      details: [
+                        { label: 'Consultation Type: Specialist Hospital OPD', value: 'CONFIRMED' },
+                        { label: 'Preferred Appointment Date', value: preferredDate },
+                        { label: 'Patient Country of Residence', value: country },
+                        { label: 'Medical Concierge Desk Registration', value: 'ACTIVE' }
+                      ],
+                      notes: `Medical Reason: ${medicalReason || 'General Consultation'}\n\nPlease present this official PDF voucher at the hospital international reception desk along with your identity proof/passport.`
+                    });
+                  }}
+                  className="w-full sm:w-auto px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs sm:text-sm rounded-lg shadow flex items-center justify-center gap-1.5 transition"
+                >
+                  <Download className="w-4 h-4 text-emerald-200" />
+                  <span>Download PDF Voucher</span>
+                </button>
+
+                <button
+                  onClick={handleReset}
+                  className="w-full sm:w-auto px-6 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow"
+                >
+                  Close & View in Patient Portal
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">

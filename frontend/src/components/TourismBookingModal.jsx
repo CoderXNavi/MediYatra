@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plane, Building2, UserCheck, ShieldCheck, CheckCircle2, AlertCircle, Globe, Phone, FileText } from 'lucide-react';
+import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
 
 export default function TourismBookingModal({ isOpen, onClose, currentUser, initialService, hospitals, doctors, onSuccess }) {
   const [patientName, setPatientName] = useState('');
@@ -64,6 +65,27 @@ export default function TourismBookingModal({ isOpen, onClose, currentUser, init
 
       const data = await response.json();
       if (response.ok && data.success) {
+        generateOfficialPDFReceipt({
+          documentType: serviceType.toUpperCase(),
+          referenceNo: data.data?._id || `MY-TRM-${Math.floor(100000 + Math.random() * 900000)}`,
+          date: new Date().toLocaleDateString(),
+          patientName,
+          patientEmail,
+          patientPhone,
+          doctorName,
+          doctorSpecialty: 'Specialist Surgery',
+          hospitalName,
+          hospitalCity: 'New Delhi',
+          amountPaid: 'CONFIRMED & REGISTERED',
+          status: 'STEP 1: INITIATED & DISPATCHED TO HOSPITAL',
+          details: [
+            { label: `Concierge Service Requested: ${serviceType}`, value: 'ACTIVE' },
+            { label: 'Target Hospital (VIL Approver)', value: hospitalName },
+            { label: 'Assigned Senior Doctor', value: doctorName },
+            { label: 'Patient Residence Country', value: country }
+          ],
+          notes: `Medical Reason: ${medicalReason}\n\nYour medical tourism case has been registered in the MEDIYATRA 4-Step Pipeline. Please present this official PDF voucher at the hospital desk upon arrival.`
+        });
         onSuccess();
         onClose();
       } else {

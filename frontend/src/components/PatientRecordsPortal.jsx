@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Stethoscope
 } from 'lucide-react';
+import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
 
 export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNewAppointment }) {
   const [activeSubTab, setActiveSubTab] = useState('tourism-pipeline');
@@ -70,16 +71,24 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
     loadPatientData();
   }, [currentUser]);
 
-  function handleDownloadPDF(title) {
-    const content = `MEDIYATRA HEALTHCARE CONCIERGE\nOFFICIAL MEDICAL DOCUMENT\n================================\nDocument: ${title}\nPatient: ${currentUser?.name || 'Authenticated Patient'}\nPatient Email: ${currentUser?.email || 'N/A'}\nGenerated Date: ${new Date().toLocaleDateString()}\nStatus: Verified Identity-Protected Clinical Record\n================================\nMediYatra Healthcare Network - Saket, New Delhi, India.`;
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${title.toLowerCase().replace(/\s+/g, '_')}_mediyatra.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  function handleDownloadPDF(title, extraData = {}) {
+    generateOfficialPDFReceipt({
+      documentType: title.toUpperCase(),
+      patientName: currentUser?.name || 'Authenticated Patient',
+      patientEmail: currentUser?.email || 'N/A',
+      patientPhone: extraData.phone || currentUser?.phone || 'N/A',
+      hospitalName: extraData.hospitalName || 'Indraprastha Apollo Hospitals',
+      doctorName: extraData.doctorName || 'Dr. Ashok Seth',
+      doctorSpecialty: extraData.specialty || 'Cardiac Sciences',
+      amountPaid: extraData.amount || 'CONFIRMED & REGISTERED',
+      status: extraData.status || 'VERIFIED IDENTITY-PROTECTED CLINICAL RECORD',
+      details: [
+        { label: `Document Title: ${title}`, value: 'AUTHENTICATED' },
+        { label: 'Session Security & Data Isolation', value: 'ACTIVE' },
+        { label: 'MEDIYATRA Healthcare Network Clearance', value: 'APPROVED' }
+      ],
+      notes: extraData.notes || `This is an official identity-protected medical record issued under account ${currentUser?.email || 'patient'}. Please present this PDF voucher at the hospital desk.`
+    });
   }
 
   // Guest Unauthenticated View

@@ -21,9 +21,11 @@ import {
   Send,
   Edit3,
   MessageSquare,
-  HeartHandshake
+  HeartHandshake,
+  Download
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
 
 export default function AdminDashboard({ currentUser }) {
   const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'users' | 'hospitals' | 'doctors' | 'appointments' | 'consultations' | 'tourism' | 'treatments' | 'charity'
@@ -557,7 +559,37 @@ export default function AdminDashboard({ currentUser }) {
                             {apt.status || 'Pending'}
                           </span>
                         </td>
-                        <td className="p-3 text-right space-x-1">
+                        <td className="p-3 text-right space-x-1 flex items-center justify-end">
+                          <button
+                            onClick={() => {
+                              generateOfficialPDFReceipt({
+                                documentType: 'ADMIN VERIFIED APPOINTMENT VOUCHER',
+                                referenceNo: apt.bookingReference || apt._id,
+                                date: new Date(apt.preferredDate).toLocaleDateString(),
+                                patientName: apt.patientName,
+                                patientEmail: apt.patientEmail,
+                                patientPhone: apt.patientPhone,
+                                doctorName: apt.doctorId?.name || apt.doctorName || 'Senior Specialist',
+                                doctorSpecialty: apt.doctorId?.specialty || 'Department Speciality',
+                                hospitalName: apt.hospitalId?.name || apt.hospitalName || 'Accredited Partner Hospital',
+                                hospitalCity: 'New Delhi',
+                                amountPaid: 'VERIFIED BY ADMIN',
+                                status: apt.status || 'Confirmed',
+                                details: [
+                                  { label: 'Booking Reference ID', value: apt.bookingReference || apt._id },
+                                  { label: 'Patient Country of Residence', value: apt.patientCountry || 'International' },
+                                  { label: 'Hospital Registration Clearance', value: 'APPROVED BY ADMIN' }
+                                ],
+                                notes: `Medical Reason: ${apt.medicalNotes || apt.medicalReason || 'General Consultation'}\n\nOfficial PDF Voucher verified by MEDIYATRA Platform Administration Desk.`
+                              });
+                            }}
+                            className="px-2 py-1 bg-[#2D3A5E] text-white text-[10px] font-black rounded hover:bg-[#1A233D] flex items-center gap-1"
+                            title="Download PDF Receipt"
+                          >
+                            <Download className="w-3 h-3 text-[#8FA9FF]" />
+                            <span>PDF</span>
+                          </button>
+
                           <button
                             onClick={() => handleUpdateAppointmentStatus(apt._id, 'Confirmed')}
                             className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black rounded"
@@ -566,7 +598,7 @@ export default function AdminDashboard({ currentUser }) {
                           </button>
                           <button
                             onClick={() => handleUpdateAppointmentStatus(apt._id, 'Completed')}
-                            className="px-2.5 py-1 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-[10px] font-black rounded"
+                            className="px-2.5 py-1 bg-blue-700 hover:bg-blue-800 text-white text-[10px] font-black rounded"
                           >
                             Complete
                           </button>
@@ -636,7 +668,36 @@ export default function AdminDashboard({ currentUser }) {
                           {ord.status}
                         </span>
                       </td>
-                      <td className="p-3 text-right">
+                      <td className="p-3 text-right flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => {
+                            generateOfficialPDFReceipt({
+                              documentType: ord.serviceType.toUpperCase(),
+                              referenceNo: ord._id,
+                              date: new Date(ord.createdAt || Date.now()).toLocaleDateString(),
+                              patientName: ord.patientName,
+                              patientEmail: ord.patientEmail,
+                              patientPhone: ord.patientPhone,
+                              doctorName: ord.doctorName || 'Senior Specialist',
+                              doctorSpecialty: 'Medical Tourism Concierge',
+                              hospitalName: ord.hospitalName || 'Accredited Partner Hospital',
+                              hospitalCity: 'New Delhi',
+                              amountPaid: 'DISPATCHED BY ADMIN',
+                              status: ord.status,
+                              details: [
+                                { label: `Logistics Service: ${ord.serviceType}`, value: 'DISPATCHED' },
+                                { label: 'Patient Residence Country', value: ord.patientCountry || 'International' },
+                                { label: 'Step 3 Admin Logistics Clearance', value: 'APPROVED' }
+                              ],
+                              notes: `Logistics Notes: ${ord.adminLogisticsNotes || 'Logistics dispatched by Admin'}\n\nOfficial PDF Voucher verified by MEDIYATRA Medical Tourism Desk.`
+                            });
+                          }}
+                          className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black rounded flex items-center gap-1"
+                        >
+                          <Download className="w-3 h-3 text-emerald-200" />
+                          <span>PDF</span>
+                        </button>
+
                         <button
                           onClick={() => handleDispatchTourismByAdmin(ord._id)}
                           className="px-3.5 py-1.5 bg-[#2D3A5E] text-white text-[10px] font-black rounded-lg shadow"

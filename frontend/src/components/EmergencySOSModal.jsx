@@ -5,9 +5,11 @@ import {
   MapPin, 
   CheckCircle2, 
   Ambulance, 
-  ShieldAlert 
+  ShieldAlert,
+  Download
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
 
 export default function EmergencySOSModal({ isOpen, onClose }) {
   const [patientLocation, setPatientLocation] = useState('');
@@ -106,15 +108,47 @@ export default function EmergencySOSModal({ isOpen, onClose }) {
                 </div>
               </div>
 
-              <button
-                onClick={() => {
-                  setDispatchConfirmed(null);
-                  onClose();
-                }}
-                className="w-full py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs rounded-lg shadow"
-              >
-                Close Window
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    generateOfficialPDFReceipt({
+                      documentType: 'EMERGENCY 24/7 ICU AMBULANCE DISPATCH RECEIPT',
+                      referenceNo: dispatchConfirmed.ticketId || 'MY-SOS-911',
+                      date: new Date().toLocaleDateString(),
+                      patientName: 'Emergency SOS Patient',
+                      patientEmail: 'N/A',
+                      patientPhone: contactNumber,
+                      doctorName: 'On-Call ICU Emergency Physician',
+                      doctorSpecialty: 'Emergency Trauma & Resuscitation',
+                      hospitalName: 'Indraprastha Apollo Emergency Response Unit',
+                      hospitalCity: 'New Delhi',
+                      amountPaid: 'EMERGENCY DISPATCH INITIATED',
+                      status: 'ICU AMBULANCE DISPATCHED',
+                      details: [
+                        { label: `Pickup Location: ${patientLocation}`, value: 'EN ROUTE' },
+                        { label: 'Emergency Type', value: natureOfEmergency },
+                        { label: 'Estimated Unit Arrival Time', value: dispatchConfirmed.estimatedArrival || '8 Mins' },
+                        { label: 'Ambulance Driver Contact', value: dispatchConfirmed.driverContact || '+91 98111 22334' }
+                      ],
+                      notes: `CRITICAL NOTICE: An Advanced Life Support (ALS) ICU Ambulance unit with oxygen and ventilator equipment has been dispatched to ${patientLocation}.\nContact Dispatch Hotline (+91 11 4000 9999) for immediate updates.`
+                    });
+                  }}
+                  className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-lg shadow flex items-center justify-center gap-1.5 transition"
+                >
+                  <Download className="w-4 h-4 text-emerald-200" />
+                  <span>Download Official PDF SOS Slip</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setDispatchConfirmed(null);
+                    onClose();
+                  }}
+                  className="w-full py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs rounded-lg shadow"
+                >
+                  Close Window
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleDispatch} className="space-y-3">
