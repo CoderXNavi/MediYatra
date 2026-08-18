@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { 
+  Home,
   Building2, 
   UserCheck, 
   Calculator, 
@@ -38,22 +39,17 @@ export default function Navbar({
 
   function handleNavClick(tabId) {
     setActiveTab(tabId);
-    if (tabId === 'hospitals') {
-      setTimeout(() => {
-        const el = document.getElementById('hospitals-explorer-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 50);
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleExecuteSearch() {
-    if (activeTab === 'hospitals') {
-      const el = document.getElementById('hospitals-explorer-section');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (activeTab !== 'hospitals' && activeTab !== 'doctors') {
+      setActiveTab('hospitals');
     }
   }
 
   const baseNavLinks = [
+    { id: 'home', label: 'Home', icon: Home },
     { id: 'hospitals', label: 'Hospitals', icon: Building2 },
     { id: 'doctors', label: 'Doctors', icon: UserCheck },
     { id: 'treatments', label: 'Surgical Pricing', icon: Calculator },
@@ -183,7 +179,7 @@ export default function Navbar({
           {/* Logo Emblem & Brand Title */}
           <div 
             className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0" 
-            onClick={() => handleNavClick(isAdmin ? 'admin' : isDoctor ? 'doctor-portal' : isHospital ? 'hospital-portal' : 'hospitals')}
+            onClick={() => handleNavClick(isAdmin ? 'admin' : isDoctor ? 'doctor-portal' : isHospital ? 'hospital-portal' : 'home')}
           >
             <img 
               src="/logo_clean.png" 
