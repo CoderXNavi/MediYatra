@@ -12,13 +12,17 @@ import {
   Filter,
   MessageSquare,
   Lock,
-  ChevronRight
+  ChevronRight,
+  MapPin,
+  Navigation
 } from 'lucide-react';
 import { normalizeDoctor } from '../utils/normalizeData';
 import { fuzzySearchMatch } from '../utils/fuzzySearch';
+import HospitalMapModal from './HospitalMapModal';
 
 export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedDept, setSelectedDept] = useState('All');
+  const [selectedMapHospital, setSelectedMapHospital] = useState(null);
 
   const isDoctor = currentUser?.role === 'Doctor';
   const isHospital = currentUser?.role === 'Hospital';
@@ -162,10 +166,25 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
                         {doc.specialty}
                       </p>
 
-                      <p className="text-[11px] text-slate-700 font-extrabold flex items-center gap-1">
-                        <Building2 className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>{doc.hospitalName}</span>
-                      </p>
+                      <div className="flex items-center justify-between gap-1 pt-1">
+                        <p className="text-[11px] text-slate-700 font-extrabold flex items-center gap-1">
+                          <Building2 className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                          <span>{doc.hospitalName}</span>
+                        </p>
+                        <button
+                          onClick={() => setSelectedMapHospital({
+                            name: doc.hospitalName,
+                            address: doc.hospitalName,
+                            city: doc.hospitalCity || 'New Delhi',
+                            rating: doc.rating
+                          })}
+                          className="text-[11px] font-black text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
+                          title="View Hospital Location Map"
+                        >
+                          <MapPin className="w-3 h-3 text-blue-700" />
+                          <span>Map</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -256,6 +275,15 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
             );
           })}
         </div>
+      )}
+
+      {/* Render Hospital Map Modal */}
+      {selectedMapHospital && (
+        <HospitalMapModal
+          hospital={selectedMapHospital}
+          onClose={() => setSelectedMapHospital(null)}
+          isNonPatient={isNonPatient}
+        />
       )}
 
     </section>

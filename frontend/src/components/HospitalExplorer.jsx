@@ -10,18 +10,22 @@ import {
   ShieldCheck,
   Check,
   X,
+  Navigation,
+  Compass,
   Filter,
   Lock,
   Stethoscope
 } from 'lucide-react';
 import { normalizeHospital } from '../utils/normalizeData';
 import { fuzzySearchMatch } from '../utils/fuzzySearch';
+import HospitalMapModal from './HospitalMapModal';
 
 export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedCity, setSelectedCity] = useState('All');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
+  const [selectedMapHospital, setSelectedMapHospital] = useState(null);
 
   const isDoctor = currentUser?.role === 'Doctor';
   const isHospital = currentUser?.role === 'Hospital';
@@ -206,12 +210,16 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                     {isCompared ? '✓ Selected for Compare' : '+ Compare'}
                   </button>
 
-                  <div className="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between">
-                    <span className="text-xs font-black flex items-center gap-1">
+                  <div className="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => setSelectedMapHospital(hosp)}
+                      className="text-xs font-black bg-slate-900/80 hover:bg-slate-900 text-[#8FA9FF] px-2.5 py-1 rounded border border-[#8FA9FF]/40 flex items-center gap-1.5 transition cursor-pointer backdrop-blur-xs"
+                    >
                       <MapPin className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                      {hosp.city}, {hosp.country}
-                    </span>
-                    <span className="text-xs font-black bg-amber-100 text-amber-950 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1">
+                      <span>{hosp.city}, {hosp.country}</span>
+                    </button>
+
+                    <span className="text-xs font-black bg-amber-100 text-amber-950 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1 shrink-0">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-600" />
                       {hosp.rating} ({hosp.reviewCount})
                     </span>
@@ -225,9 +233,18 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                       <h3 className="text-xl font-black text-slate-900 font-sans leading-tight">
                         {hosp.name}
                       </h3>
-                      <p className="text-xs text-slate-700 font-extrabold mt-1">
-                        {hosp.address}
-                      </p>
+                      <div className="flex flex-wrap items-center justify-between gap-2 mt-1">
+                        <p className="text-xs text-slate-700 font-extrabold flex-1">
+                          {hosp.address}
+                        </p>
+                        <button
+                          onClick={() => setSelectedMapHospital(hosp)}
+                          className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 text-xs font-black rounded border border-blue-300 flex items-center gap-1 transition cursor-pointer shrink-0"
+                        >
+                          <Navigation className="w-3.5 h-3.5 text-blue-700" />
+                          <span>View Live Map</span>
+                        </button>
+                      </div>
                     </div>
 
                     <p className="text-xs text-slate-900 font-semibold leading-relaxed bg-slate-50 p-3 rounded border border-slate-200">
@@ -266,12 +283,13 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
 
                   {/* Footer Action */}
                   <div className="pt-4 border-t-2 border-slate-100 flex items-center justify-between gap-2">
-                    <div className="text-xs text-slate-900 font-bold">
-                      <span className="text-[10px] text-slate-700 font-black uppercase block">Concierge Support</span>
-                      <span className="text-emerald-800 font-black flex items-center gap-1">
-                        <ShieldCheck className="w-4 h-4" /> 24/7 International Desk
-                      </span>
-                    </div>
+                    <button
+                      onClick={() => setSelectedMapHospital(hosp)}
+                      className="text-xs text-slate-900 font-bold hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-emerald-800" />
+                      <span className="text-emerald-800 font-black">24/7 Desk & Map</span>
+                    </button>
 
                     {isDoctor ? (
                       <button
@@ -336,23 +354,42 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
                     <p><span className="text-slate-500">Established:</span> {h.establishedYear}</p>
                   </div>
 
-                  {!isNonPatient && (
+                  <div className="flex gap-2">
                     <button
-                      onClick={() => {
-                        setShowCompareModal(false);
-                        onBookHospital(h);
-                      }}
-                      className="w-full py-2 bg-[#2D3A5E] text-white text-xs font-black rounded shadow"
+                      onClick={() => setSelectedMapHospital(h)}
+                      className="flex-1 py-2 bg-blue-600 text-white text-xs font-black rounded shadow hover:bg-blue-700 transition flex items-center justify-center gap-1 cursor-pointer"
                     >
-                      Book OPD
+                      <Navigation className="w-3.5 h-3.5" /> Map
                     </button>
-                  )}
+                    {!isNonPatient && (
+                      <button
+                        onClick={() => {
+                          setShowCompareModal(false);
+                          onBookHospital(h);
+                        }}
+                        className="flex-1 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded shadow"
+                      >
+                        Book OPD
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
       )}
+
+      {/* Render Hospital Live Location Map Modal */}
+      {selectedMapHospital && (
+        <HospitalMapModal
+          hospital={selectedMapHospital}
+          onClose={() => setSelectedMapHospital(null)}
+          onBookHospital={onBookHospital}
+          isNonPatient={isNonPatient}
+        />
+      )}
+
     </section>
   );
 }
