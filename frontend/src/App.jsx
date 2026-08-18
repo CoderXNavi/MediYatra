@@ -9,6 +9,7 @@ import PatientRecordsPortal from './components/PatientRecordsPortal';
 import DoctorPortal from './components/DoctorPortal';
 import HospitalPortal from './components/HospitalPortal';
 import AdminDashboard from './components/AdminDashboard';
+import AccessDenied from './components/AccessDenied';
 import AITriageWidget from './components/AITriageWidget';
 import AppointmentModal from './components/AppointmentModal';
 import ConsultationModal from './components/ConsultationModal';
@@ -269,74 +270,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Patient Health Portal Header Banner */}
-        {activeTab === 'records' && (
-          <div className="bg-[#2D3A5E] text-white py-8 border-b-4 border-[#8FA9FF] mb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block mb-1">
-                Patient Medical Portal
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
-                Patient Medical History, Consultations & Reports
-              </h1>
-              <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-                Track doctor consultations, access diagnostic lab reports, and download digital prescriptions.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Doctor Portal Header Banner */}
-        {activeTab === 'doctor-portal' && (
-          <div className="bg-[#2D3A5E] text-white py-8 border-b-4 border-[#8FA9FF] mb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block mb-1">
-                Senior Specialist Consultation Desk
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
-                Doctor Consultation Desk & Case Review
-              </h1>
-              <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-                Review patient consultation inquiries, evaluate diagnostic histories, and issue clinical responses.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Hospital Provider Portal Header Banner */}
-        {activeTab === 'hospital-portal' && (
-          <div className="bg-[#2D3A5E] text-white py-8 border-b-4 border-[#8FA9FF] mb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block mb-1">
-                Partner Hospital Operations Portal
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
-                Hospital Provider Operations & Roster Control
-              </h1>
-              <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-                Manage hospital medical roster, confirm patient appointment requests, and oversee bed capacity.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Admin Dashboard Header Banner */}
-        {activeTab === 'admin' && (
-          <div className="bg-[#2D3A5E] text-white py-8 border-b-4 border-[#8FA9FF] mb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block mb-1">
-                System Administration Control Panel
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-sans">
-                Admin & Operations Platform Control
-              </h1>
-              <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-                Global hospital/doctor CRUD management, network-wide patient appointment operations, and system sync.
-              </p>
-            </div>
-          </div>
-        )}
-
         {/* Tab Views */}
         {activeTab === 'hospitals' && (
           <HospitalExplorer 
@@ -393,10 +326,17 @@ export default function App() {
           />
         )}
 
+        {/* Admin Dashboard Protected View */}
         {activeTab === 'admin' && (
-          <AdminDashboard 
-            currentUser={currentUser}
-          />
+          currentUser?.role === 'Admin' ? (
+            <AdminDashboard currentUser={currentUser} />
+          ) : (
+            <AccessDenied 
+              currentUser={currentUser}
+              onOpenAuth={() => setIsAuthOpen(true)}
+              onGoHome={() => setActiveTab('hospitals')}
+            />
+          )
         )}
 
       </main>
@@ -408,7 +348,7 @@ export default function App() {
         onOpenAITriage={() => setIsAITriageOpen(true)}
       />
 
-      {/* Modals & Slide-over Drawers */}
+      {/* Modals */}
       <ConsultationModal 
         isOpen={isConsultationOpen}
         onClose={() => {

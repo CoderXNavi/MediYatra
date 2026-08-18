@@ -1,14 +1,23 @@
 const User = require('../models/User');
 const Doctor = require('../models/Doctor');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../middleware/authMiddleware');
 
-// In-memory registered users cache for fallback resilience
 const registeredUsersCache = [
   { _id: 'u_patient_1', name: 'Demo Patient', email: 'patient@mediyatra.org', password: 'password123', role: 'Patient' },
   { _id: 'u_doctor_1', name: 'Dr. Naresh Trehan', email: 'doctor@mediyatra.org', password: 'password123', role: 'Doctor' },
   { _id: 'u_hospital_1', name: 'Max Hospital Admin', email: 'hospital@mediyatra.org', password: 'password123', role: 'Hospital' },
   { _id: 'u_admin_1', name: 'System Admin', email: 'admin@mediyatra.org', password: 'password123', role: 'Admin' }
 ];
+
+function generateToken(userObj) {
+  return jwt.sign(
+    { id: userObj._id, name: userObj.name, email: userObj.email, role: userObj.role },
+    JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+}
 
 // @desc    Register a new user
 // @route   POST /api/users/register
@@ -43,7 +52,6 @@ const registerUser = async (req, res, next) => {
         role: assignedRole
       });
 
-      // If registered as Doctor, auto-create Doctor profile in directory
       if (assignedRole === 'Doctor') {
         try {
           await Doctor.create({
@@ -62,6 +70,8 @@ const registerUser = async (req, res, next) => {
         }
       }
 
+      const token = generateToken(user);
+
       return res.status(201).json({
         success: true,
         message: 'Account registered successfully',
@@ -70,12 +80,11 @@ const registerUser = async (req, res, next) => {
           name: user.name,
           email: user.email,
           role: user.role,
-          token: `jwt_${user._id}_${Date.now()}`
+          token
         }
       });
     }
 
-    // Fallback cache check
     const existingCache = registeredUsersCache.find(u => u.email === cleanEmail);
     if (existingCache) {
       return res.status(400).json({
@@ -94,6 +103,8 @@ const registerUser = async (req, res, next) => {
     };
     registeredUsersCache.push(newUser);
 
+    const token = generateToken(newUser);
+
     res.status(201).json({
       success: true,
       message: 'Account registered successfully',
@@ -103,7 +114,7 @@ const registerUser = async (req, res, next) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-        token: `jwt_${newUser._id}_${Date.now()}`
+        token
       }
     });
   } catch (error) {
@@ -143,20 +154,24 @@ const loginUser = async (req, res, next) => {
         });
       }
 
+      const activeUser = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: role || user.role
+      };
+      const token = generateToken(activeUser);
+
       return res.status(200).json({
         success: true,
         message: 'Sign in successful',
         data: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: role || user.role,
-          token: `jwt_${user._id}_${Date.now()}`
+          ...activeUser,
+          token
         }
       });
     }
 
-    // Fallback cache check
     const user = registeredUsersCache.find(u => u.email === cleanEmail);
     if (!user) {
       return res.status(400).json({
@@ -172,16 +187,21 @@ const loginUser = async (req, res, next) => {
       });
     }
 
+    const activeUser = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: role || user.role
+    };
+    const token = generateToken(activeUser);
+
     res.status(200).json({
       success: true,
       message: 'Sign in successful',
       dataSource: 'fallback-cache',
       data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: role || user.role,
-        token: `jwt_${user._id}_${Date.now()}`
+        ...activeUser,
+        token
       }
     });
   } catch (error) {

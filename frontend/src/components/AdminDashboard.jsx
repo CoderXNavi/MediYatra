@@ -13,21 +13,39 @@ import {
   Clock,
   Plane,
   FileText,
+  Users,
+  BarChart3,
   CheckCircle2,
-  Send
+  AlertCircle,
+  Activity,
+  Send,
+  Edit3
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
 export default function AdminDashboard({ currentUser }) {
-  const [activeTab, setActiveTab] = useState('tourism-dispatch'); // 'tourism-dispatch' | 'appointments' | 'hospitals' | 'doctors' | 'treatments'
+  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'users' | 'hospitals' | 'doctors' | 'appointments' | 'consultations' | 'tourism' | 'treatments'
   
+  // Real Database Analytics Metrics
+  const [stats, setStats] = useState({
+    totalPatients: 0,
+    totalDoctors: 0,
+    totalHospitals: 0,
+    totalAppointments: 0,
+    totalConsultations: 0,
+    pendingRequests: 0
+  });
+
+  const [users, setUsers] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [consultations, setConsultations] = useState([]);
   const [tourismOrders, setTourismOrders] = useState([]);
   const [hospitals, setHospitals] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [treatments, setTreatments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Form inputs for new item CRUD
+  // Form inputs for Management CRUD
   const [newHospitalName, setNewHospitalName] = useState('');
   const [newHospitalCity, setNewHospitalCity] = useState('New Delhi');
   const [newDoctorName, setNewDoctorName] = useState('');
@@ -37,40 +55,59 @@ export default function AdminDashboard({ currentUser }) {
   const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
-    loadData();
+    loadAdminData();
   }, []);
 
-  async function loadData() {
+  async function loadAdminData() {
+    setIsLoading(true);
     try {
-      const [hosp, doc, treat, apts, tourRes] = await Promise.all([
+      const authHeader = {
+        headers: {
+          'Authorization': `Bearer ${currentUser?.token || ''}`,
+          'x-auth-token': currentUser?.token || ''
+        }
+      };
+
+      const [statsRes, usersRes, hospList, docList, treatList, aptsRes, conRes, tourRes] = await Promise.all([
+        fetch('/api/admin/stats', authHeader).then(r => r.ok ? r.json() : null),
+        fetch('/api/admin/users', authHeader).then(r => r.ok ? r.json() : null),
         apiService.getHospitals(),
         apiService.getDoctors(),
         apiService.getTreatments(),
         fetch('/api/appointments').then(r => r.ok ? r.json() : null),
+        fetch('/api/consultations').then(r => r.ok ? r.json() : null),
         fetch('/api/tourism').then(r => r.ok ? r.json() : null)
       ]);
-      setHospitals(hosp || []);
-      setDoctors(doc || []);
-      setTreatments(treat || []);
-      if (apts?.data) setAppointments(apts.data);
+
+      if (statsRes?.data) setStats(statsRes.data);
+      if (usersRes?.data) setUsers(usersRes.data);
+      setHospitals(hospList || []);
+      setDoctors(docList || []);
+      setTreatments(treatList || []);
+      if (aptsRes?.data) setAppointments(aptsRes.data);
+      if (conRes?.data) setConsultations(conRes.data);
       if (tourRes?.data) setTourismOrders(tourRes.data);
     } catch (e) {
-      console.warn('Failed loading admin dashboard data:', e);
+      console.warn('Failed loading admin management data:', e);
+    } finally {
+      setIsLoading(false);
     }
   }
 
-  async function handleDispatchByAdmin(id) {
+  async function handleToggleUserStatus(userId, currentStatus) {
+    const newStatus = currentStatus === 'Active' ? 'Deactivated' : 'Active';
     try {
-      const res = await fetch(`/api/tourism/${id}/admin-dispatch`, {
+      const res = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          adminLogisticsNotes: 'Certified Language Translator assigned, Serviced Recovery Suite reserved, Airport Driver scheduled. Case forwarded to Doctor Desk.'
-        })
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentUser?.token || ''}`
+        },
+        body: JSON.stringify({ status: newStatus })
       });
       if (res.ok) {
-        setStatusMessage(`✅ Step 3 Complete: Travel logistics & translators dispatched for Request #${id}! Case forwarded to Doctor Desk.`);
-        loadData();
+        setStatusMessage(`User account status updated to ${newStatus}`);
+        loadAdminData();
       }
     } catch (err) {
       console.error(err);
@@ -86,7 +123,25 @@ export default function AdminDashboard({ currentUser }) {
       });
       if (res.ok) {
         setStatusMessage(`Appointment #${id} status updated to ${newStatus}`);
-        loadData();
+        loadAdminData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleDispatchTourismByAdmin(id) {
+    try {
+      const res = await fetch(`/api/tourism/${id}/admin-dispatch`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          adminLogisticsNotes: 'Certified Translator assigned, Serviced Suite reserved, Airport Driver scheduled.'
+        })
+      });
+      if (res.ok) {
+        setStatusMessage(`Travel logistics dispatched for Order #${id}`);
+        loadAdminData();
       }
     } catch (err) {
       console.error(err);
@@ -113,9 +168,9 @@ export default function AdminDashboard({ currentUser }) {
         })
       });
       if (res.ok) {
-        setStatusMessage(`Hospital "${newHospitalName}" created successfully!`);
+        setStatusMessage(`Hospital "${newHospitalName}" added to system directory!`);
         setNewHospitalName('');
-        loadData();
+        loadAdminData();
       }
     } catch (e) {
       console.error(e);
@@ -140,9 +195,9 @@ export default function AdminDashboard({ currentUser }) {
         })
       });
       if (res.ok) {
-        setStatusMessage(`Doctor "${newDoctorName}" created successfully!`);
+        setStatusMessage(`Specialist "${newDoctorName}" added to system directory!`);
         setNewDoctorName('');
-        loadData();
+        loadAdminData();
       }
     } catch (e) {
       console.error(e);
@@ -152,47 +207,50 @@ export default function AdminDashboard({ currentUser }) {
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      {/* Header */}
+      {/* Platform Management Header Banner */}
       <div className="bg-[#2D3A5E] text-white rounded-xl p-6 border-2 border-[#8FA9FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <ShieldCheck className="w-5 h-5 text-[#8FA9FF]" />
             <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
-              Step 3 Pipeline Coordinator • System Admin
+              MediYatra Platform Management Suite • {currentUser?.name || 'System Admin'}
             </span>
           </div>
           <h2 className="text-2xl font-black text-white tracking-tight font-sans">
-            Admin Desk: Logistics & Translator Dispatch
+            Admin System Operations & Analytics Dashboard
           </h2>
           <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-            Dispatch language translators, confirm recovery guest suites, schedule airport drivers, and forward cases to assigned Doctors.
+            Real-time MongoDB metrics, user account management, hospital & doctor CRUD controls, and logistics dispatch.
           </p>
         </div>
 
         <button
-          onClick={loadData}
+          onClick={loadAdminData}
           className="px-4 py-2 bg-[#1A233D] text-[#8FA9FF] border border-[#8FA9FF] text-xs font-black rounded-lg shadow hover:bg-black flex items-center gap-1.5 shrink-0"
         >
           <RefreshCw className="w-4 h-4" />
-          <span>Refresh System Data</span>
+          <span>Refresh Real DB Metrics</span>
         </button>
       </div>
 
       {statusMessage && (
         <div className="p-4 mb-6 bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs rounded-xl font-black flex items-center justify-between">
           <span>{statusMessage}</span>
-          <button onClick={() => setStatusMessage('')} className="p-1"><X className="w-4 h-4" /></button>
+          <button onClick={() => setStatusMessage('')} className="p-1 font-mono">X</button>
         </div>
       )}
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {[
-          { id: 'tourism-dispatch', label: `Step 3: Travel Logistics Dispatch (${tourismOrders.length})`, icon: Plane },
-          { id: 'appointments', label: `Manage Appointments (${appointments.length})`, icon: Calendar },
-          { id: 'hospitals', label: 'Manage Hospitals (CRUD)', icon: Building2 },
-          { id: 'doctors', label: 'Manage Doctors (CRUD)', icon: UserCheck },
-          { id: 'treatments', label: 'Manage Surgical Tariffs', icon: Calculator },
+          { id: 'analytics', label: 'Platform Analytics', icon: BarChart3 },
+          { id: 'users', label: `User Management (${users.length})`, icon: Users },
+          { id: 'hospitals', label: `Hospitals (${hospitals.length})`, icon: Building2 },
+          { id: 'doctors', label: `Doctors (${doctors.length})`, icon: UserCheck },
+          { id: 'appointments', label: `Appointments (${appointments.length})`, icon: Calendar },
+          { id: 'consultations', label: `Consultations (${consultations.length})`, icon: MessageSquare },
+          { id: 'tourism', label: `Logistics Orders (${tourismOrders.length})`, icon: Plane },
+          { id: 'treatments', label: 'Surgical Tariffs', icon: Calculator },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -213,71 +271,91 @@ export default function AdminDashboard({ currentUser }) {
         })}
       </div>
 
-      {/* Step 3: Travel Logistics Dispatch */}
-      {activeTab === 'tourism-dispatch' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-black text-slate-900 font-sans">Step 3: Hospital-Approved Cases Awaiting Travel Logistics Dispatch</h3>
-            <span className="text-xs font-black text-[#2D3A5E]">Admin Concierge Operations Desk</span>
+      {/* Tab 1: Platform Analytics */}
+      {activeTab === 'analytics' && (
+        <div className="space-y-6">
+          <h3 className="text-lg font-black text-slate-900 font-sans">Real-Time MongoDB Platform Statistics</h3>
+          <div className="grid sm:grid-cols-3 md:grid-cols-6 gap-4 font-bold text-xs">
+            <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
+              <span className="text-slate-600 block text-[10px] uppercase font-black">Total Patients</span>
+              <span className="text-2xl font-black text-slate-900 font-mono">{stats.totalPatients}</span>
+            </div>
+            <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
+              <span className="text-slate-600 block text-[10px] uppercase font-black">Total Doctors</span>
+              <span className="text-2xl font-black text-[#2D3A5E] font-mono">{stats.totalDoctors}</span>
+            </div>
+            <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
+              <span className="text-slate-600 block text-[10px] uppercase font-black">Total Hospitals</span>
+              <span className="text-2xl font-black text-[#2D3A5E] font-mono">{stats.totalHospitals}</span>
+            </div>
+            <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
+              <span className="text-slate-600 block text-[10px] uppercase font-black">Total Appointments</span>
+              <span className="text-2xl font-black text-blue-700 font-mono">{stats.totalAppointments}</span>
+            </div>
+            <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
+              <span className="text-slate-600 block text-[10px] uppercase font-black">Total Consultations</span>
+              <span className="text-2xl font-black text-purple-700 font-mono">{stats.totalConsultations}</span>
+            </div>
+            <div className="p-4 bg-amber-50 rounded-xl border-2 border-amber-300 shadow-sm space-y-1">
+              <span className="text-amber-900 block text-[10px] uppercase font-black">Pending Requests</span>
+              <span className="text-2xl font-black text-amber-950 font-mono">{stats.pendingRequests}</span>
+            </div>
           </div>
+        </div>
+      )}
 
+      {/* Tab 2: User Account Management */}
+      {activeTab === 'users' && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-slate-900 font-sans">User Account Management & Role Status</h3>
           <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-900 font-bold">
                 <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
                   <tr>
-                    <th className="p-3">Order ID</th>
-                    <th className="p-3">Patient Name</th>
-                    <th className="p-3">Booked Service</th>
-                    <th className="p-3">Approved Hospital</th>
-                    <th className="p-3">Assigned Doctor</th>
+                    <th className="p-3">User ID</th>
+                    <th className="p-3">Full Name</th>
+                    <th className="p-3">Email Address</th>
+                    <th className="p-3">Role</th>
                     <th className="p-3">Status</th>
-                    <th className="p-3 text-right">Step 3 Action</th>
+                    <th className="p-3 text-right">Admin Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                  {tourismOrders.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="p-6 text-center text-slate-600 font-bold">No hospital-approved cases awaiting logistics dispatch.</td>
+                  {users.map((u) => (
+                    <tr key={u._id} className="hover:bg-slate-50">
+                      <td className="p-3 font-mono font-black text-[#2D3A5E]">{u._id}</td>
+                      <td className="p-3 font-black text-slate-900">{u.name}</td>
+                      <td className="p-3 font-mono text-slate-800">{u.email}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
+                          u.role === 'Admin' ? 'bg-purple-100 text-purple-950 border-purple-300' :
+                          u.role === 'Doctor' ? 'bg-blue-100 text-blue-950 border-blue-300' :
+                          u.role === 'Hospital' ? 'bg-amber-100 text-amber-950 border-amber-300' :
+                          'bg-slate-100 text-slate-900 border-slate-300'
+                        }`}>
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="p-3">
+                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
+                          u.status === 'Deactivated' ? 'bg-red-100 text-red-950 border-red-300' : 'bg-emerald-100 text-emerald-950 border-emerald-300'
+                        }`}>
+                          {u.status || 'Active'}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right">
+                        <button
+                          onClick={() => handleToggleUserStatus(u._id, u.status || 'Active')}
+                          className={`px-3 py-1 text-[10px] font-black rounded text-white ${
+                            u.status === 'Deactivated' ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-red-700 hover:bg-red-800'
+                          }`}
+                        >
+                          {u.status === 'Deactivated' ? 'Activate Account' : 'Deactivate Account'}
+                        </button>
+                      </td>
                     </tr>
-                  ) : (
-                    tourismOrders.map((ord) => {
-                      const isDispatched = ord.status === 'Dispatched by Admin' || ord.status === 'Completed';
-
-                      return (
-                        <tr key={ord._id} className="hover:bg-slate-50">
-                          <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
-                          <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
-                          <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
-                          <td className="p-3 text-slate-800">{ord.hospitalName}</td>
-                          <td className="p-3 text-slate-800">{ord.doctorName}</td>
-                          <td className="p-3">
-                            <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
-                              isDispatched ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-purple-100 text-purple-950 border-purple-300'
-                            }`}>
-                              {ord.status}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            {isDispatched ? (
-                              <span className="text-emerald-700 font-black text-xs flex items-center justify-end gap-1">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                                <span>Dispatched to Doctor Desk</span>
-                              </span>
-                            ) : (
-                              <button
-                                onClick={() => handleDispatchByAdmin(ord._id)}
-                                className="px-3.5 py-1.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-[10px] font-black rounded-lg shadow flex items-center gap-1 ml-auto"
-                              >
-                                <Send className="w-3 h-3 text-[#8FA9FF]" />
-                                <span>Dispatch Logistics & Forward Case</span>
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -285,10 +363,108 @@ export default function AdminDashboard({ currentUser }) {
         </div>
       )}
 
-      {/* Appointments */}
+      {/* Tab 3: Hospital Management CRUD */}
+      {activeTab === 'hospitals' && (
+        <div className="space-y-6">
+          <form onSubmit={handleAddHospital} className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-3">
+            <h4 className="text-sm font-black text-slate-900 uppercase font-sans">Add New Accredited Hospital (POST /api/hospitals)</h4>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <input
+                type="text"
+                required
+                placeholder="Hospital Name (e.g. Artemis Health Institute)"
+                value={newHospitalName}
+                onChange={(e) => setNewHospitalName(e.target.value)}
+                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
+              />
+              <select
+                value={newHospitalCity}
+                onChange={(e) => setNewHospitalCity(e.target.value)}
+                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
+              >
+                <option value="New Delhi">New Delhi</option>
+                <option value="Gurugram">Gurugram</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Mumbai">Mumbai</option>
+              </select>
+            </div>
+            <button type="submit" className="px-4 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded-lg hover:bg-[#1A233D] flex items-center gap-1">
+              <Plus className="w-4 h-4 text-[#8FA9FF]" /> Register Hospital Entry
+            </button>
+          </form>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {hospitals.map((h) => (
+              <div key={h._id} className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between">
+                <div>
+                  <h5 className="text-sm font-black text-slate-900">{h.name}</h5>
+                  <p className="text-xs text-slate-700 font-bold">{h.city}, {h.country || 'India'} • {h.beds || 450} Beds</p>
+                </div>
+                <span className="text-xs font-mono font-black px-2 py-1 bg-slate-100 rounded border">
+                  ID: {h._id}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 4: Doctor Management CRUD */}
+      {activeTab === 'doctors' && (
+        <div className="space-y-6">
+          <form onSubmit={handleAddDoctor} className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-3">
+            <h4 className="text-sm font-black text-slate-900 uppercase font-sans">Add Board-Certified Specialist (POST /api/doctors)</h4>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <input
+                type="text"
+                required
+                placeholder="Doctor Name (e.g. Dr. Ramesh Kumar)"
+                value={newDoctorName}
+                onChange={(e) => setNewDoctorName(e.target.value)}
+                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
+              />
+              <input
+                type="text"
+                required
+                placeholder="Specialty (e.g. Neurosurgery)"
+                value={newDoctorSpecialty}
+                onChange={(e) => setNewDoctorSpecialty(e.target.value)}
+                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
+              />
+              <input
+                type="number"
+                required
+                placeholder="OPD Fee USD ($)"
+                value={newDoctorFee}
+                onChange={(e) => setNewDoctorFee(e.target.value)}
+                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
+              />
+            </div>
+            <button type="submit" className="px-4 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded-lg hover:bg-[#1A233D] flex items-center gap-1">
+              <Plus className="w-4 h-4 text-[#8FA9FF]" /> Register Specialist Entry
+            </button>
+          </form>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {doctors.map((d) => (
+              <div key={d._id} className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between">
+                <div>
+                  <h5 className="text-sm font-black text-slate-900">{d.name}</h5>
+                  <p className="text-xs text-slate-700 font-bold">{d.specialty} • ${d.consultationFeeUSD} OPD Fee</p>
+                </div>
+                <span className="text-xs font-mono font-black px-2 py-1 bg-slate-100 rounded border">
+                  ID: {d._id}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 5: Appointment Management */}
       {activeTab === 'appointments' && (
         <div className="space-y-4">
-          <h3 className="text-lg font-black text-slate-900 font-sans">Patient Consultation Requests</h3>
+          <h3 className="text-lg font-black text-slate-900 font-sans">All Patient Consultation Appointments</h3>
           <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-900 font-bold">
@@ -299,13 +475,13 @@ export default function AdminDashboard({ currentUser }) {
                     <th className="p-3">Contact</th>
                     <th className="p-3">Date</th>
                     <th className="p-3">Status</th>
-                    <th className="p-3 text-right">Actions</th>
+                    <th className="p-3 text-right">Administrative Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {appointments.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-6 text-center text-slate-600 font-bold">No appointment requests in database.</td>
+                      <td colSpan={6} className="p-6 text-center text-slate-600 font-bold">No appointment records in database.</td>
                     </tr>
                   ) : (
                     appointments.map((apt) => (
@@ -354,105 +530,73 @@ export default function AdminDashboard({ currentUser }) {
         </div>
       )}
 
-      {/* Hospitals */}
-      {activeTab === 'hospitals' && (
-        <div className="space-y-6">
-          <form onSubmit={handleAddHospital} className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-3">
-            <h4 className="text-sm font-black text-slate-900 uppercase font-sans">Add New Accredited Hospital (POST /api/hospitals)</h4>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <input
-                type="text"
-                required
-                placeholder="Hospital Name (e.g. Artemis Health Institute)"
-                value={newHospitalName}
-                onChange={(e) => setNewHospitalName(e.target.value)}
-                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
-              />
-              <select
-                value={newHospitalCity}
-                onChange={(e) => setNewHospitalCity(e.target.value)}
-                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
-              >
-                <option value="New Delhi">New Delhi</option>
-                <option value="Gurugram">Gurugram</option>
-                <option value="Chennai">Chennai</option>
-                <option value="Mumbai">Mumbai</option>
-              </select>
-            </div>
-            <button type="submit" className="px-4 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded-lg hover:bg-[#1A233D] flex items-center gap-1">
-              <Plus className="w-4 h-4 text-[#8FA9FF]" /> Add Hospital
-            </button>
-          </form>
-
+      {/* Tab 6: Consultation Management */}
+      {activeTab === 'consultations' && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-slate-900 font-sans">All Patient-Doctor Consultations Workflow Monitor</h3>
           <div className="grid md:grid-cols-2 gap-4">
-            {hospitals.map((h) => (
-              <div key={h._id} className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between">
-                <div>
-                  <h5 className="text-sm font-black text-slate-900">{h.name}</h5>
-                  <p className="text-xs text-slate-700 font-bold">{h.city}, {h.country || 'India'} • {h.beds || 450} Beds</p>
+            {consultations.map((con) => (
+              <div key={con._id} className="p-5 bg-white border-2 border-slate-300 rounded-xl space-y-2 font-bold text-xs">
+                <div className="flex items-center justify-between border-b pb-2">
+                  <span className="font-mono font-black text-[#2D3A5E]">ID: {con._id}</span>
+                  <span className="px-2 py-0.5 bg-slate-100 text-slate-900 rounded border">{con.status}</span>
                 </div>
-                <span className="text-xs font-mono font-black px-2 py-1 bg-slate-100 rounded border">
-                  ID: {h._id}
-                </span>
+                <p>Patient: <span className="text-slate-900 font-black">{con.patientName}</span> ({con.patientEmail})</p>
+                <p>Doctor: <span className="text-[#2D3A5E] font-black">{con.doctorName}</span></p>
+                <p className="text-slate-700">Subject: {con.subject}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Doctors */}
-      {activeTab === 'doctors' && (
-        <div className="space-y-6">
-          <form onSubmit={handleAddDoctor} className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-3">
-            <h4 className="text-sm font-black text-slate-900 uppercase font-sans">Add New Board-Certified Specialist (POST /api/doctors)</h4>
-            <div className="grid sm:grid-cols-3 gap-3">
-              <input
-                type="text"
-                required
-                placeholder="Doctor Name (e.g. Dr. Ramesh Kumar)"
-                value={newDoctorName}
-                onChange={(e) => setNewDoctorName(e.target.value)}
-                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
-              />
-              <input
-                type="text"
-                required
-                placeholder="Specialty (e.g. Neurosurgery)"
-                value={newDoctorSpecialty}
-                onChange={(e) => setNewDoctorSpecialty(e.target.value)}
-                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
-              />
-              <input
-                type="number"
-                required
-                placeholder="OPD Fee USD ($)"
-                value={newDoctorFee}
-                onChange={(e) => setNewDoctorFee(e.target.value)}
-                className="border-2 border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:outline-none"
-              />
+      {/* Tab 7: Travel Logistics Orders */}
+      {activeTab === 'tourism' && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-slate-900 font-sans">Medical Tourism Logistics & Concierge Dispatch</h3>
+          <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-900 font-bold">
+                <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
+                  <tr>
+                    <th className="p-3">Order ID</th>
+                    <th className="p-3">Patient Name</th>
+                    <th className="p-3">Service Requested</th>
+                    <th className="p-3">Status</th>
+                    <th className="p-3 text-right">Step 3 Dispatch Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {tourismOrders.map((ord) => (
+                    <tr key={ord._id} className="hover:bg-slate-50">
+                      <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
+                      <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
+                      <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
+                          ord.status === 'Dispatched by Admin' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-purple-100 text-purple-950 border-purple-300'
+                        }`}>
+                          {ord.status}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right">
+                        <button
+                          onClick={() => handleDispatchTourismByAdmin(ord._id)}
+                          className="px-3.5 py-1.5 bg-[#2D3A5E] text-white text-[10px] font-black rounded-lg shadow"
+                        >
+                          Dispatch Logistics
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <button type="submit" className="px-4 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded-lg hover:bg-[#1A233D] flex items-center gap-1">
-              <Plus className="w-4 h-4 text-[#8FA9FF]" /> Register Specialist
-            </button>
-          </form>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {doctors.map((d) => (
-              <div key={d._id} className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between">
-                <div>
-                  <h5 className="text-sm font-black text-slate-900">{d.name}</h5>
-                  <p className="text-xs text-slate-700 font-bold">{d.specialty} • ${d.consultationFeeUSD} OPD Fee</p>
-                </div>
-                <span className="text-xs font-mono font-black px-2 py-1 bg-slate-100 rounded border">
-                  ID: {d._id}
-                </span>
-              </div>
-            ))}
           </div>
         </div>
       )}
 
-      {/* Treatments */}
+      {/* Tab 8: Surgical Package Tariffs */}
       {activeTab === 'treatments' && (
         <div className="space-y-4">
           <h3 className="text-lg font-black text-slate-900 font-sans">Active Surgical Tariffs</h3>

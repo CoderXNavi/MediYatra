@@ -33,6 +33,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/hospitals', require('./routes/hospitalRoutes'));
 app.use('/api/hospitals/:hospitalId/doctors', require('./routes/doctorRoutes'));
 app.use('/api/hospitals/:hospitalId/treatments', require('./routes/treatmentRoutes'));
