@@ -244,9 +244,88 @@ const createDoctor = async (req, res, next) => {
   }
 };
 
+// @desc    Update / Complete authenticated Doctor profile
+// @route   PATCH /api/doctors/profile
+// @access  Public / Doctor
+const updateDoctorProfile = async (req, res, next) => {
+  try {
+    const { name, specialty, qualifications, experienceYears, consultationFeeUSD, languages, imageUrl } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ success: false, error: 'Doctor name is required' });
+    }
+
+    if (mongoose.connection.readyState === 1) {
+      let doctor = await Doctor.findOne({ name: { $regex: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } });
+      if (doctor) {
+        if (specialty) doctor.specialty = specialty;
+        if (qualifications) doctor.qualifications = qualifications;
+        if (experienceYears !== undefined) doctor.experienceYears = Number(experienceYears);
+        if (consultationFeeUSD !== undefined) doctor.consultationFeeUSD = Number(consultationFeeUSD);
+        if (languages) doctor.languages = Array.isArray(languages) ? languages : languages.split(',').map(l=>l.trim());
+        if (imageUrl) doctor.imageUrl = imageUrl;
+        await doctor.save();
+      } else {
+        doctor = await Doctor.create({
+          hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
+          name,
+          specialty: specialty || 'General Medicine & Senior Specialist',
+          qualifications: qualifications || 'MBBS, MD',
+          experienceYears: Number(experienceYears) || 12,
+          languages: Array.isArray(languages) ? languages : ['English', 'Hindi'],
+          consultationFeeUSD: Number(consultationFeeUSD) || 50,
+          availableDays: ['Monday', 'Wednesday', 'Friday'],
+          imageUrl: imageUrl || ''
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Doctor profile updated successfully',
+        data: doctor
+      });
+    }
+
+    // Fallback cache update
+    let doc = fallbackDoctors.find(d => d.name.toLowerCase() === name.toLowerCase());
+    if (doc) {
+      if (specialty) doc.specialty = specialty;
+      if (qualifications) doc.qualifications = qualifications;
+      if (experienceYears !== undefined) doc.experienceYears = Number(experienceYears);
+      if (consultationFeeUSD !== undefined) doc.consultationFeeUSD = Number(consultationFeeUSD);
+      if (languages) doc.languages = Array.isArray(languages) ? languages : languages.split(',').map(l=>l.trim());
+      if (imageUrl) doc.imageUrl = imageUrl;
+    } else {
+      doc = {
+        _id: `doc_${Date.now()}`,
+        hospitalId: '64f1a2b3c4d5e6f7a8b9c0d1',
+        name,
+        specialty: specialty || 'General Medicine & Senior Specialist',
+        qualifications: qualifications || 'MBBS, MD',
+        experienceYears: Number(experienceYears) || 12,
+        languages: Array.isArray(languages) ? languages : ['English', 'Hindi'],
+        consultationFeeUSD: Number(consultationFeeUSD) || 50,
+        availableDays: ['Monday', 'Wednesday', 'Friday'],
+        imageUrl: imageUrl || ''
+      };
+      fallbackDoctors.unshift(doc);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Doctor profile updated successfully',
+      dataSource: 'fallback-cache',
+      data: doc
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getDoctors,
   getDoctorById,
   getDoctorsByHospital,
-  createDoctor
+  createDoctor,
+  updateDoctorProfile
 };

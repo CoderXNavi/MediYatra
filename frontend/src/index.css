@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #fffdfb;
+    color: #2d3a5e;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #2d3a5e;
+    font-weight: 800;
+  }
+}
+
+/* Custom Portal Card Styling */
+.portal-card {
+  background: #ffffff;
+  border: 2px solid #d7c6ff;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.portal-card:hover {
+  border-color: #8fa9ff;
+  box-shadow: 0 10px 20px -5px rgba(45, 58, 94, 0.15);
+}
+
+.icon-circle {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  background-color: #fbe7f1;
+  border: 2px solid #d7c6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #fbe7f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #2d3a5e;
+  border-radius: 4px;
+}

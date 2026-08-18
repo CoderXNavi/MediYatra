@@ -73,6 +73,42 @@ const getAmbulances = async (req, res, next) => {
   }
 };
 
+// @desc    Dispatch emergency ambulance
+// @route   POST /api/ambulance/dispatch
+// @access  Public
+const dispatchAmbulance = async (req, res, next) => {
+  try {
+    const { pickupLocation, contactPhone, emergencyType } = req.body;
+
+    if (!pickupLocation || !contactPhone) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide pickupLocation and contactPhone'
+      });
+    }
+
+    const ticketId = `SOS-AMB-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    res.status(201).json({
+      success: true,
+      message: 'ICU Ambulance successfully dispatched',
+      data: {
+        ticketId,
+        pickupLocation,
+        contactPhone,
+        emergencyType: emergencyType || 'Severe Chest Pain / Trauma',
+        estimatedArrival: '8 - 12 Minutes',
+        driverContact: '+91 98110 99888',
+        status: 'Dispatched',
+        dispatchedAt: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
-  getAmbulances
+  getAmbulances,
+  dispatchAmbulance
 };

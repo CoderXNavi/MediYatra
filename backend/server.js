@@ -32,12 +32,15 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/hospitals', require('./routes/hospitalRoutes'));
 app.use('/api/hospitals/:hospitalId/doctors', require('./routes/doctorRoutes'));
 app.use('/api/hospitals/:hospitalId/treatments', require('./routes/treatmentRoutes'));
 app.use('/api/doctors', require('./routes/doctorRoutes'));
 app.use('/api/treatments', require('./routes/treatmentRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
+app.use('/api/consultations', require('./routes/consultationRoutes'));
+app.use('/api/tourism', require('./routes/tourismRoutes'));
 app.use('/api/search', require('./routes/searchRoutes'));
 
 // Enhanced Medical Tourism Feature Routes

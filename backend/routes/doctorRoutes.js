@@ -4,7 +4,8 @@ const {
   getDoctors,
   getDoctorById,
   getDoctorsByHospital,
-  createDoctor
+  createDoctor,
+  updateDoctorProfile
 } = require('../controllers/doctorController');
 
 router.route('/')
@@ -15,6 +16,8 @@ router.route('/')
     return getDoctors(req, res, next);
   })
   .post(createDoctor);
+
+router.patch('/profile', updateDoctorProfile);
 
 router.route('/:id')
   .get(getDoctorById);

@@ -4,6 +4,7 @@ require('dotenv').config();
 const Hospital = require('./models/Hospital');
 const Doctor = require('./models/Doctor');
 const Treatment = require('./models/Treatment');
+const User = require('./models/User');
 
 const realHospitals = [
   {
@@ -78,6 +79,13 @@ const realHospitals = [
   }
 ];
 
+const defaultUsers = [
+  { name: 'Demo Patient', email: 'patient@mediyatra.org', password: 'password123', role: 'Patient' },
+  { name: 'Dr. Naresh Trehan', email: 'doctor@mediyatra.org', password: 'password123', role: 'Doctor' },
+  { name: 'Max Hospital Admin', email: 'hospital@mediyatra.org', password: 'password123', role: 'Hospital' },
+  { name: 'System Admin', email: 'admin@mediyatra.org', password: 'password123', role: 'Admin' }
+];
+
 const seedRealData = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mediyatra', {
@@ -88,6 +96,10 @@ const seedRealData = async () => {
     await Hospital.deleteMany({});
     await Doctor.deleteMany({});
     await Treatment.deleteMany({});
+    await User.deleteMany({});
+
+    const insertedUsers = await User.insertMany(defaultUsers);
+    console.log(`✅ ${insertedUsers.length} Authentic Users Seeded.`);
 
     const insertedHospitals = await Hospital.insertMany(realHospitals);
     console.log(`✅ ${insertedHospitals.length} Authentic Hospitals Seeded.`);
@@ -98,7 +110,7 @@ const seedRealData = async () => {
     const sterlingId = insertedHospitals[3]._id;
     const stnmId = insertedHospitals[4]._id;
 
-    // Authentic Doctors List from user input
+    // Authentic Doctors List
     const realDoctors = [
       // AIIMS Bathinda Doctors
       { hospitalId: aiimsId, name: 'Dr. Bhupinder Singh', specialty: 'Cardiology', qualifications: 'MBBS, MD, DM (Cardiology)', experienceYears: 18, languages: ['English', 'Hindi', 'Punjabi'], consultationFeeUSD: 40, availableDays: ['Monday', 'Thursday', 'Friday'] },
@@ -145,7 +157,7 @@ const seedRealData = async () => {
     const insertedTreatments = await Treatment.insertMany(realTreatments);
     console.log(`✅ ${insertedTreatments.length} Authentic Treatments Seeded.`);
 
-    console.log('🎉 Real Hospital & Doctor Data Seeding Completed!');
+    console.log('🎉 Real Hospital, Doctor & User Data Seeding Completed!');
     process.exit(0);
   } catch (error) {
     console.error(`❌ Error seeding real data: ${error.message}`);

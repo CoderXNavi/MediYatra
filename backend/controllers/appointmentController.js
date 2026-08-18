@@ -28,9 +28,11 @@ const createAppointment = async (req, res, next) => {
       });
     }
 
+    const cleanEmail = patientEmail.trim().toLowerCase();
+
     // Validate Email format
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-    if (!emailRegex.test(patientEmail)) {
+    if (!emailRegex.test(cleanEmail)) {
       return res.status(400).json({
         success: false,
         error: 'Please provide a valid patient email address'
@@ -59,7 +61,7 @@ const createAppointment = async (req, res, next) => {
         doctorId: doctorId || null,
         treatmentId: treatmentId || null,
         patientName,
-        patientEmail,
+        patientEmail: cleanEmail,
         patientPhone,
         patientCountry,
         preferredDate: appointmentDate,
@@ -77,11 +79,12 @@ const createAppointment = async (req, res, next) => {
     // Fallback mode
     const newAppointment = {
       _id: `apt_${Date.now()}`,
+      bookingReference: `MY-APT-${Math.floor(100000 + Math.random() * 900000)}`,
       hospitalId,
       doctorId: doctorId || null,
       treatmentId: treatmentId || null,
       patientName,
-      patientEmail,
+      patientEmail: cleanEmail,
       patientPhone,
       patientCountry,
       preferredDate: appointmentDate.toISOString(),
@@ -128,7 +131,7 @@ const getAppointmentById = async (req, res, next) => {
       });
     }
 
-    const appointment = fallbackAppointments.find((a) => a._id === id);
+    const appointment = fallbackAppointments.find((a) => a._id === id || a.bookingReference === id);
     if (!appointment) {
       return res.status(404).json({
         success: false,
@@ -146,19 +149,20 @@ const getAppointmentById = async (req, res, next) => {
   }
 };
 
-// @desc    List all appointments (For Admin / Healthcare Provider management)
+// @desc    List appointments (with Patient & Role Identity Scoping)
 // @route   GET /api/appointments
-// @access  Public / Admin
+// @access  Public / Authenticated
 const getAppointments = async (req, res, next) => {
   try {
-    const { status } = req.query;
+    const { status, patientEmail, doctorId, hospitalId } = req.query;
+
+    let query = {};
+    if (status) query.status = status;
+    if (patientEmail) query.patientEmail = patientEmail.trim().toLowerCase();
+    if (doctorId) query.doctorId = doctorId;
+    if (hospitalId) query.hospitalId = hospitalId;
 
     if (mongoose.connection.readyState === 1) {
-      let query = {};
-      if (status) {
-        query.status = status;
-      }
-
       const appointments = await Appointment.find(query)
         .populate('hospitalId', 'name city')
         .populate('doctorId', 'name specialty')
@@ -175,6 +179,15 @@ const getAppointments = async (req, res, next) => {
     let filtered = [...fallbackAppointments];
     if (status) {
       filtered = filtered.filter((a) => a.status.toLowerCase() === status.toLowerCase());
+    }
+    if (patientEmail) {
+      filtered = filtered.filter((a) => a.patientEmail && a.patientEmail.toLowerCase() === patientEmail.trim().toLowerCase());
+    }
+    if (doctorId) {
+      filtered = filtered.filter((a) => a.doctorId === doctorId);
+    }
+    if (hospitalId) {
+      filtered = filtered.filter((a) => a.hospitalId === hospitalId);
     }
 
     res.status(200).json({
@@ -225,7 +238,7 @@ const updateAppointmentStatus = async (req, res, next) => {
       });
     }
 
-    const appointment = fallbackAppointments.find((a) => a._id === id);
+    const appointment = fallbackAppointments.find((a) => a._id === id || a.bookingReference === id);
     if (!appointment) {
       return res.status(404).json({
         success: false,
