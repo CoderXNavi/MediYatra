@@ -1339,3 +1339,101 @@ export const MOCK_NGO_AIDS = [
   }
 ];
 
+export const MOCK_CHARITY_EQUIPMENT = [
+  {
+    _id: "eq_101",
+    name: "Folding All-Terrain Wheelchairs (Donated Set)",
+    category: "Wheelchairs",
+    quantity: 5,
+    city: "New Delhi",
+    donorName: "Rotary Club Healthcare Drive",
+    donorEmail: "rotary.health@mediyatra.org",
+    description: "Heavy-duty lightweight foldable wheelchairs with safety brakes for mobility relief.",
+    status: "Available"
+  },
+  {
+    _id: "eq_102",
+    name: "Surplus Essential Medicines & Cardiac Kit",
+    category: "Medicines",
+    quantity: 25,
+    city: "Gurugram",
+    donorName: "Apollo Pharmacy Relief Desk",
+    donorEmail: "donor.pharmacy@mediyatra.org",
+    description: "Unopened sealed boxes of Atorvastatin, Metoprolol, and multivitamins for poor patients.",
+    status: "Available"
+  },
+  {
+    _id: "eq_103",
+    name: "10L Medical Oxygen Concentrator Unit",
+    category: "Oxygen Cylinders",
+    quantity: 3,
+    city: "Mumbai",
+    donorName: "Being Human Care Drive",
+    donorEmail: "beinghuman@mediyatra.org",
+    description: "High-grade 10 Liter/min continuous flow oxygen concentrator with humidifiers.",
+    status: "Available"
+  },
+  {
+    _id: "eq_104",
+    name: "Digital Pulse Oximeters & BP Monitors",
+    category: "Medical Equipment",
+    quantity: 12,
+    city: "Bengaluru",
+    donorName: "Smile Foundation Medical Wing",
+    donorEmail: "smile.org@mediyatra.org",
+    description: "Fingertip OLED pulse oximeters and automatic digital blood pressure monitors.",
+    status: "Available"
+  },
+  {
+    _id: "eq_105",
+    name: "Semi-Fowler Hospital Recovery Bed Frame",
+    category: "Hospital Beds",
+    quantity: 2,
+    city: "Chennai",
+    donorName: "MGM Healthcare Charity Relief",
+    donorEmail: "mgm.charity@mediyatra.org",
+    description: "Manual crank semi-fowler hospital bed with side safety rails and waterproof mattress.",
+    status: "Available"
+  }
+];
+
+export const MOCK_NGO_PARTNERS = [
+  {
+    _id: "ngo_201",
+    name: "Rotary Global Mobility Drive",
+    registrationNo: "NGO-ROT-88912",
+    city: "New Delhi",
+    contactEmail: "rotary.mobility@mediyatra.org",
+    contactPhone: "+91 11 2345 6789",
+    supportedCategories: ["Wheelchairs", "Medical Equipment"],
+    allocatedBudgetINR: 450000,
+    isVerifiedByAdmin: true,
+    description: "Providing free mobility aids, wheelchairs, and physical rehabilitation kits to patients in need."
+  },
+  {
+    _id: "ngo_202",
+    name: "Being Human Healthcare Foundation",
+    registrationNo: "NGO-[#BH]-4410",
+    city: "Mumbai",
+    contactEmail: "beinghuman.health@mediyatra.org",
+    contactPhone: "+91 22 4567 8901",
+    supportedCategories: ["Medicines", "Hospital Subsidy", "Pediatric Heart Surgeries"],
+    allocatedBudgetINR: 1500000,
+    isVerifiedByAdmin: true,
+    description: "Subsidizing open-heart cardiac surgeries and critical oncology treatments for children."
+  },
+  {
+    _id: "ngo_203",
+    name: "Smile Foundation Healthcare Wing",
+    registrationNo: "NGO-SMI-1102",
+    city: "Bengaluru",
+    contactEmail: "smile.health@mediyatra.org",
+    contactPhone: "+91 80 3456 7890",
+    supportedCategories: ["Oxygen Cylinders", "Medical Equipment", "Medicines"],
+    allocatedBudgetINR: 850000,
+    isVerifiedByAdmin: true,
+    description: "Supplying emergency medical kits, oxygen concentrators, and diagnostic support to rural clinics."
+  }
+];
+
+
