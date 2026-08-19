@@ -63,6 +63,13 @@ export default function AdminDashboard({ currentUser }) {
   const [isLoading, setIsLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState('');
 
+  // Form inputs for Hospital & Doctor Registration CRUD
+  const [newHospitalName, setNewHospitalName] = useState('');
+  const [newHospitalCity, setNewHospitalCity] = useState('New Delhi');
+  const [newDoctorName, setNewDoctorName] = useState('');
+  const [newDoctorSpecialty, setNewDoctorSpecialty] = useState('Cardiology');
+  const [newDoctorFee, setNewDoctorFee] = useState(60);
+
   useEffect(() => {
     loadAdminData();
   }, [currentUser]);
