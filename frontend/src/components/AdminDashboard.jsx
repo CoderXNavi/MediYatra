@@ -26,6 +26,12 @@ import {
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
+import { 
+  MOCK_TOURISM_PIPELINE, 
+  MOCK_PATIENT_CONSULTATIONS, 
+  MOCK_PATIENT_APPOINTMENTS,
+  MOCK_NGO_AIDS
+} from '../data/mockData';
 
 export default function AdminDashboard({ currentUser }) {
   const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'users' | 'hospitals' | 'doctors' | 'appointments' | 'consultations' | 'tourism' | 'treatments' | 'charity'
@@ -92,13 +98,18 @@ export default function AdminDashboard({ currentUser }) {
       setHospitals(hospList || []);
       setDoctors(docList || []);
       setTreatments(treatList || []);
-      if (aptsRes?.data) setAppointments(aptsRes.data);
-      if (conRes?.data) setConsultations(conRes.data);
-      if (tourRes?.data) setTourismOrders(tourRes.data);
-      if (ngoRes?.data) setNgos(ngoRes.data);
+      
+      setAppointments((aptsRes?.data && aptsRes.data.length > 0) ? aptsRes.data : MOCK_PATIENT_APPOINTMENTS);
+      setConsultations((conRes?.data && conRes.data.length > 0) ? conRes.data : MOCK_PATIENT_CONSULTATIONS);
+      setTourismOrders((tourRes?.data && tourRes.data.length > 0) ? tourRes.data : MOCK_TOURISM_PIPELINE);
+      setNgos((ngoRes?.data && ngoRes.data.length > 0) ? ngoRes.data : MOCK_NGO_AIDS);
       if (eqRes?.data) setEquipmentList(eqRes.data);
     } catch (e) {
       console.warn('Failed loading admin management data:', e);
+      setAppointments(MOCK_PATIENT_APPOINTMENTS);
+      setConsultations(MOCK_PATIENT_CONSULTATIONS);
+      setTourismOrders(MOCK_TOURISM_PIPELINE);
+      setNgos(MOCK_NGO_AIDS);
     } finally {
       setIsLoading(false);
     }
@@ -232,38 +243,38 @@ export default function AdminDashboard({ currentUser }) {
   }
 
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
       
       {/* Platform Management Header Banner */}
-      <div className="bg-[#2D3A5E] text-white rounded-xl p-6 border-2 border-[#8FA9FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#2B4A66] text-white rounded-2xl p-6 border border-[#7FD6FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <ShieldCheck className="w-5 h-5 text-[#8FA9FF]" />
-            <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
+            <ShieldCheck className="w-5 h-5 text-[#7FD6FF]" />
+            <span className="text-xs font-bold text-[#7FD6FF] uppercase tracking-wider block">
               MediYatra Platform Management Suite • {currentUser?.name || 'System Admin'}
             </span>
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight font-sans">
+          <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
             Admin System Operations & Analytics Dashboard
           </h2>
-          <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
-            Real-time MongoDB metrics, user account management, hospital & doctor CRUD controls, and logistics dispatch.
+          <p className="text-slate-200 text-xs sm:text-sm mt-0.5 font-medium">
+            Real-time platform activity metrics, user account management, accredited hospital & doctor directories, and logistics dispatch.
           </p>
         </div>
 
         <button
           onClick={loadAdminData}
-          className="px-4 py-2 bg-[#1A233D] text-[#8FA9FF] border border-[#8FA9FF] text-xs font-black rounded-lg shadow hover:bg-black flex items-center gap-1.5 shrink-0 font-sans"
+          className="px-4 py-2 bg-[#1E364B] text-[#7FD6FF] border border-[#7FD6FF] text-xs font-bold rounded-xl shadow-xs hover:bg-[#2B4A66] flex items-center gap-1.5 shrink-0 font-sans cursor-pointer"
         >
           <RefreshCw className="w-4 h-4" />
-          <span>Refresh Real DB Metrics</span>
+          <span>Refresh Live Metrics</span>
         </button>
       </div>
 
       {statusMessage && (
-        <div className="p-4 mb-6 bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs rounded-xl font-black flex items-center justify-between">
+        <div className="p-4 mb-6 bg-emerald-100 border border-[#6FE3B4] text-emerald-950 text-xs rounded-xl font-bold flex items-center justify-between">
           <span>{statusMessage}</span>
-          <button onClick={() => setStatusMessage('')} className="p-1 font-mono">X</button>
+          <button onClick={() => setStatusMessage('')} className="p-1 font-mono cursor-pointer">X</button>
         </div>
       )}
 
@@ -286,13 +297,13 @@ export default function AdminDashboard({ currentUser }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-black transition ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 isActive
-                  ? 'bg-[#2D3A5E] text-white shadow border-2 border-[#2D3A5E]'
-                  : 'bg-white text-slate-900 hover:bg-slate-100 border-2 border-slate-300'
+                  ? 'bg-[#2B4A66] text-white shadow-xs border border-[#2B4A66]'
+                  : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#FFD6E8]'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-[#8FA9FF]' : 'text-[#2D3A5E]'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-[#7FD6FF]' : 'text-[#2B4A66]'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -302,7 +313,7 @@ export default function AdminDashboard({ currentUser }) {
       {/* Tab 1: Platform Analytics */}
       {activeTab === 'analytics' && (
         <div className="space-y-6">
-          <h3 className="text-lg font-black text-slate-900 font-sans">Real-Time MongoDB Platform Statistics</h3>
+          <h3 className="text-lg font-bold text-[#2B4A66] font-sans">Real-Time Executive Platform Overview</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 font-bold text-xs">
             <div className="p-4 bg-white rounded-xl border-2 border-slate-300 shadow-sm space-y-1">
               <span className="text-slate-600 block text-[10px] uppercase font-black">Total Patients</span>

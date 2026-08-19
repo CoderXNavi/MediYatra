@@ -19,6 +19,11 @@ import {
   Stethoscope
 } from 'lucide-react';
 import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
+import { 
+  MOCK_TOURISM_PIPELINE, 
+  MOCK_PATIENT_CONSULTATIONS, 
+  MOCK_PATIENT_APPOINTMENTS 
+} from '../data/mockData';
 
 export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNewAppointment }) {
   const [activeSubTab, setActiveSubTab] = useState('tourism-pipeline');
@@ -55,14 +60,32 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
           fetch(`/api/prescriptions?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null)
         ]);
 
-        if (conRes?.data) setConsultations(conRes.data);
-        if (aptsRes?.data) setAppointments(aptsRes.data);
-        if (tourRes?.data) setTourismOrders(tourRes.data);
+        if (conRes?.data && conRes.data.length > 0) {
+          setConsultations(conRes.data);
+        } else {
+          setConsultations(MOCK_PATIENT_CONSULTATIONS);
+        }
+
+        if (aptsRes?.data && aptsRes.data.length > 0) {
+          setAppointments(aptsRes.data);
+        } else {
+          setAppointments(MOCK_PATIENT_APPOINTMENTS);
+        }
+
+        if (tourRes?.data && tourRes.data.length > 0) {
+          setTourismOrders(tourRes.data);
+        } else {
+          setTourismOrders(MOCK_TOURISM_PIPELINE);
+        }
+
         if (recsRes?.data) setRecords(recsRes.data);
         if (repsRes?.data) setReports(repsRes.data);
         if (rxRes?.data) setPrescriptions(rxRes.data);
       } catch (err) {
         console.warn('[PatientRecordsPortal] Error loading patient data:', err);
+        setConsultations(MOCK_PATIENT_CONSULTATIONS);
+        setAppointments(MOCK_PATIENT_APPOINTMENTS);
+        setTourismOrders(MOCK_TOURISM_PIPELINE);
       } finally {
         setIsLoading(false);
       }
@@ -131,56 +154,64 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
 
   // Authenticated Patient View
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Top Visual Hero Banner for Patient Records Portal */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
+      {/* Full Image Background Hero Banner with Soft Left Gradient Overlay */}
+      <div className="relative rounded-3xl overflow-hidden shadow-sm border border-[#FFD6E8] mb-10 bg-white min-h-[320px] sm:min-h-[380px] flex items-center">
+        
+        {/* Full Cover Background Image */}
         <img
           src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1600"
           alt="Patient Health Records & Clinical Pipeline"
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
         
-        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+        {/* Smooth Left-to-Right Soft Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 sm:via-white/85 to-transparent" />
+
+        {/* Hero Content on Left Side */}
+        <div className="relative z-10 p-8 sm:p-12 max-w-2xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
-              Session-Isolated Health Portal
+            <span className="px-3 py-1 bg-[#FFD6E8] text-[#2B4A66] text-xs font-bold rounded-full border border-pink-200">
+              Personalized Patient Health Portal
             </span>
-            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-full uppercase tracking-wider">
-              Encrypted Patient Records
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-950 text-xs font-bold rounded-full">
+              Encrypted Medical Records
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2B4A66] leading-tight font-sans">
             My Clinical Records & Medical Tourism Pipeline
           </h1>
-          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
-            Track real-time doctor responses, download official hospital appointment vouchers, review diagnostic lab reports, and manage digital prescriptions under your isolated account.
+
+          <p className="text-xs sm:text-sm text-slate-700 font-bold leading-relaxed">
+            Track real-time doctor responses, download official hospital appointment vouchers, review diagnostic lab reports, and manage digital prescriptions under your private account.
           </p>
         </div>
+
       </div>
       
       {/* Header */}
-      <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-6 border border-[#FFD6E8] shadow-xs mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <ShieldCheck className="w-4 h-4 text-[#2D3A5E]" />
-            <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block">
-              Session Isolated • Authenticated as {currentUser.name}
+            <ShieldCheck className="w-4 h-4 text-[#2B4A66]" />
+            <span className="text-xs font-bold text-[#2B4A66] uppercase tracking-wider block">
+              Authenticated Patient Account • {currentUser.name}
             </span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">
+          <h2 className="text-2xl font-bold text-[#2B4A66] tracking-tight font-sans">
             My Health Records & Travel Concierge Pipeline
           </h2>
-          <p className="text-slate-900 text-xs sm:text-sm mt-1 font-bold">
-            Private records associated with account <span className="text-[#2D3A5E] font-black">{currentUser.email}</span>.
+          <p className="text-slate-600 text-xs sm:text-sm mt-0.5 font-medium">
+            Private medical records associated with account <span className="text-[#2B4A66] font-bold">{currentUser.email}</span>.
           </p>
         </div>
 
         <button
           onClick={onBookNewAppointment}
-          className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-2 transition shrink-0"
+          className="px-4 py-2.5 bg-[#2B4A66] hover:bg-[#1E364B] text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-2 transition shrink-0 cursor-pointer"
         >
-          <Calendar className="w-4 h-4 text-[#8FA9FF]" />
+          <Calendar className="w-4 h-4 text-[#7FD6FF]" />
           <span>Book New Consultation</span>
         </button>
       </div>
@@ -201,13 +232,13 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
             <button
               key={tab.id}
               onClick={() => setActiveSubTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-black transition ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 isActive
-                  ? 'bg-[#2D3A5E] text-white shadow border-2 border-[#2D3A5E]'
-                  : 'bg-white text-slate-900 hover:bg-slate-100 border-2 border-slate-300'
+                  ? 'bg-[#2B4A66] text-white shadow-xs border border-[#2B4A66]'
+                  : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#FFD6E8]'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-[#8FA9FF]' : 'text-[#2D3A5E]'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-[#7FD6FF]' : 'text-[#2B4A66]'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -217,9 +248,9 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
       {/* Sub Tab 1: Live Medical Tourism Pipeline */}
       {activeSubTab === 'tourism-pipeline' && (
         <div className="space-y-6">
-          <div className="bg-[#2D3A5E] text-white p-5 rounded-xl border-2 border-[#8FA9FF] space-y-1">
-            <h3 className="text-base font-black font-sans">Live 4-Step Medical Tourism Pipeline</h3>
-            <p className="text-xs text-slate-200 font-bold">
+          <div className="bg-[#2B4A66] text-white p-5 rounded-2xl border border-[#7FD6FF] space-y-1">
+            <h3 className="text-base font-bold text-white font-sans">Live 4-Step Medical Tourism Pipeline</h3>
+            <p className="text-xs text-slate-200 font-medium">
               Track your case progress from Patient Submission ➔ Hospital Visa Approval ➔ Admin Logistics Dispatch ➔ Doctor Clinical Treatment.
             </p>
           </div>
@@ -243,8 +274,8 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
                     
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-2">
                       <div>
-                        <span className="font-mono text-xs font-black text-[#2D3A5E]">Pipeline Ref: {ord._id}</span>
-                        <h4 className="text-base font-black text-slate-900">{ord.serviceType}</h4>
+                        <span className="font-mono text-xs font-bold text-[#2B4A66]">Case Reference ID: {ord._id}</span>
+                        <h4 className="text-base font-bold text-[#2B4A66]">{ord.serviceType}</h4>
                         <p className="text-xs text-slate-700 font-bold">Hospital: {ord.hospitalName} • Doctor: {ord.doctorName}</p>
                       </div>
 

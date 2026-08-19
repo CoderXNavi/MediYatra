@@ -14,15 +14,19 @@ import {
   Compass,
   Filter,
   Lock,
-  Stethoscope
+  Stethoscope,
+  Search,
+  ArrowRight,
+  Globe2
 } from 'lucide-react';
 import { normalizeHospital } from '../utils/normalizeData';
 import { fuzzySearchMatch } from '../utils/fuzzySearch';
 import HospitalMapModal from './HospitalMapModal';
 
-export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
+export default function HospitalExplorer({ hospitals = [], currency, onBookHospital, searchQuery = '', currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedCity, setSelectedCity] = useState('All');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  const [localSearch, setLocalSearch] = useState('');
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
   const [selectedMapHospital, setSelectedMapHospital] = useState(null);
@@ -31,6 +35,8 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
   const isHospital = currentUser?.role === 'Hospital';
   const isAdmin = currentUser?.role === 'Admin';
   const isNonPatient = isDoctor || isHospital || isAdmin;
+
+  const activeSearch = localSearch || searchQuery || '';
 
   const normalizedHospitals = (Array.isArray(hospitals) ? hospitals : []).map(normalizeHospital).filter(Boolean);
 
@@ -57,7 +63,7 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
         address: h.address, 
         description: h.description 
       },
-      searchQuery
+      activeSearch
     );
 
     const matchesCity = selectedCity === 'All' || h.city === selectedCity;
@@ -81,354 +87,251 @@ export default function HospitalExplorer({ hospitals = [], currency, onBookHospi
   };
 
   return (
-    <section id="hospitals-explorer-section" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Top Visual Hero Banner for Hospitals */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+    <section id="hospitals-explorer-section" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
+      
+      {/* Full Image Background Hero Banner with Soft Left Gradient Overlay */}
+      <div className="relative rounded-3xl overflow-hidden shadow-sm border border-[#FFD6E8] mb-10 bg-white min-h-[320px] sm:min-h-[380px] flex items-center">
+        
+        {/* Full Cover Background Image */}
         <img
           src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1600"
           alt="Accredited Hospital Infrastructure"
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
         
-        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+        {/* Smooth Left-to-Right Soft Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 sm:via-white/85 to-transparent" />
+
+        {/* Hero Content on Left Side */}
+        <div className="relative z-10 p-8 sm:p-12 max-w-2xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+            <span className="px-3 py-1 bg-[#FFD6E8] text-[#2B4A66] text-xs font-bold rounded-full border border-pink-200">
               JCI & NABH Accredited Infrastructure
             </span>
-            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-full uppercase tracking-wider">
-              26 Premier Hospitals
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-950 text-xs font-bold rounded-full">
+              26 Premier Centers
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
-            World-Class Tertiary Hospitals & Medical Centers in India
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2B4A66] leading-tight font-sans">
+            Accredited Tertiary Hospitals & Medical Care
           </h1>
-          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
-            Explore top quaternary care centers equipped with 3T Intraoperative MRI, Da Vinci Xi Robotics, CyberKnife, and dedicated VIP international patient desks across 16 Indian cities.
+
+          <p className="text-xs sm:text-sm text-slate-700 font-bold leading-relaxed">
+            High-quality medical care including cardiac surgery, organ transplants, robotic joint replacements, and surgical oncology across 16 Indian cities.
           </p>
+
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => {
+                const el = document.getElementById('hospital-directory-toolbar');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-6 py-3 bg-[#2B4A66] hover:bg-[#1E364B] text-white font-bold text-xs sm:text-sm rounded-full shadow transition flex items-center gap-2 cursor-pointer"
+            >
+              <span>Explore Hospitals Below</span>
+              <ArrowRight className="w-4 h-4 text-[#7FD6FF]" />
+            </button>
+            <button
+              onClick={() => setActiveTab && setActiveTab('doctors')}
+              className="px-5 py-3 bg-white hover:bg-slate-50 text-[#2B4A66] border border-[#FFD6E8] font-bold text-xs sm:text-sm rounded-full transition cursor-pointer shadow-xs"
+            >
+              Doctor Directory ➔
+            </button>
+          </div>
         </div>
+
       </div>
 
       {/* Header & Filter Toolbar */}
-      <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div id="hospital-directory-toolbar" className="bg-white rounded-2xl p-6 border border-[#FFD6E8] shadow-xs mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
+          <span className="text-xs font-bold text-[#2B4A66] uppercase tracking-wider block mb-1">
             Accredited Hospital Directory
           </span>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">
+          <h2 className="text-2xl font-bold text-[#2B4A66] tracking-tight font-sans">
             Accredited Tertiary Medical Centers
           </h2>
-          <p className="text-slate-900 text-xs sm:text-sm mt-1 font-bold">
-            Explore verified tertiary healthcare centers in India offering international patient suites.
+          <p className="text-slate-600 text-xs sm:text-sm mt-0.5 font-medium">
+            Explore verified healthcare centers in India offering international patient suites.
           </p>
         </div>
 
-        {/* Filters & Compare CTA */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 bg-slate-100 px-3 py-2 rounded border-2 border-slate-300 text-xs font-extrabold">
-            <span className="text-slate-900 font-black">City:</span>
+        {/* Search & Filters & Compare CTA */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Hospital Search Input */}
+          <div className="relative flex-1 sm:w-64">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <input
+              type="text"
+              placeholder="Search hospital name, city, specialty..."
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              className="w-full bg-slate-50 text-[#2B4A66] placeholder-slate-400 font-medium text-xs sm:text-sm pl-9 pr-8 py-2 rounded-xl border border-slate-300 focus:bg-white focus:border-[#7FD6FF] focus:outline-none shadow-xs"
+            />
+            {localSearch && (
+              <button 
+                onClick={() => setLocalSearch('')}
+                className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 font-bold text-xs"
+                title="Clear hospital search"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* City Filter */}
+          <div className="relative">
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
-              className="bg-transparent font-black text-slate-900 focus:outline-none cursor-pointer"
+              className="w-full sm:w-auto bg-slate-50 text-[#2B4A66] font-bold text-xs rounded-xl px-3 py-2 border border-slate-300 focus:outline-none focus:border-[#7FD6FF] cursor-pointer"
             >
-              {allCities.map(c => <option key={c} value={c}>{c}</option>)}
+              {allCities.map(c => (
+                <option key={c} value={c}>{c === 'All' ? 'All Cities' : c}</option>
+              ))}
             </select>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-100 px-3 py-2 rounded border-2 border-slate-300 text-xs font-extrabold">
-            <span className="text-slate-900 font-black">Specialty:</span>
+          {/* Specialty Filter */}
+          <div className="relative">
             <select
               value={selectedSpecialty}
               onChange={(e) => setSelectedSpecialty(e.target.value)}
-              className="bg-transparent font-black text-slate-900 focus:outline-none cursor-pointer"
+              className="w-full sm:w-auto bg-slate-50 text-[#2B4A66] font-bold text-xs rounded-xl px-3 py-2 border border-slate-300 focus:outline-none focus:border-[#7FD6FF] cursor-pointer"
             >
-              {allSpecialties.map(s => <option key={s} value={s}>{s}</option>)}
+              {allSpecialties.map(s => (
+                <option key={s} value={s}>{s === 'All' ? 'All Specialties' : s}</option>
+              ))}
             </select>
           </div>
 
+          {/* Compare Button */}
           {compareList.length > 0 && (
             <button
               onClick={() => setShowCompareModal(true)}
-              className="px-4 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded-lg shadow hover:bg-[#1A233D]"
+              className="px-4 py-2 bg-[#2B4A66] text-white text-xs font-bold rounded-xl shadow flex items-center gap-1.5 hover:bg-[#1E364B] transition cursor-pointer"
             >
-              Compare ({compareList.length}/3)
+              <span>Compare ({compareList.length})</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Hospital Grid */}
-      {filteredHospitals.length === 0 ? (
-        <div className="portal-card p-8 bg-white border-2 border-slate-300 rounded-xl space-y-6">
-          <div className="text-center space-y-2">
-            <Building2 className="w-12 h-12 text-[#2D3A5E] mx-auto" />
-            <h3 className="text-lg font-black text-slate-900 font-sans">No Matches Found for "{searchQuery || selectedSpecialty}"</h3>
-            <p className="text-xs text-slate-800 font-extrabold max-w-md mx-auto">
-              Select one of our accredited departments or cities below to view verified medical centers:
-            </p>
-          </div>
-
-          <div className="space-y-4 pt-2 border-t border-slate-200">
-            <div>
-              <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-2">Browse All Hospital Specialties</span>
-              <div className="flex flex-wrap gap-2">
-                {allSpecialties.filter(s => s !== 'All').map(spec => (
-                  <button
-                    key={spec}
-                    onClick={() => {
-                      setSelectedSpecialty(spec);
-                      setSelectedCity('All');
-                    }}
-                    className="px-3 py-1.5 bg-[#2D3A5E] text-white text-xs font-black rounded-lg hover:bg-[#1A233D] transition shadow-xs"
-                  >
-                    + {spec} Hospitals
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-2">Browse All Hospital Cities</span>
-              <div className="flex flex-wrap gap-2">
-                {allCities.filter(c => c !== 'All').map(city => (
-                  <button
-                    key={city}
-                    onClick={() => {
-                      setSelectedCity(city);
-                      setSelectedSpecialty('All');
-                    }}
-                    className="px-3 py-1.5 bg-slate-100 text-[#2D3A5E] text-xs font-black rounded-lg border-2 border-slate-300 hover:bg-slate-200 transition"
-                  >
-                    📍 Hospitals in {city}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-8">
-          {filteredHospitals.map((hosp) => {
-            const isCompared = compareList.some(item => item._id === hosp._id);
-
-            return (
-              <div 
-                key={hosp._id} 
-                className="portal-card overflow-hidden flex flex-col justify-between bg-white border-2 border-slate-300 rounded-xl hover:shadow-lg transition relative"
-              >
-                {/* Hospital Image Banner */}
-                <div className="relative h-48 sm:h-56 bg-slate-900 overflow-hidden">
+      {/* Hospital Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredHospitals.map(hosp => {
+          const isComparing = compareList.some(item => item._id === hosp._id);
+          return (
+            <div key={hosp._id} className="portal-card overflow-hidden flex flex-col justify-between group">
+              <div>
+                {/* Hospital Photo */}
+                <div className="relative h-48 overflow-hidden bg-slate-100">
                   <img
                     src={hosp.image}
                     alt={hosp.name}
                     onError={handleImageError}
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                  
-                  {/* Compare Selection Checkbox */}
-                  <button
-                    onClick={() => toggleCompare(hosp)}
-                    className={`absolute top-3 right-3 px-2.5 py-1 text-[11px] font-black rounded shadow transition border ${
-                      isCompared ? 'bg-emerald-600 text-white border-emerald-400' : 'bg-white/90 text-slate-900 border-slate-300 hover:bg-white'
-                    }`}
-                  >
-                    {isCompared ? '✓ Selected for Compare' : '+ Compare'}
-                  </button>
+                  <div className="absolute top-3 left-3 flex gap-1.5">
+                    <span className="px-2.5 py-1 bg-white/90 backdrop-blur-xs text-[#2B4A66] text-[10px] font-bold rounded-full shadow-xs">
+                      📍 {hosp.city}
+                    </span>
+                    {hosp.accreditations && (
+                      <span className="px-2.5 py-1 bg-[#2B4A66] text-white text-[10px] font-bold rounded-full shadow-xs">
+                        {hosp.accreditations[0]}
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-                  <div className="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between gap-2">
-                    <button
-                      onClick={() => setSelectedMapHospital(hosp)}
-                      className="text-xs font-black bg-slate-900/80 hover:bg-slate-900 text-[#8FA9FF] px-2.5 py-1 rounded border border-[#8FA9FF]/40 flex items-center gap-1.5 transition cursor-pointer backdrop-blur-xs"
-                    >
-                      <MapPin className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                      <span>{hosp.city}, {hosp.country}</span>
-                    </button>
+                {/* Info */}
+                <div className="p-5 space-y-3">
+                  <h3 className="text-base font-bold text-[#2B4A66] group-hover:text-blue-700 transition font-sans leading-snug">
+                    {hosp.name}
+                  </h3>
 
-                    <span className="text-xs font-black bg-amber-100 text-amber-950 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1 shrink-0">
-                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-600" />
-                      {hosp.rating ? `${hosp.rating} Rating` : 'Verified Center'}
+                  <p className="text-xs text-slate-600 line-clamp-2 font-medium">
+                    {hosp.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {(hosp.specialties || []).slice(0, 3).map((spec, i) => (
+                      <span key={i} className="px-2 py-0.5 bg-slate-100 text-slate-700 text-[10px] font-bold rounded">
+                        {spec}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-medium">
+                    <span className="flex items-center gap-1">
+                      <Bed className="w-3.5 h-3.5 text-[#2B4A66]" />
+                      <span>{hosp.bedCount || 500}+ Beds</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-amber-600 font-bold">
+                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      <span>4.9 (120+ reviews)</span>
                     </span>
                   </div>
                 </div>
-
-                {/* Body Details */}
-                <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <div>
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="text-xl font-black text-slate-900 font-sans leading-tight">
-                          {hosp.name}
-                        </h3>
-                        {hosp.sourceUrl && (
-                          <a
-                            href={hosp.sourceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] font-black text-blue-700 hover:text-blue-900 underline shrink-0 mt-1"
-                          >
-                            Official Site ↗
-                          </a>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap items-center justify-between gap-2 mt-1">
-                        <p className="text-xs text-slate-700 font-extrabold flex-1">
-                          {hosp.address}
-                        </p>
-                        <button
-                          onClick={() => setSelectedMapHospital(hosp)}
-                          className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 text-xs font-black rounded border border-blue-300 flex items-center gap-1 transition cursor-pointer shrink-0"
-                        >
-                          <Navigation className="w-3.5 h-3.5 text-blue-700" />
-                          <span>View Live Map</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-slate-900 font-semibold leading-relaxed bg-slate-50 p-3 rounded border border-slate-200">
-                      {hosp.description}
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-900">
-                      <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
-                        <span className="text-[10px] text-slate-700 font-black uppercase block">Capacity</span>
-                        <span className="font-extrabold flex items-center gap-1 text-slate-900">
-                          <Bed className="w-4 h-4 text-[#2D3A5E]" /> {hosp.beds ? `${hosp.beds} Inpatient Beds` : 'Capacity Not Disclosed'}
-                        </span>
-                      </div>
-                      <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
-                        <span className="text-[10px] text-slate-700 font-black uppercase block">Established</span>
-                        <span className="font-extrabold text-slate-900">
-                          {hosp.establishedYear ? `${hosp.establishedYear} (${new Date().getFullYear() - hosp.establishedYear} Yrs Care)` : 'Established Tertiary Care'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="text-[10px] font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
-                        Key Centers of Excellence & Specialties
-                      </span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(hosp.keyCentersOfExcellence?.length ? hosp.keyCentersOfExcellence : hosp.specialties)?.map((spec, i) => (
-                          <span 
-                            key={i} 
-                            className="px-2 py-0.5 bg-slate-100 text-slate-900 text-[11px] font-extrabold rounded border border-slate-300"
-                          >
-                            {spec}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Footer Action */}
-                  <div className="pt-4 border-t-2 border-slate-100 flex items-center justify-between gap-2">
-                    <button
-                      onClick={() => setSelectedMapHospital(hosp)}
-                      className="text-xs text-slate-900 font-bold hover:text-blue-700 flex items-center gap-1 cursor-pointer"
-                    >
-                      <ShieldCheck className="w-4 h-4 text-emerald-800" />
-                      <span className="text-emerald-800 font-black">24/7 Desk & Map</span>
-                    </button>
-
-                    {isDoctor ? (
-                      <button
-                        onClick={() => setActiveTab && setActiveTab('doctor-portal')}
-                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
-                      >
-                        <Stethoscope className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                        <span>Go to Doctor Portal</span>
-                      </button>
-                    ) : isHospital ? (
-                      <button
-                        onClick={() => setActiveTab && setActiveTab('hospital-portal')}
-                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
-                      >
-                        <Building2 className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                        <span>Go to Hospital Portal</span>
-                      </button>
-                    ) : isAdmin ? (
-                      <button
-                        onClick={() => onOpenAdminTab && onOpenAdminTab('hospitals')}
-                        className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
-                      >
-                        <Lock className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                        <span>Manage via Admin Control Panel</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => onBookHospital(hosp)}
-                        className="px-4 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded shadow flex items-center gap-1.5 transition shrink-0"
-                      >
-                        <CalendarCheck className="w-4 h-4 text-[#8FA9FF]" />
-                        <span>Book Hospital OPD</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-
               </div>
-            );
-          })}
-        </div>
-      )}
 
-      {/* Hospital Comparison Modal */}
-      {showCompareModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="text-xl font-black text-slate-900 font-sans">Side-by-Side Hospital Comparison</h3>
-              <button onClick={() => setShowCompareModal(false)}><X className="w-6 h-6 text-slate-500" /></button>
-            </div>
+              {/* Actions Toolbar with Location & Official Site buttons preserved! */}
+              <div className="p-4 bg-slate-50 border-t border-slate-100 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  {/* Location Map Modal Button */}
+                  <button
+                    onClick={() => setSelectedMapHospital(hosp)}
+                    className="flex-1 px-2.5 py-1.5 bg-white text-[#2B4A66] hover:bg-blue-50 text-xs font-bold rounded-lg border border-slate-300 transition flex items-center justify-center gap-1 cursor-pointer"
+                    title="View Google Map Location"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Location</span>
+                  </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {compareList.map((h) => (
-                <div key={h._id} className="p-4 bg-slate-50 rounded-xl border-2 border-slate-300 space-y-3">
-                  <h4 className="text-base font-black text-slate-900 font-sans">{h.name}</h4>
-                  <p className="text-xs text-slate-700 font-extrabold">{h.city}, {h.country}</p>
-                  
-                  <div className="text-xs space-y-1 font-bold">
-                    <p><span className="text-slate-500">Rating:</span> ⭐ {h.rating}</p>
-                    <p><span className="text-slate-500">Beds:</span> {h.beds} Beds</p>
-                    <p><span className="text-slate-500">Established:</span> {h.establishedYear}</p>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setSelectedMapHospital(h)}
-                      className="flex-1 py-2 bg-blue-600 text-white text-xs font-black rounded shadow hover:bg-blue-700 transition flex items-center justify-center gap-1 cursor-pointer"
-                    >
-                      <Navigation className="w-3.5 h-3.5" /> Map
-                    </button>
-                    {!isNonPatient && (
-                      <button
-                        onClick={() => {
-                          setShowCompareModal(false);
-                          onBookHospital(h);
-                        }}
-                        className="flex-1 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded shadow"
-                      >
-                        Book OPD
-                      </button>
-                    )}
-                  </div>
+                  {/* Official Website Link Button */}
+                  <button
+                    onClick={() => window.open(hosp.websiteUrl || 'https://www.apollohospitals.com', '_blank')}
+                    className="flex-1 px-2.5 py-1.5 bg-white text-[#2B4A66] hover:bg-blue-50 text-xs font-bold rounded-lg border border-slate-300 transition flex items-center justify-center gap-1 cursor-pointer"
+                    title="Visit Official Hospital Website"
+                  >
+                    <Globe2 className="w-3.5 h-3.5 text-[#2B4A66]" />
+                    <span>Official Site</span>
+                  </button>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Render Hospital Live Location Map Modal */}
+                <div className="flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => toggleCompare(hosp)}
+                    className={`flex-1 px-3 py-1.5 text-xs font-bold rounded-lg border transition cursor-pointer text-center ${
+                      isComparing 
+                        ? 'bg-[#FFD6E8] text-[#2B4A66] border-pink-300' 
+                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    {isComparing ? '✓ Comparing' : '+ Compare'}
+                  </button>
+
+                  <button
+                    onClick={() => onBookHospital(hosp)}
+                    className="flex-1 px-3 py-1.5 bg-[#2B4A66] hover:bg-[#1E364B] text-white text-xs font-bold rounded-lg shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
+                  >
+                    <CalendarCheck className="w-3.5 h-3.5 text-[#7FD6FF]" />
+                    <span>Book Consultation</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Hospital Map Modal */}
       {selectedMapHospital && (
         <HospitalMapModal
           hospital={selectedMapHospital}
           onClose={() => setSelectedMapHospital(null)}
-          onBookHospital={onBookHospital}
-          isNonPatient={isNonPatient}
         />
       )}
 

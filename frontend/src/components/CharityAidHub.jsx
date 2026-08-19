@@ -19,6 +19,7 @@ import {
   PackageCheck
 } from 'lucide-react';
 import { fuzzySearchMatch } from '../utils/fuzzySearch';
+import { MOCK_NGO_AIDS } from '../data/mockData';
 
 export default function CharityAidHub({ currentUser, onOpenAuth }) {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -70,9 +71,14 @@ export default function CharityAidHub({ currentUser, onOpenAuth }) {
 
       if (eqRes?.data) setEquipmentList(eqRes.data);
       if (ngoRes?.data) setNgoList(ngoRes.data);
-      if (reqRes?.data) setPatientRequests(reqRes.data);
+      if (reqRes?.data && reqRes.data.length > 0) {
+        setPatientRequests(reqRes.data);
+      } else {
+        setPatientRequests(MOCK_NGO_AIDS);
+      }
     } catch (e) {
       console.warn('Error loading charity hub data:', e);
+      setPatientRequests(MOCK_NGO_AIDS);
     } finally {
       setIsLoading(false);
     }
@@ -182,36 +188,44 @@ export default function CharityAidHub({ currentUser, onOpenAuth }) {
   });
 
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Top Visual Hero Banner for Donor & Charity Aid Page */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
+      {/* Full Image Background Hero Banner with Soft Left Gradient Overlay */}
+      <div className="relative rounded-3xl overflow-hidden shadow-sm border border-[#FFD6E8] mb-10 bg-white min-h-[320px] sm:min-h-[380px] flex items-center">
+        
+        {/* Full Cover Background Image */}
         <img
           src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=1600"
           alt="Charity Healthcare & Aid Distribution"
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
         
-        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+        {/* Smooth Left-to-Right Soft Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 sm:via-white/85 to-transparent" />
+
+        {/* Hero Content on Left Side */}
+        <div className="relative z-10 p-8 sm:p-12 max-w-2xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 bg-emerald-500 text-slate-950 text-xs font-black rounded-full uppercase tracking-wider">
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-950 text-xs font-bold rounded-full">
               Humanitarian Healthcare Aid
             </span>
-            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+            <span className="px-3 py-1 bg-[#FFD6E8] text-[#2B4A66] text-xs font-bold rounded-full border border-pink-200">
               Verified NGO Partners
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2B4A66] leading-tight font-sans">
             Surplus Medicine & Medical Equipment Aid Hub
           </h1>
-          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
+
+          <p className="text-xs sm:text-sm text-slate-700 font-bold leading-relaxed">
             Connecting donors, verified health foundations, and underprivileged patients with donated wheelchairs, oxygen cylinders, surplus surgical supplies, and philanthropic medical grants.
           </p>
         </div>
+
       </div>
       
       {/* Header Banner */}
-      <div className="bg-[#2D3A5E] text-white rounded-2xl p-6 sm:p-8 border-2 border-[#8FA9FF] shadow-md mb-8">
+      <div className="bg-[#2B4A66] text-white rounded-2xl p-6 sm:p-8 border border-[#7FD6FF] shadow-md mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -310,16 +324,40 @@ export default function CharityAidHub({ currentUser, onOpenAuth }) {
             ))}
           </div>
 
-          {/* Search Box */}
-          <div className="relative w-full md:w-72">
-            <input
-              type="text"
-              placeholder="Search items or city..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-100 border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg pl-9 pr-3 py-2 focus:bg-white focus:border-[#8FA9FF] focus:outline-none"
-            />
-            <Search className="w-4 h-4 text-slate-500 absolute left-2.5 top-2.5" />
+          {/* Search Box with Search Button and Enter Trigger */}
+          <div className="flex items-center gap-2 w-full md:w-80">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search items or city..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
+                className="w-full bg-slate-50 border-2 border-slate-300 text-slate-800 placeholder-slate-400 font-semibold text-xs rounded-lg pl-9 pr-8 py-2 focus:bg-white focus:border-[#8FA9FF] focus:outline-none"
+              />
+              <Search className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 font-black text-xs"
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <button
+              type="button"
+              className="px-3.5 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow transition cursor-pointer shrink-0 flex items-center gap-1"
+            >
+              <Search className="w-3.5 h-3.5 text-[#8FA9FF]" />
+              <span>Search</span>
+            </button>
           </div>
 
         </div>

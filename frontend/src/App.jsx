@@ -16,16 +16,37 @@ import AppointmentModal from './components/AppointmentModal';
 import ConsultationModal from './components/ConsultationModal';
 import TourismBookingModal from './components/TourismBookingModal';
 import EmergencySOSModal from './components/EmergencySOSModal';
+import InsuranceVerificationModal from './components/InsuranceVerificationModal';
 import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
 
 import { apiService } from './services/api';
+import { triggerGlobalWebsiteTranslation } from './utils/translations';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'hospitals' | 'doctors' | 'treatments' | 'tourism' | 'charity' | 'records' | 'doctor-portal' | 'hospital-portal' | 'admin'
   const [currency, setCurrency] = useState('USD');
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Multilingual Language State (EN | HI | ES | FR | AR | RU)
+  const [displayLang, setDisplayLang] = useState(() => {
+    try {
+      return localStorage.getItem('mediyatra_lang') || 'EN';
+    } catch (e) {
+      return 'EN';
+    }
+  });
+
+  // Handle Full-Site Translation & RTL layout for Arabic
+  useEffect(() => {
+    try {
+      localStorage.setItem('mediyatra_lang', displayLang);
+    } catch (e) {}
+    
+    // Trigger Site-Wide Auto Translation for entire DOM
+    triggerGlobalWebsiteTranslation(displayLang);
+  }, [displayLang]);
+
   // Data states
   const [hospitals, setHospitals] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -50,6 +71,7 @@ export default function App() {
   const [isTourismModalOpen, setIsTourismModalOpen] = useState(false);
   const [tourismModalService, setTourismModalService] = useState('');
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
+  const [isInsuranceOpen, setIsInsuranceOpen] = useState(false);
   const [isAITriageOpen, setIsAITriageOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
@@ -211,9 +233,12 @@ export default function App() {
         setActiveTab={setActiveTab}
         currency={currency}
         setCurrency={setCurrency}
+        displayLang={displayLang}
+        setDisplayLang={setDisplayLang}
         onOpenBooking={() => !isNonPatientRole && setIsBookingOpen(true)}
         onOpenEmergency={() => setIsEmergencyOpen(true)}
         onOpenAITriage={() => setIsAITriageOpen(true)}
+        onOpenInsurance={() => setIsInsuranceOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         currentUser={currentUser}
         onLogout={handleLogout}
@@ -231,8 +256,10 @@ export default function App() {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               setActiveTab={setActiveTab}
+              displayLang={displayLang}
               onOpenAITriage={() => setIsAITriageOpen(true)}
               onOpenBooking={() => !isNonPatientRole && setIsBookingOpen(true)}
+              onOpenInsurance={() => setIsInsuranceOpen(true)}
               onOpenEmergency={() => setIsEmergencyOpen(true)}
             />
 
@@ -388,42 +415,15 @@ export default function App() {
 
         {/* Tab Views */}
         {activeTab === 'hospitals' && (
-          <div>
-            {/* Dedicated Hospital Page Header */}
-            <div className="bg-[#2D3A5E] text-white py-8 px-4 sm:px-8 mb-4 shadow-md border-b-4 border-[#8FA9FF]">
-              <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div className="space-y-2">
-                  <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
-                    Official Hospital Explorer
-                  </span>
-                  <h1 className="text-2xl sm:text-4xl font-black font-sans leading-tight">
-                    Accredited Hospitals & Medical Centers in India
-                  </h1>
-                  <p className="text-slate-200 text-xs sm:text-sm font-bold max-w-2xl">
-                    Browse JCI and NABH accredited quaternary care hospitals across 16 Indian cities. View exact locations on Google Maps, bed counts, centers of excellence, and book direct consultations.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button 
-                    onClick={() => setActiveTab('doctors')}
-                    className="px-4 py-2 bg-[#1A233D] hover:bg-black text-[#8FA9FF] border border-[#8FA9FF] rounded-lg text-xs font-black transition cursor-pointer"
-                  >
-                    View Doctor Directory ➔
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <HospitalExplorer 
-              hospitals={hospitals} 
-              currency={currency} 
-              onBookHospital={handleBookHospital}
-              searchQuery={searchQuery}
-              currentUser={currentUser}
-              onOpenAdminTab={handleOpenAdminTab}
-              setActiveTab={setActiveTab}
-            />
-          </div>
+          <HospitalExplorer 
+            hospitals={hospitals} 
+            currency={currency} 
+            onBookHospital={handleBookHospital}
+            searchQuery={searchQuery}
+            currentUser={currentUser}
+            onOpenAdminTab={handleOpenAdminTab}
+            setActiveTab={setActiveTab}
+          />
         )}
 
         {activeTab === 'doctors' && (
@@ -556,6 +556,12 @@ export default function App() {
         </>
       )}
 
+      <InsuranceVerificationModal 
+        isOpen={isInsuranceOpen}
+        onClose={() => setIsInsuranceOpen(false)}
+        currentUser={currentUser}
+      />
+
       <EmergencySOSModal 
         isOpen={isEmergencyOpen}
         onClose={() => setIsEmergencyOpen(false)}
@@ -563,8 +569,12 @@ export default function App() {
 
       <AITriageWidget 
         isOpen={isAITriageOpen}
+        onOpen={() => setIsAITriageOpen(true)}
         onClose={() => setIsAITriageOpen(false)}
         onBookDoctor={handleBookDoctor}
+        setActiveTab={setActiveTab}
+        onOpenBooking={() => { setIsAITriageOpen(false); setIsBookingOpen(true); }}
+        onOpenEmergency={() => { setIsAITriageOpen(false); setIsEmergencyOpen(true); }}
       />
 
       <AuthModal 

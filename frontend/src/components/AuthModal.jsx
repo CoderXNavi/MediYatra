@@ -98,15 +98,15 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-md w-full overflow-hidden">
         
         {/* Header */}
-        <div className="bg-[#2D3A5E] text-white p-4 flex items-center justify-between border-b border-[#1A233D]">
+        <div className="bg-[#2B4A66] text-white p-4 flex items-center justify-between border-b border-[#1E364B]">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-[#8FA9FF]" />
+            <ShieldCheck className="w-6 h-6 text-[#7FD6FF]" />
             <div>
-              <h3 className="font-black text-base text-white font-sans">{isRegister ? 'Create MediYatra Account' : 'MediYatra Patient & Provider Sign In'}</h3>
-              <p className="text-xs text-[#8FA9FF] font-black">Authentic Database Security</p>
+              <h3 className="font-bold text-base text-white font-sans">{isRegister ? 'Create MediYatra Account' : 'MediYatra Patient & Provider Sign In'}</h3>
+              <p className="text-xs text-[#7FD6FF] font-bold">Encrypted Healthcare Network Clearance</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-slate-300 hover:text-white font-mono">
+          <button onClick={onClose} className="p-1 text-slate-300 hover:text-white font-mono cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -115,13 +115,13 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
           {successMsg ? (
             <div className="text-center py-6 space-y-3">
               <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
-              <h4 className="text-lg font-black text-slate-900 font-sans">{successMsg}</h4>
+              <h4 className="text-lg font-bold text-[#2B4A66] font-sans">{successMsg}</h4>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               
               {errorMsg && (
-                <div className="p-3 bg-red-50 border-2 border-red-300 text-red-700 text-xs rounded-xl font-bold flex items-center gap-2">
+                <div className="p-3 bg-red-50 border border-red-300 text-red-700 text-xs rounded-xl font-bold flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
                   <span>{errorMsg}</span>
                 </div>
@@ -129,17 +129,17 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
 
               {/* Role Selector */}
               <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">Select Account Type / Role</label>
-                <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-lg border border-slate-300 text-[11px] font-black">
+                <label className="text-xs font-bold text-[#2B4A66] block mb-1">Select Account Type / Role</label>
+                <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl border border-[#FFD6E8] text-[11px] font-bold">
                   {['Patient', 'Doctor', 'Hospital', 'Admin'].map((r) => (
                     <button
                       key={r}
                       type="button"
                       onClick={() => handleSelectRole(r)}
-                      className={`py-1.5 rounded transition ${
+                      className={`py-1.5 rounded-lg transition cursor-pointer ${
                         role === r 
-                          ? 'bg-[#2D3A5E] text-white shadow' 
-                          : 'text-slate-800 hover:bg-slate-200'
+                          ? 'bg-[#2B4A66] text-white shadow-xs' 
+                          : 'text-slate-700 hover:bg-slate-200'
                       }`}
                     >
                       {r}
@@ -150,52 +150,52 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
 
               {isRegister && (
                 <div>
-                  <label className="text-xs font-black text-slate-900 block mb-1">Full Name *</label>
+                  <label className="text-xs font-bold text-[#2B4A66] block mb-1">Full Name *</label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                    <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. Navdeep Kaur"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg pl-9 pr-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
+                      className="w-full border border-[#FFD6E8] text-[#2B4A66] font-bold text-xs rounded-xl pl-9 pr-3 py-2.5 focus:border-[#7FD6FF] focus:outline-none"
                     />
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">Email Address *</label>
+                <label className="text-xs font-bold text-[#2B4A66] block mb-1">Email Address *</label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
                     type="email"
                     required
                     placeholder="user@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg pl-9 pr-3 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
+                    className="w-full border border-[#FFD6E8] text-[#2B4A66] font-bold text-xs rounded-xl pl-9 pr-3 py-2.5 focus:border-[#7FD6FF] focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-black text-slate-900 block mb-1">Password *</label>
+                <label className="text-xs font-bold text-[#2B4A66] block mb-1">Password *</label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full border-2 border-slate-300 text-slate-900 font-extrabold text-xs rounded-lg pl-9 pr-10 py-2.5 focus:border-[#8FA9FF] focus:outline-none"
+                    className="w-full border border-[#FFD6E8] text-[#2B4A66] font-bold text-xs rounded-xl pl-9 pr-10 py-2.5 focus:border-[#7FD6FF] focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-slate-500 hover:text-slate-950 transition"
+                    className="absolute right-3 top-3 text-slate-400 hover:text-slate-800 transition cursor-pointer"
                     title={showPassword ? 'Hide Password' : 'Show Password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -206,7 +206,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 bg-[#2D3A5E] hover:bg-[#1A233D] text-white font-black text-xs sm:text-sm rounded-lg shadow transition disabled:opacity-50"
+                className="w-full py-3 bg-[#2B4A66] hover:bg-[#1E364B] text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? 'Authenticating...' : isRegister ? `Register as ${role}` : `Sign In as ${role}`}
               </button>

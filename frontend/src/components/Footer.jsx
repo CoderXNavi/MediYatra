@@ -3,7 +3,7 @@ import { PhoneCall, Mail, MapPin } from 'lucide-react';
 
 export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }) {
   return (
-    <footer className="bg-[#2D3A5E] text-white border-t-4 border-[#8FA9FF] pt-12 pb-8 mt-12 w-full">
+    <footer className="bg-[#2B4A66] text-white border-t-4 border-[#7FD6FF] pt-12 pb-8 mt-12 w-full font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Responsive 4-Column Grid */}
@@ -18,31 +18,31 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
                 className="h-10 w-auto object-contain shrink-0"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
-              <div className="border-l-2 border-[#8FA9FF] pl-2">
-                <span className="text-xl font-black text-white tracking-tight block leading-none font-sans">
+              <div className="border-l-2 border-[#7FD6FF] pl-2">
+                <span className="text-xl font-bold text-white tracking-tight block leading-none font-sans">
                   MEDIYATRA
                 </span>
-                <span className="text-[10px] font-bold text-[#8FA9FF] block mt-0.5">
+                <span className="text-[10px] font-bold text-[#7FD6FF] block mt-0.5">
                   Connecting Health, Facilitating Care
                 </span>
               </div>
             </div>
 
-            <p className="text-xs text-slate-200 leading-relaxed font-semibold">
+            <p className="text-xs text-slate-200 leading-relaxed font-medium">
               Global Medical Tourism Concierge connecting international & domestic patients with accredited hospital networks and senior surgeons across India.
             </p>
           </div>
 
           {/* Column 2: Concierge Portals */}
           <div>
-            <h4 className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider mb-3 border-b border-[#8FA9FF]/30 pb-1 font-sans">
+            <h4 className="text-xs font-bold text-[#7FD6FF] uppercase tracking-wider mb-3 border-b border-[#7FD6FF]/30 pb-1 font-sans">
               Concierge Portals
             </h4>
-            <ul className="space-y-2.5 text-xs font-bold text-slate-100">
+            <ul className="space-y-2.5 text-xs font-medium text-slate-100">
               <li>
                 <button 
                   onClick={() => setActiveTab('hospitals')} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
                   Accredited Hospital Directory
                 </button>
@@ -50,7 +50,7 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
               <li>
                 <button 
                   onClick={() => setActiveTab('doctors')} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
                   Board-Certified Specialist Registry
                 </button>
@@ -58,7 +58,7 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
               <li>
                 <button 
                   onClick={() => setActiveTab('treatments')} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
                   Surgical Tariff & Price Comparison
                 </button>
@@ -66,7 +66,7 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
               <li>
                 <button 
                   onClick={onOpenAITriage} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
                   Clinical Symptom Triage Desk
                 </button>
@@ -76,14 +76,14 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
 
           {/* Column 3: International Patient Desk */}
           <div>
-            <h4 className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider mb-3 border-b border-[#8FA9FF]/30 pb-1 font-sans">
+            <h4 className="text-xs font-bold text-[#7FD6FF] uppercase tracking-wider mb-3 border-b border-[#7FD6FF]/30 pb-1 font-sans">
               International Services
             </h4>
-            <ul className="space-y-2.5 text-xs font-bold text-slate-100">
+            <ul className="space-y-2.5 text-xs font-medium text-slate-100">
               <li>
                 <button 
                   onClick={() => setActiveTab('tourism')} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
                   Medical Visa Recommendation Letters
                 </button>
@@ -91,7 +91,7 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
               <li>
                 <button 
                   onClick={() => setActiveTab('tourism')} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
                   Certified Language Interpreters
                 </button>
@@ -99,62 +99,63 @@ export default function Footer({ setActiveTab, onOpenEmergency, onOpenAITriage }
               <li>
                 <button 
                   onClick={() => setActiveTab('tourism')} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
-                  Serviced Accommodations & Suites
+                  Airport Transfers & Recovery Suites
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => setActiveTab('tourism')} 
-                  className="hover:text-[#8FA9FF] transition text-left"
+                  onClick={() => setActiveTab('charity')} 
+                  className="hover:text-[#7FD6FF] transition text-left cursor-pointer"
                 >
-                  Airport Pickup & Van Transfers
+                  NGO Medical Aid & Grants
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Emergency SOS & Contact */}
-          <div>
-            <h4 className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider mb-3 border-b border-[#8FA9FF]/30 pb-1 font-sans">
-              24/7 International Desk
+          {/* Column 4: 24/7 International Desk & Hotline */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-[#7FD6FF] uppercase tracking-wider border-b border-[#7FD6FF]/30 pb-1 font-sans">
+              Emergency & Concierge Desk
             </h4>
-            <div className="space-y-2 text-xs text-slate-100 font-bold">
-              <p className="flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-[#8FA9FF] shrink-0" />
-                <span>+91 11 4000 8888</span>
-              </p>
-              <p className="flex items-center gap-2 break-all">
-                <Mail className="w-4 h-4 text-[#8FA9FF] shrink-0" />
-                <span>concierge@mediyatra-health.org</span>
-              </p>
-              <p className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#8FA9FF] shrink-0" />
-                <span>Press Enclave Marg, Saket, New Delhi</span>
-              </p>
+
+            <div className="space-y-2 text-xs text-slate-100 font-medium">
+              <div className="flex items-center gap-2">
+                <PhoneCall className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>24/7 Hotline: +91-11-26925858</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-[#7FD6FF] shrink-0" />
+                <span>concierge@mediyatra.org</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-[#FFD6E8] shrink-0" />
+                <span>Sarita Vihar, Mathura Road, New Delhi 110076</span>
+              </div>
             </div>
 
-            <button
-              onClick={onOpenEmergency}
-              className="mt-4 w-full py-2.5 bg-red-700 hover:bg-red-800 text-white text-xs font-black rounded-lg shadow transition flex items-center justify-center gap-2"
-            >
-              <PhoneCall className="w-3.5 h-3.5" />
-              <span>EMERGENCY 24/7 ICU SOS</span>
-            </button>
+            <div className="pt-2">
+              <button
+                onClick={onOpenEmergency}
+                className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <PhoneCall className="w-3.5 h-3.5 animate-pulse" />
+                <span>24/7 ICU Ambulance SOS</span>
+              </button>
+            </div>
           </div>
 
         </div>
 
-        {/* Footer Bottom Bar */}
-        <div className="pt-6 border-t border-[#1A233D] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300 font-bold">
-          <p>© {new Date().getFullYear()} MEDIYATRA Healthcare Concierge. All Rights Reserved.</p>
-          <div className="flex flex-wrap items-center gap-4 text-slate-300">
-            <span className="hover:underline cursor-pointer">Privacy Policy</span>
-            <span>•</span>
-            <span className="hover:underline cursor-pointer">Terms of Service</span>
-            <span>•</span>
-            <span className="hover:underline cursor-pointer">Global Compliance</span>
+        {/* Bottom Bar: Copyright & Compliance */}
+        <div className="pt-6 border-t border-slate-700/60 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-300 font-medium gap-2">
+          <p>© 2026 MEDIYATRA International Healthcare Network. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <span className="hover:text-white cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-white cursor-pointer">Terms of Concierge</span>
+            <span className="hover:text-white cursor-pointer">NABH Guidelines</span>
           </div>
         </div>
 

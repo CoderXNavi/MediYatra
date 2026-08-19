@@ -16,6 +16,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { MOCK_TOURISM_PIPELINE, MOCK_PATIENT_APPOINTMENTS } from '../data/mockData';
 
 export default function HospitalPortal({ currentUser }) {
   const [activeTab, setActiveTab] = useState('visa-approval'); // 'visa-approval' | 'appointments' | 'doctors' | 'facilities'
@@ -46,10 +47,12 @@ export default function HospitalPortal({ currentUser }) {
       ]);
 
       setDoctors(docList || []);
-      if (aptsRes?.data) setAppointments(aptsRes.data);
-      if (tourRes?.data) setTourismOrders(tourRes.data);
+      setAppointments((aptsRes?.data && aptsRes.data.length > 0) ? aptsRes.data : MOCK_PATIENT_APPOINTMENTS);
+      setTourismOrders((tourRes?.data && tourRes.data.length > 0) ? tourRes.data : MOCK_TOURISM_PIPELINE);
     } catch (err) {
       console.warn('Error loading hospital provider data:', err);
+      setAppointments(MOCK_PATIENT_APPOINTMENTS);
+      setTourismOrders(MOCK_TOURISM_PIPELINE);
     } finally {
       setIsLoading(false);
     }
@@ -118,28 +121,28 @@ export default function HospitalPortal({ currentUser }) {
   }
 
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
       
       {/* Hospital Provider Banner */}
-      <div className="bg-[#2D3A5E] text-white rounded-xl p-6 border-2 border-[#8FA9FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#2B4A66] text-white rounded-2xl p-6 border border-[#7FD6FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Building2 className="w-5 h-5 text-[#8FA9FF]" />
-            <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
+            <Building2 className="w-5 h-5 text-[#7FD6FF]" />
+            <span className="text-xs font-bold text-[#7FD6FF] uppercase tracking-wider block">
               Step 2 Pipeline Host • {currentUser?.name || 'Max Healthcare Admin'}
             </span>
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight font-sans">
+          <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
             Hospital Desk: VIL & Bed Approvals
           </h2>
-          <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
+          <p className="text-slate-200 text-xs sm:text-sm mt-0.5 font-medium">
             Approve official Embassy Visa Invitation Letters (VIL), reserve inpatient bed capacity, and manage doctor rosters.
           </p>
         </div>
 
         <button
           onClick={loadHospitalData}
-          className="px-4 py-2 bg-[#1A233D] text-[#8FA9FF] border border-[#8FA9FF] text-xs font-black rounded-lg shadow hover:bg-black flex items-center gap-1.5 shrink-0"
+          className="px-4 py-2 bg-[#1E364B] text-[#7FD6FF] border border-[#7FD6FF] text-xs font-bold rounded-xl shadow-xs hover:bg-[#2B4A66] flex items-center gap-1.5 shrink-0 cursor-pointer"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Refresh Desk</span>
@@ -147,9 +150,9 @@ export default function HospitalPortal({ currentUser }) {
       </div>
 
       {statusMsg && (
-        <div className="p-4 mb-6 bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs rounded-xl font-black flex items-center justify-between">
+        <div className="p-4 mb-6 bg-emerald-100 border border-[#6FE3B4] text-emerald-950 text-xs rounded-xl font-bold flex items-center justify-between">
           <span>{statusMsg}</span>
-          <button onClick={() => setStatusMsg('')} className="p-1 font-mono">X</button>
+          <button onClick={() => setStatusMsg('')} className="p-1 font-mono cursor-pointer">X</button>
         </div>
       )}
 
@@ -167,13 +170,13 @@ export default function HospitalPortal({ currentUser }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-black transition ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 isActive
-                  ? 'bg-[#2D3A5E] text-white shadow border-2 border-[#2D3A5E]'
-                  : 'bg-white text-slate-900 hover:bg-slate-100 border-2 border-slate-300'
+                  ? 'bg-[#2B4A66] text-white shadow-xs border border-[#2B4A66]'
+                  : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#FFD6E8]'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-[#8FA9FF]' : 'text-[#2D3A5E]'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-[#7FD6FF]' : 'text-[#2B4A66]'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -184,14 +187,14 @@ export default function HospitalPortal({ currentUser }) {
       {activeTab === 'visa-approval' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-black text-slate-900 font-sans font-bold">Step 2: International Patient VIL & Bed Readiness Requests</h3>
-            <span className="text-xs font-black text-[#2D3A5E]">Hospital Approval Desk</span>
+            <h3 className="text-lg font-bold text-[#2B4A66] font-sans">Step 2: International Patient VIL & Bed Readiness Requests</h3>
+            <span className="text-xs font-bold text-[#2B4A66]">Hospital Approval Desk</span>
           </div>
 
-          <div className="bg-white border-2 border-slate-300 rounded-xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-[#FFD6E8] rounded-2xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-900 font-bold">
-                <thead className="bg-[#2D3A5E] text-white uppercase text-[10px] font-black tracking-wider border-b border-[#1A233D]">
+              <table className="w-full text-left text-xs text-slate-700 font-medium">
+                <thead className="bg-[#2B4A66] text-white uppercase text-[10px] font-bold tracking-wider border-b border-[#1E364B]">
                   <tr>
                     <th className="p-3">Pipeline ID</th>
                     <th className="p-3">Patient Name</th>

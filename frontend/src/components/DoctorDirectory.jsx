@@ -14,20 +14,25 @@ import {
   Lock,
   ChevronRight,
   MapPin,
-  Navigation
+  Navigation,
+  Search,
+  ArrowRight
 } from 'lucide-react';
 import { normalizeDoctor } from '../utils/normalizeData';
 import { fuzzySearchMatch } from '../utils/fuzzySearch';
 import HospitalMapModal from './HospitalMapModal';
 
-export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery, currentUser, onOpenAdminTab, setActiveTab }) {
+export default function DoctorDirectory({ doctors = [], currency, onConsultDoctor, onBookDoctor, searchQuery = '', currentUser, onOpenAdminTab, setActiveTab }) {
   const [selectedDept, setSelectedDept] = useState('All');
+  const [localSearch, setLocalSearch] = useState('');
   const [selectedMapHospital, setSelectedMapHospital] = useState(null);
 
   const isDoctor = currentUser?.role === 'Doctor';
   const isHospital = currentUser?.role === 'Hospital';
   const isAdmin = currentUser?.role === 'Admin';
   const isNonPatient = isDoctor || isHospital || isAdmin;
+
+  const activeSearch = localSearch || searchQuery || '';
 
   const normalizedDoctors = (Array.isArray(doctors) ? doctors : []).map(normalizeDoctor).filter(Boolean);
 
@@ -53,7 +58,7 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
         qualifications: doc.qualifications,
         bio: doc.bio 
       },
-      searchQuery
+      activeSearch
     );
 
     const matchesDept = selectedDept === 'All' || doc.specialty.toLowerCase().includes(selectedDept.toLowerCase());
@@ -67,277 +72,192 @@ export default function DoctorDirectory({ doctors = [], currency, onConsultDocto
   };
 
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Top Visual Hero Banner for Doctor Directory */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
+      
+      {/* Full Image Background Hero Banner with Soft Left Gradient Overlay */}
+      <div className="relative rounded-3xl overflow-hidden shadow-sm border border-[#FFD6E8] mb-10 bg-white min-h-[320px] sm:min-h-[380px] flex items-center">
+        
+        {/* Full Cover Background Image */}
         <img
           src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1600"
           alt="Senior Medical Faculty & Surgeons"
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
         
-        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+        {/* Smooth Left-to-Right Soft Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 sm:via-white/85 to-transparent" />
+
+        {/* Hero Content on Left Side */}
+        <div className="relative z-10 p-8 sm:p-12 max-w-2xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+            <span className="px-3 py-1 bg-[#FFD6E8] text-[#2B4A66] text-xs font-bold rounded-full border border-pink-200">
               Board-Certified Senior Faculty
             </span>
-            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-full uppercase tracking-wider">
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-950 text-xs font-bold rounded-full">
               50+ Verified Specialists
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2B4A66] leading-tight font-sans">
             Senior Department Chairs & Surgical Faculty
           </h1>
-          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
+
+          <p className="text-xs sm:text-sm text-slate-700 font-bold leading-relaxed">
             Direct consultation schedules with Padma Awardees, FRCS/FACC certified cardiac surgeons, hepato-biliary transplant specialists, and robotic neurosurgeons across India.
           </p>
+
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => {
+                const el = document.getElementById('doctor-registry-toolbar');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-6 py-3 bg-[#2B4A66] hover:bg-[#1E364B] text-white font-bold text-xs sm:text-sm rounded-full shadow transition flex items-center gap-2 cursor-pointer"
+            >
+              <span>Explore Specialist Registry</span>
+              <ArrowRight className="w-4 h-4 text-[#7FD6FF]" />
+            </button>
+            <button
+              onClick={() => setActiveTab && setActiveTab('hospitals')}
+              className="px-5 py-3 bg-white hover:bg-slate-50 text-[#2B4A66] border border-[#FFD6E8] font-bold text-xs sm:text-sm rounded-full transition cursor-pointer shadow-xs"
+            >
+              Hospital Explorer ➔
+            </button>
+          </div>
         </div>
+
       </div>
       
       {/* Header Toolbar */}
-      <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div id="doctor-registry-toolbar" className="bg-white rounded-2xl p-6 border border-[#FFD6E8] shadow-xs mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
+          <span className="text-xs font-bold text-[#2B4A66] uppercase tracking-wider block mb-1">
             Board-Certified Specialist Registry
           </span>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">
+          <h2 className="text-2xl font-bold text-[#2B4A66] tracking-tight font-sans">
             Senior Medical Faculty & Surgeons
           </h2>
-          <p className="text-slate-900 text-xs sm:text-sm mt-1 font-bold">
+          <p className="text-slate-600 text-xs sm:text-sm mt-0.5 font-medium">
             Consult verified department chairs, senior surgeons, and international clinical specialists.
           </p>
         </div>
 
-        {/* Department Filter Select */}
-        <div className="flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border-2 border-slate-300 text-xs font-black">
-          <Filter className="w-4 h-4 text-[#2D3A5E]" />
-          <span className="text-slate-900">Department:</span>
-          <select
-            value={selectedDept}
-            onChange={(e) => setSelectedDept(e.target.value)}
-            className="bg-transparent font-black text-slate-900 focus:outline-none cursor-pointer"
-          >
-            {allDepartments.map(dept => (
-              <option key={dept} value={dept}>{dept}</option>
-            ))}
-          </select>
+        {/* Doctor Search & Department Filter Toolbar */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Dedicated Doctor Search Input Option */}
+          <div className="relative flex-1 sm:w-72">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <input
+              type="text"
+              placeholder="Search doctor name, specialty, hospital..."
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              className="w-full bg-slate-50 text-[#2B4A66] placeholder-slate-400 font-medium text-xs sm:text-sm pl-9 pr-8 py-2 rounded-xl border border-slate-300 focus:bg-white focus:border-[#7FD6FF] focus:outline-none shadow-xs"
+            />
+            {localSearch && (
+              <button 
+                onClick={() => setLocalSearch('')}
+                className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 font-bold text-xs"
+                title="Clear doctor search"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Department Filter */}
+          <div className="relative">
+            <select
+              value={selectedDept}
+              onChange={(e) => setSelectedDept(e.target.value)}
+              className="w-full sm:w-auto bg-slate-50 text-[#2B4A66] font-bold text-xs rounded-xl px-3 py-2 border border-slate-300 focus:outline-none focus:border-[#7FD6FF] cursor-pointer"
+            >
+              {allDepartments.map(d => (
+                <option key={d} value={d}>{d === 'All' ? 'All Specialties' : d}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Grid List */}
-      {filteredDoctors.length === 0 ? (
-        <div className="portal-card p-8 bg-white border-2 border-slate-300 rounded-xl space-y-6">
-          <div className="text-center space-y-2">
-            <UserCheck className="w-12 h-12 text-[#2D3A5E] mx-auto" />
-            <h3 className="text-lg font-black text-slate-900 font-sans">No Doctors Match "{searchQuery || selectedDept}"</h3>
-            <p className="text-xs text-slate-800 font-extrabold max-w-md mx-auto">
-              Select one of our verified clinical departments below to browse available senior specialists:
-            </p>
-          </div>
+      {/* Doctor Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredDoctors.map(doc => {
+          const isUSD = currency === 'USD';
+          const feeDisplay = isUSD
+            ? `$${doc.consultationFeeUSD}`
+            : `₹${(doc.consultationFeeUSD * 83).toLocaleString('en-IN')}`;
 
-          <div className="pt-2 border-t border-slate-200">
-            <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-2">Explore Medical Departments</span>
-            <div className="flex flex-wrap gap-2">
-              {allDepartments.filter(d => d !== 'All').map(dept => (
-                <button
-                  key={dept}
-                  onClick={() => setSelectedDept(dept)}
-                  className="px-3.5 py-2 bg-[#2D3A5E] text-white text-xs font-black rounded-lg hover:bg-[#1A233D] transition shadow-xs flex items-center gap-1.5"
-                >
-                  <Stethoscope className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                  <span>{dept} Specialists</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {filteredDoctors.map((doc) => {
-            const displayFee = doc.opdFee
-              ? `₹${doc.opdFee.toLocaleString('en-IN')}`
-              : doc.consultationFeeINR 
-                ? `₹${doc.consultationFeeINR.toLocaleString('en-IN')}`
-                : doc.consultationFeeUSD
-                  ? `$${doc.consultationFeeUSD}`
-                  : 'Contact Desk';
-
-            return (
-              <div 
-                key={doc._id} 
-                className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl flex flex-col justify-between hover:shadow-lg transition space-y-4"
-              >
-                <div className="space-y-4">
-                  
-                  {/* Doctor Top Info Header */}
-                  <div className="flex gap-4 items-start">
-                    <img
-                      src={doc.image}
-                      alt={doc.name}
-                      onError={handleImageError}
-                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover border-2 border-slate-300 shadow-sm shrink-0 bg-slate-100"
-                    />
-
-                    <div className="space-y-1 flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-950 text-[10px] font-black rounded border border-emerald-300">
-                          {doc.designation || 'Verified Faculty'}
-                        </span>
-                        {doc.rating ? (
-                          <span className="text-xs font-black text-amber-950 bg-amber-100 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-600" />
-                            {doc.rating}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      <h3 className="text-lg font-black text-slate-900 font-sans leading-snug">
-                        {doc.name}
-                      </h3>
-
-                      <p className="text-xs font-black text-[#2D3A5E]">
-                        {doc.specialty} {doc.subSpecialty ? `• ${doc.subSpecialty}` : ''}
-                      </p>
-
-                      <div className="flex items-center justify-between gap-1 pt-1">
-                        <p className="text-[11px] text-slate-700 font-extrabold flex items-center gap-1">
-                          <Building2 className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                          <span>{doc.hospitalName}</span>
-                        </p>
-                        <button
-                          onClick={() => setSelectedMapHospital({
-                            name: doc.hospitalName,
-                            address: doc.hospitalName,
-                            city: doc.hospitalCity || 'India',
-                            rating: doc.rating
-                          })}
-                          className="text-[11px] font-black text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
-                          title="View Hospital Location Map"
-                        >
-                          <MapPin className="w-3 h-3 text-blue-700" />
-                          <span>Map</span>
-                        </button>
-                      </div>
+          return (
+            <div key={doc._id} className="portal-card overflow-hidden flex flex-col justify-between group">
+              <div className="p-6 space-y-4">
+                
+                {/* Doctor Avatar & Quick Badges */}
+                <div className="flex items-start gap-4">
+                  <img
+                    src={doc.image}
+                    alt={doc.name}
+                    onError={handleImageError}
+                    className="w-20 h-20 rounded-2xl object-cover border-2 border-[#FFD6E8] shadow-xs group-hover:scale-105 transition-transform duration-300 shrink-0"
+                  />
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1 text-[#2B4A66] font-bold text-xs">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Verified Faculty</span>
                     </div>
+                    <h3 className="text-base font-bold text-[#2B4A66] group-hover:text-blue-700 transition font-sans leading-snug">
+                      {doc.name}
+                    </h3>
+                    <p className="text-xs text-slate-600 font-bold">{doc.specialty}</p>
+                    <p className="text-[11px] text-slate-500 font-medium">{doc.experienceYears} Years Clinical Exp.</p>
                   </div>
-
-                  {/* Qualifications & Experience */}
-                  <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-900">
-                    <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
-                      <span className="text-[10px] text-slate-700 font-black uppercase block">Qualifications</span>
-                      <span className="font-extrabold text-slate-900">{doc.qualifications || 'Verified Medical Degree'}</span>
-                    </div>
-                    <div className="bg-slate-100 p-2.5 rounded border border-slate-200">
-                      <span className="text-[10px] text-slate-700 font-black uppercase block">Experience</span>
-                      <span className="font-extrabold text-slate-900">
-                        {doc.experienceYears ? `${doc.experienceYears}+ Yrs Clinical` : 'Senior Medical Faculty'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Spoken Languages & Source Link */}
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
-                        Languages Spoken
-                      </span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {Array.isArray(doc.languagesSpoken) && doc.languagesSpoken.length > 0 ? (
-                          doc.languagesSpoken.map((lang, idx) => (
-                            <span 
-                              key={idx} 
-                              className="px-2 py-0.5 bg-slate-100 text-slate-900 text-[11px] font-extrabold rounded border border-slate-300"
-                            >
-                              {lang}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-[11px] text-slate-600 font-semibold italic">Languages not specified</span>
-                        )}
-                      </div>
-                    </div>
-
-                    {doc.sourceUrl && (
-                      <a
-                        href={doc.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10px] font-black text-blue-700 hover:text-blue-900 underline flex items-center gap-1"
-                      >
-                        Official Profile ↗
-                      </a>
-                    )}
-                  </div>
-
                 </div>
 
-                {/* Footer Action Bar */}
-                <div className="pt-4 border-t-2 border-slate-100 flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] text-slate-700 font-black uppercase block">OPD Fee</span>
-                    <span className="text-base font-black text-slate-900 font-mono">{displayFee}</span>
+                {/* Hospital Affiliation & Qualifications */}
+                <div className="space-y-2 pt-2 border-t border-slate-100 text-xs">
+                  <div className="flex items-center gap-2 text-slate-700 font-bold">
+                    <Building2 className="w-4 h-4 text-[#2B4A66] shrink-0" />
+                    <span>{doc.hospitalName}</span>
                   </div>
+                  <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
+                    🎓 {doc.qualifications}
+                  </p>
+                  <p className="text-xs text-slate-600 line-clamp-2 font-medium">
+                    {doc.bio}
+                  </p>
+                </div>
 
-                  {isDoctor ? (
-                    <button
-                      onClick={() => setActiveTab && setActiveTab('doctor-portal')}
-                      className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
-                    >
-                      <Stethoscope className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                      <span>Go to Doctor Portal</span>
-                    </button>
-                  ) : isHospital ? (
-                    <button
-                      onClick={() => setActiveTab && setActiveTab('hospital-portal')}
-                      className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
-                    >
-                      <Building2 className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                      <span>Go to Hospital Portal</span>
-                    </button>
-                  ) : isAdmin ? (
-                    <button
-                      onClick={() => onOpenAdminTab && onOpenAdminTab('doctors')}
-                      className="px-4 py-2 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition cursor-pointer"
-                    >
-                      <Lock className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                      <span>Manage via Admin Control Panel</span>
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => onConsultDoctor(doc)}
-                        className="px-3 py-2.5 bg-[#2D3A5E] hover:bg-[#1A233D] text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition shrink-0"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5 text-[#8FA9FF]" />
-                        <span>Consult Doctor</span>
-                      </button>
-
-                      <button
-                        onClick={() => onBookDoctor(doc)}
-                        className="px-3 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-lg shadow flex items-center gap-1.5 transition shrink-0"
-                      >
-                        <CalendarCheck className="w-3.5 h-3.5 text-white" />
-                        <span>Book OPD</span>
-                      </button>
-                    </div>
-                  )}
+                {/* Consultation Fee Badge */}
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                  <span className="text-xs text-slate-600 font-bold">OPD / Video Consultation:</span>
+                  <span className="text-sm font-extrabold text-[#2B4A66]">{feeDisplay}</span>
                 </div>
 
               </div>
-            );
-          })}
-        </div>
-      )}
 
-      {/* Render Hospital Map Modal */}
-      {selectedMapHospital && (
-        <HospitalMapModal
-          hospital={selectedMapHospital}
-          onClose={() => setSelectedMapHospital(null)}
-          isNonPatient={isNonPatient}
-        />
-      )}
+              {/* Action Buttons */}
+              <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => onConsultDoctor(doc)}
+                  className="flex-1 px-3 py-2 bg-white hover:bg-slate-100 text-[#2B4A66] text-xs font-bold rounded-lg border border-slate-300 transition flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Ask Doctor</span>
+                </button>
+
+                <button
+                  onClick={() => onBookDoctor(doc)}
+                  className="flex-1 px-3 py-2 bg-[#2B4A66] hover:bg-[#1E364B] text-white text-xs font-bold rounded-lg shadow-xs transition flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <CalendarCheck className="w-3.5 h-3.5 text-[#7FD6FF]" />
+                  <span>Book OPD</span>
+                </button>
+              </div>
+
+            </div>
+          );
+        })}
+      </div>
 
     </section>
   );

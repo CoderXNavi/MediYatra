@@ -84,43 +84,51 @@ export default function MedicalTourismHub({ currency, onSelectService, currentUs
   }
 
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Top Visual Hero Banner for Medical Tourism Concierge */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-[#8FA9FF] mb-8 bg-slate-900 min-h-[220px] sm:min-h-[260px] flex flex-col justify-end">
+    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
+      {/* Full Image Background Hero Banner with Soft Left Gradient Overlay */}
+      <div className="relative rounded-3xl overflow-hidden shadow-sm border border-[#FFD6E8] mb-10 bg-white min-h-[320px] sm:min-h-[380px] flex items-center">
+        
+        {/* Full Cover Background Image */}
         <img
           src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=1600"
           alt="International Medical Tourism Concierge & Flight Travel"
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2D3A5E] via-[#2D3A5E]/70 to-transparent" />
         
-        <div className="relative p-6 sm:p-8 text-white space-y-2 z-10 max-w-3xl">
+        {/* Smooth Left-to-Right Soft Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 sm:via-white/85 to-transparent" />
+
+        {/* Hero Content on Left Side */}
+        <div className="relative z-10 p-8 sm:p-12 max-w-2xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 bg-[#8FA9FF] text-[#2D3A5E] text-xs font-black rounded-full uppercase tracking-wider">
+            <span className="px-3 py-1 bg-[#FFD6E8] text-[#2B4A66] text-xs font-bold rounded-full border border-pink-200">
               End-to-End Travel Concierge
             </span>
-            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-black rounded-full uppercase tracking-wider">
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-950 text-xs font-bold rounded-full">
               24h Visa Recommendation Letter
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight drop-shadow-md">
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2B4A66] leading-tight font-sans">
             International Medical Tourism & Flight Concierge
           </h1>
-          <p className="text-xs sm:text-sm text-slate-100 font-extrabold drop-shadow max-w-2xl leading-relaxed">
+
+          <p className="text-xs sm:text-sm text-slate-700 font-bold leading-relaxed">
             Full concierge support including e-Medical Visa Invitation Letters issued by host hospitals, certified multilingual interpreters, airport wheelchair transfers, and serviced recovery guest suites.
           </p>
         </div>
+
       </div>
       
       {/* Header Toolbar */}
-      <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm mb-8">
-        <span className="text-xs font-black text-[#2D3A5E] uppercase tracking-wider block mb-1">
+      <div className="bg-white rounded-2xl p-6 border border-[#FFD6E8] shadow-xs mb-8">
+        <span className="text-xs font-bold text-[#2B4A66] uppercase tracking-wider block mb-1">
           MEDIYATRA International Support Services
         </span>
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">
+        <h2 className="text-2xl font-bold text-[#2B4A66] tracking-tight font-sans">
           e-Medical Visa, Translators & Travel Concierge
         </h2>
-        <p className="text-slate-900 text-xs sm:text-sm mt-1 font-bold">
+        <p className="text-slate-600 text-xs sm:text-sm mt-0.5 font-medium">
           Hospital visa invitation letters, certified language interpreters, serviced recovery guest houses, and airport transfers.
         </p>
       </div>

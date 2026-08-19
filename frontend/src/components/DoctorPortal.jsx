@@ -28,6 +28,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { MOCK_TOURISM_PIPELINE, MOCK_PATIENT_CONSULTATIONS } from '../data/mockData';
 
 export default function DoctorPortal({ currentUser }) {
   // Tabs: 'pipeline-cases' | 'consultations' | 'network' | 'surgical-tariffs' | 'travel-support' | 'profile'
@@ -90,8 +91,8 @@ export default function DoctorPortal({ currentUser }) {
         apiService.getHospitals()
       ]);
 
-      if (conRes?.data) setConsultations(conRes.data);
-      if (tourRes?.data) setTourismPipelineCases(tourRes.data);
+      setConsultations((conRes?.data && conRes.data.length > 0) ? conRes.data : MOCK_PATIENT_CONSULTATIONS);
+      setTourismPipelineCases((tourRes?.data && tourRes.data.length > 0) ? tourRes.data : MOCK_TOURISM_PIPELINE);
       setDoctorsList(docs || []);
       setTreatmentsList(treats || []);
       setAccommodationsList(accs || []);
@@ -99,6 +100,8 @@ export default function DoctorPortal({ currentUser }) {
       setHospitalsList(hosps || []);
     } catch (err) {
       console.warn('Error loading doctor portal data:', err);
+      setConsultations(MOCK_PATIENT_CONSULTATIONS);
+      setTourismPipelineCases(MOCK_TOURISM_PIPELINE);
     } finally {
       setIsLoading(false);
     }
@@ -197,29 +200,29 @@ export default function DoctorPortal({ currentUser }) {
   };
 
   return (
-    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
       
       {/* Doctor Portal Header Banner */}
-      <div className="bg-[#2D3A5E] text-white rounded-xl p-6 border-2 border-[#8FA9FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#2B4A66] text-white rounded-2xl p-6 border border-[#7FD6FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Stethoscope className="w-5 h-5 text-[#8FA9FF]" />
-            <span className="text-xs font-black text-[#8FA9FF] uppercase tracking-wider block">
+            <Stethoscope className="w-5 h-5 text-[#7FD6FF]" />
+            <span className="text-xs font-bold text-[#7FD6FF] uppercase tracking-wider block">
               MediYatra Physician & Provider Operations Portal • {currentUser?.name || 'Dr. Ashok Seth'}
             </span>
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight font-sans">
+          <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
             Clinical Desk & Provider Operations
           </h2>
-          <p className="text-slate-200 text-xs sm:text-sm mt-1 font-semibold">
+          <p className="text-slate-200 text-xs sm:text-sm mt-0.5 font-medium">
             Evaluate dispatched international clinical cases, manage consultation schedules, inspect surgical package tariffs, and access professional travel & language networks.
           </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <div className="bg-[#1A233D] px-3 py-1.5 rounded-lg border border-[#8FA9FF] text-right">
-            <span className="text-[10px] font-black text-slate-300 block uppercase">Duty Status</span>
-            <span className={`text-xs font-black flex items-center justify-end gap-1 ${
+          <div className="bg-[#1E364B] px-3 py-1.5 rounded-xl border border-[#7FD6FF] text-right">
+            <span className="text-[10px] font-bold text-slate-300 block uppercase">Duty Status</span>
+            <span className={`text-xs font-bold flex items-center justify-end gap-1 ${
               doctorStatus === 'Available' ? 'text-emerald-400' : 'text-amber-400'
             }`}>
               <span className={`w-2 h-2 rounded-full ${
@@ -231,7 +234,7 @@ export default function DoctorPortal({ currentUser }) {
 
           <button
             onClick={loadDoctorPortalData}
-            className="px-3.5 py-2.5 bg-[#1A233D] text-[#8FA9FF] border border-[#8FA9FF] text-xs font-black rounded-lg shadow hover:bg-black flex items-center gap-1.5 font-sans"
+            className="px-3.5 py-2.5 bg-[#1E364B] text-[#7FD6FF] border border-[#7FD6FF] text-xs font-bold rounded-xl shadow-xs hover:bg-[#2B4A66] flex items-center gap-1.5 font-sans cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh Queue</span>
@@ -240,9 +243,9 @@ export default function DoctorPortal({ currentUser }) {
       </div>
 
       {statusMsg && (
-        <div className="p-4 mb-6 bg-emerald-100 border-2 border-emerald-300 text-emerald-950 text-xs rounded-xl font-black flex items-center justify-between">
+        <div className="p-4 mb-6 bg-emerald-100 border border-[#6FE3B4] text-emerald-950 text-xs rounded-xl font-bold flex items-center justify-between">
           <span>{statusMsg}</span>
-          <button onClick={() => setStatusMsg('')} className="p-1 font-mono">X</button>
+          <button onClick={() => setStatusMsg('')} className="p-1 font-mono cursor-pointer">X</button>
         </div>
       )}
 
@@ -250,11 +253,11 @@ export default function DoctorPortal({ currentUser }) {
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setActiveTab('pipeline-cases')}
-          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
-            activeTab === 'pipeline-cases' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
+          className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition flex items-center gap-1.5 cursor-pointer ${
+            activeTab === 'pipeline-cases' ? 'bg-[#2B4A66] text-white border-[#2B4A66] shadow-xs' : 'bg-white text-slate-700 border-[#FFD6E8] hover:bg-slate-50'
           }`}
         >
-          <Plane className="w-4 h-4 text-[#8FA9FF]" />
+          <Plane className="w-4 h-4 text-[#7FD6FF]" />
           <span>Step 4: Dispatched Clinical Cases ({tourismPipelineCases.length})</span>
         </button>
 

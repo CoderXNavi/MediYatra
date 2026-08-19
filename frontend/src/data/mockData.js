@@ -135,7 +135,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1650,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=1200",
     description: "Sir Ganga Ram Hospital is a historical multi-specialty institution in New Delhi celebrated for pioneering minimal access surgery and comprehensive renal care.",
     sourceUrl: "https://sgrh.com"
   },
@@ -163,7 +163,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 4200,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&q=80&w=1200",
     description: "AIIMS New Delhi is India's premier public medical institution, housing national centers of excellence in cardiology, neurosurgery, and oncology.",
     sourceUrl: "https://www.aiims.edu"
   },
@@ -191,7 +191,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1780,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&fit=crop&q=80&w=1200",
     description: "BLK-Max Super Speciality Hospital in New Delhi features one of Asia's largest bone marrow transplant centers and robotic cancer surgery units.",
     sourceUrl: "https://www.blkmaxhospital.com"
   },
@@ -219,7 +219,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1350,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1200",
     description: "Lilavati Hospital and Research Centre is a leading multi-specialty institution in Mumbai offering premier cardiac, renal, and surgical oncology services.",
     sourceUrl: "https://www.lilavatihospital.com"
   },
@@ -247,7 +247,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 2400,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=1200",
     description: "Kokilaben Dhirubhai Ambani Hospital in Mumbai operates a unique Full-Time Specialist System and advanced robotic surgery centers.",
     sourceUrl: "https://www.kokilabenhospital.com"
   },
@@ -275,7 +275,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 3500,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1632833239869-a37e3a5806d2?auto=format&fit=crop&q=80&w=1200",
     description: "Tata Memorial Hospital in Mumbai is South Asia's foremost specialist cancer treatment and clinical research institution.",
     sourceUrl: "https://tmc.gov.in"
   },
@@ -303,7 +303,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1650,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1596541223130-5d31a73fb6c6?auto=format&fit=crop&q=80&w=1200",
     description: "Manipal Hospital Bengaluru is a pioneer in quaternary care, renowned for complex cardiothoracic surgeries and renal transplantation.",
     sourceUrl: "https://www.manipalhospitals.com/oldairportroad/"
   },
@@ -331,7 +331,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 3500,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
     description: "Narayana Institute of Cardiac Sciences in Bengaluru, founded by Dr. Devi Shetty, is one of the world's largest cardiac hospitals performing high-volume heart surgeries.",
     sourceUrl: "https://www.narayanahealth.org"
   },
@@ -359,7 +359,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1120,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200",
     description: "Aster CMI Hospital Bengaluru is a premier quaternary hospital featuring dedicated multi-organ transplant units and pediatric sub-specialty clinics.",
     sourceUrl: "https://www.asterhospitals.in/aster-cmi-bangalore"
   },
@@ -387,7 +387,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 2150,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
     description: "Apollo Hospitals Greams Road Chennai is the flagship institution of the Apollo Group, world-famous for heart transplants, orthopedics, and complex surgeries.",
     sourceUrl: "https://chennai.apollohospitals.com"
   },
@@ -415,7 +415,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 3800,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1200",
     description: "CMC Vellore is one of India's oldest and top-ranked medical institutions, legendary for hematology, stem cell transplants, and accessible care.",
     sourceUrl: "https://www.cmch-vellore.edu"
   },
@@ -443,7 +443,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 950,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=1200",
     description: "MGM Healthcare Chennai is a state-of-the-art green hospital renowned for performing the highest number of heart and lung transplants in Asia.",
     sourceUrl: "https://mgmhealthcare.in"
   },
@@ -471,7 +471,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1890,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&q=80&w=1200",
     description: "Yashoda Hospitals Hitec City Hyderabad is one of Asia's largest medical facilities, offering comprehensive cancer care and heart-lung transplants.",
     sourceUrl: "https://www.yashodahospitals.com"
   },
@@ -499,7 +499,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1120,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1512678080530-7760d81faba6?auto=format&fit=crop&q=80&w=1200",
     description: "Fortis Hospital Anandapur Kolkata is a premier super-specialty hospital in Eastern India providing advanced cardiac, renal, and orthopedic treatment.",
     sourceUrl: "https://www.fortishealthcare.com/location/fortis-hospital-anandapur-kolkata"
   },
@@ -527,7 +527,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1450,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1200",
     description: "Ruby Hall Clinic Pune is a premier multi-specialty institution known for cancer care, heart surgery, and organ transplantation in Western India.",
     sourceUrl: "https://rubyhall.com"
   },
@@ -555,7 +555,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1250,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=1200",
     description: "Marengo CIMS Hospital Ahmedabad is a JCI-accredited quaternary medical center leading Gujarat in heart transplants and complex cardiac interventions.",
     sourceUrl: "https://cims.org"
   },
@@ -583,7 +583,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1100,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1632833239869-a37e3a5806d2?auto=format&fit=crop&q=80&w=1200",
     description: "Fortis Hospital Mohali is a JCI-accredited medical facility serving North India with specialized cardiac surgery and orthopedic care.",
     sourceUrl: "https://www.fortishealthcare.com/location/fortis-hospital-mohali"
   },
@@ -611,7 +611,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1650,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1596541223130-5d31a73fb6c6?auto=format&fit=crop&q=80&w=1200",
     description: "Medanta Lucknow is the largest private multi-super speciality hospital in Uttar Pradesh, providing world-class cardiac and urological care.",
     sourceUrl: "https://www.medanta.org/lucknow-hospital"
   },
@@ -639,7 +639,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 2100,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
     description: "Amrita Hospital Kochi is Kerala's premier super-specialty tertiary teaching hospital, famous for head-and-neck reconstructive surgeries and liver transplants.",
     sourceUrl: "https://www.amritahospitals.org/kochi/"
   },
@@ -667,7 +667,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 880,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200",
     description: "Manipal Hospital Jaipur is a premier tertiary facility offering specialized cardiac, orthopedic, and urological treatment in Rajasthan.",
     sourceUrl: "https://www.manipalhospitals.com/jaipur/"
   },
@@ -695,7 +695,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 760,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
     description: "Apollo Rajshree Hospital Indore is the leading tertiary healthcare center in Central India providing comprehensive heart and gastrointestinal care.",
     sourceUrl: "https://indore.apollohospitals.com"
   },
@@ -710,7 +710,7 @@ export const MOCK_HOSPITALS = [
     pincode: "201304",
     latitude: 28.5135,
     longitude: 77.3615,
-    contactEmail: "internationalinfo@jaypeehospital.com",
+    contactEmail: "internationalinfo@jaypeehospitals.com",
     contactPhone: "+91-120-4122222",
     officialWebsite: "https://www.jaypeehospitals.com",
     specialties: ["Cardiothoracic Surgery", "Organ Transplant", "Oncology", "Orthopaedics", "Neurosciences"],
@@ -723,7 +723,7 @@ export const MOCK_HOSPITALS = [
     reviewCount: 1320,
     emergencyAvailable: true,
     internationalPatientServices: true,
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1200",
     description: "Jaypee Hospital Noida is a flagship multi-super speciality medical center serving National Capital Region with advanced organ transplant units.",
     sourceUrl: "https://www.jaypeehospitals.com"
   }
@@ -811,7 +811,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 2200,
     consultationFeeUSD: 27,
     availableDays: ["Wednesday", "Friday", "Saturday"],
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=400",
     biography: "Dr. Sandeep Vaishya is an internationally acclaimed neurosurgeon specializing in Gamma Knife radiosurgery, skull base tumors, and brachial plexus reconstruction.",
     sourceUrl: "https://www.apollohospitals.com/locations/india/delhi/indraprastha-apollo-hospitals-delhi"
   },
@@ -834,7 +834,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 3500,
     consultationFeeUSD: 42,
     availableDays: ["Monday", "Wednesday"],
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1622253694238-3b22139576c6?auto=format&fit=crop&q=80&w=400",
     biography: "Padma Bhushan & Padma Shri Dr. Naresh Trehan is a legendary cardiovascular surgeon who trained at NYU Medical Center and has performed over 48,000 open heart surgeries.",
     sourceUrl: "https://www.medanta.org/doctors/dr-naresh-trehan"
   },
@@ -855,7 +855,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 3000,
     consultationFeeUSD: 36,
     availableDays: ["Tuesday", "Thursday", "Saturday"],
-    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1536064479547-7ee40b74b807?auto=format&fit=crop&q=80&w=400",
     biography: "Padma Shri Dr. A.S. Soin is India's premier liver transplant surgeon, having performed over 3,500 liver transplants with a 95% success rate.",
     sourceUrl: "https://www.medanta.org/doctors/dr-arvinder-singh-soin"
   },
@@ -878,7 +878,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 2500,
     consultationFeeUSD: 30,
     availableDays: ["Monday", "Wednesday", "Friday"],
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1637059824899-a441006a6875?auto=format&fit=crop&q=80&w=400",
     biography: "Dr. Vinod Raina is one of India's foremost medical oncologists, having performed over 600 stem cell transplants for lymphoma, myeloma, and leukemia.",
     sourceUrl: "https://www.fortishealthcare.com/location/fortis-memorial-research-institute-gurugram"
   },
@@ -899,7 +899,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 2500,
     consultationFeeUSD: 30,
     availableDays: ["Monday", "Thursday"],
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1584467735871-8e85353a8413?auto=format&fit=crop&q=80&w=400",
     biography: "Padma Bhushan Dr. T.S. Kler implanted India's first ICD and CRT device and is an international authority on arrhythmia electrophysiology.",
     sourceUrl: "https://www.fortishealthcare.com/location/fortis-memorial-research-institute-gurugram"
   },
@@ -922,9 +922,74 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 2500,
     consultationFeeUSD: 30,
     availableDays: ["Monday", "Wednesday", "Friday"],
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400",
     biography: "Padma Shri Dr. Balbir Singh is a master interventional cardiologist recognized globally for complex TAVI/TAVR valve implantations.",
     sourceUrl: "https://www.maxhealthcare.in/hospital-network/max-super-speciality-hospital-saket"
+  },
+
+  // Female Senior Faculty Entries
+  {
+    _id: "doc_veena_kalra",
+    hospitalId: "hosp_apollo_delhi",
+    hospitalName: "Indraprastha Apollo Hospitals",
+    city: "New Delhi",
+    name: "Dr. Veena Kalra",
+    specialty: "Paediatrics",
+    department: "Pediatric Neurology",
+    subSpecialty: "Developmental Pediatric Neurology",
+    designation: "Senior Consultant & Head - Pediatric Neurology",
+    qualifications: "MBBS, MD (Pediatrics), FAMS, FIAP",
+    experienceYears: 40,
+    languages: ["English", "Hindi"],
+    opdFee: 2200,
+    consultationFeeINR: 2200,
+    consultationFeeUSD: 27,
+    availableDays: ["Tuesday", "Thursday", "Saturday"],
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400",
+    biography: "Former AIIMS Professor & Head Dr. Veena Kalra is India's leading pediatric neurologist specializing in childhood epilepsy and neurometabolic disorders.",
+    sourceUrl: "https://www.apollohospitals.com"
+  },
+  {
+    _id: "doc_sunita_maheshwari",
+    hospitalId: "hosp_narayana_health",
+    hospitalName: "Narayana Institute of Cardiac Sciences",
+    city: "Bengaluru",
+    name: "Dr. Sunita Maheshwari",
+    specialty: "Paediatrics",
+    department: "Pediatric Cardiology",
+    subSpecialty: "Congenital Heart Surgery & Echo",
+    designation: "Senior Consultant - Pediatric Cardiology",
+    qualifications: "MBBS, MD (Pediatrics), Fellowship Yale University USA",
+    experienceYears: 28,
+    languages: ["English", "Kannada", "Hindi"],
+    opdFee: 2000,
+    consultationFeeINR: 2000,
+    consultationFeeUSD: 25,
+    availableDays: ["Monday", "Wednesday", "Friday"],
+    image: "https://images.unsplash.com/photo-1594824813566-88855ce7890b?auto=format&fit=crop&q=80&w=400",
+    biography: "Yale-trained Dr. Sunita Maheshwari is a pioneer pediatric cardiologist specializing in non-surgical closure of congenital heart defects in newborns.",
+    sourceUrl: "https://www.narayanahealth.org"
+  },
+  {
+    _id: "doc_priya_sharma",
+    hospitalId: "hosp_max_saket",
+    hospitalName: "Max Super Speciality Hospital, Saket",
+    city: "New Delhi",
+    name: "Dr. Priya Sharma",
+    specialty: "Oncology",
+    department: "Gynecologic Oncology",
+    subSpecialty: "Robotic Gynecologic Cancer Surgery",
+    designation: "Senior Director - Gynecologic Oncology",
+    qualifications: "MBBS, MS (Obs & Gynae), M.Ch (Gynae Oncology)",
+    experienceYears: 24,
+    languages: ["English", "Hindi"],
+    opdFee: 2200,
+    consultationFeeINR: 2200,
+    consultationFeeUSD: 27,
+    availableDays: ["Monday", "Thursday"],
+    image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=400",
+    biography: "Dr. Priya Sharma is a renowned surgical oncologist specializing in robotic laparoscopic procedures for gynecological malignancies.",
+    sourceUrl: "https://www.maxhealthcare.in"
   },
 
   // Lilavati Hospital Mumbai
@@ -945,7 +1010,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 3000,
     consultationFeeUSD: 36,
     availableDays: ["Monday", "Wednesday"],
-    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=400",
     biography: "Padma Bhushan Dr. Ramakanta Panda is world-renowned for performing complex re-do bypass surgeries with a 99.5% surgical success rate.",
     sourceUrl: "https://www.lilavatihospital.com"
   },
@@ -968,7 +1033,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 2000,
     consultationFeeUSD: 25,
     availableDays: ["Wednesday", "Saturday"],
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1536064479547-7ee40b74b807?auto=format&fit=crop&q=80&w=400",
     biography: "Padma Bhushan & Padma Shri Dr. Devi Shetty is a world-renowned heart surgeon who performed India's first neonatal cardiac surgery.",
     sourceUrl: "https://www.narayanahealth.org"
   },
@@ -991,7 +1056,7 @@ export const MOCK_DOCTORS = [
     consultationFeeINR: 2800,
     consultationFeeUSD: 34,
     availableDays: ["Tuesday", "Thursday"],
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400",
+    image: "https://images.unsplash.com/photo-1637059824899-a441006a6875?auto=format&fit=crop&q=80&w=400",
     biography: "Dr. K.R. Balakrishnan is South Asia's leading heart transplant surgeon, renowned for mechanical circulatory support and artificial heart LVAD implants.",
     sourceUrl: "https://chennai.apollohospitals.com"
   }
@@ -1099,3 +1164,178 @@ export const MOCK_TRANSLATORS = [
     verifiedStatus: "Certified Medical Translator"
   }
 ];
+
+// ==================================================
+// JUDGE-READY DEMO PIPELINE & PATIENT RECORDS DATASET
+// ==================================================
+export const MOCK_TOURISM_PIPELINE = [
+  {
+    _id: "VIL-2026-OMN-8812",
+    patientName: "Tariq Al-Mansoor",
+    patientEmail: "patient@mediyatra.org",
+    patientPhone: "+968-9123-4567",
+    passportNumber: "P-8891240-OM",
+    countryOfOrigin: "Oman (Muscat)",
+    hospitalName: "Medanta - The Medicity",
+    hospitalId: "hosp_medanta_gurugram",
+    doctorName: "Dr. Arvinder Singh Soin",
+    serviceType: "Living Donor Liver Transplant & Embassy VIL Clearance",
+    status: "Completed",
+    step1SubmittedAt: "2026-02-01T10:30:00.000Z",
+    step2ApprovedAt: "2026-02-02T14:15:00.000Z",
+    step3DispatchedAt: "2026-02-03T09:00:00.000Z",
+    step4CompletedAt: "2026-02-04T16:20:00.000Z",
+    visaNumber: "IND-MED-VIL-9921",
+    hospitalBedReserved: "ICU Bed #402 (Organ Transplant Wing)",
+    adminNotes: "Private airport chauffeur assigned. Certified Arabic Interpreter Ahmed Al-Mansoor on standby.",
+    doctorNotes: "Living donor evaluation complete. Segmental hepatic graft transplantation scheduled for 10:00 AM.",
+    pdfReceiptId: "REC-MED-8812"
+  },
+  {
+    _id: "VIL-2026-UZB-4410",
+    patientName: "Svetlana Ivanov",
+    patientEmail: "patient@mediyatra.org",
+    patientPhone: "+998-90-123-4567",
+    passportNumber: "UZ-778123-B",
+    countryOfOrigin: "Uzbekistan (Tashkent)",
+    hospitalName: "Indraprastha Apollo Hospitals",
+    hospitalId: "hosp_apollo_delhi",
+    doctorName: "Dr. IPS Oberoi",
+    serviceType: "Bilateral Robotic Knee Replacement & VIL Letter",
+    status: "Dispatched by Admin",
+    step1SubmittedAt: "2026-02-05T11:00:00.000Z",
+    step2ApprovedAt: "2026-02-06T12:00:00.000Z",
+    step3DispatchedAt: "2026-02-07T08:30:00.000Z",
+    visaNumber: "IND-MED-VIL-4410",
+    hospitalBedReserved: "Deluxe Suite #308 (Orthopaedic Wing)",
+    adminNotes: "Serviced apartment booked at Saket Executive Suites. Translator Elena Rostova scheduled.",
+    doctorNotes: "Bilateral titanium knee prosthesis pre-operative planning cleared.",
+    pdfReceiptId: "REC-APO-4410"
+  },
+  {
+    _id: "VIL-2026-GHA-1102",
+    patientName: "Kwame Nkrumah",
+    patientEmail: "patient@mediyatra.org",
+    patientPhone: "+233-24-555-0192",
+    passportNumber: "GHA-90812-C",
+    countryOfOrigin: "Ghana (Accra)",
+    hospitalName: "Fortis Memorial Research Institute (FMRI)",
+    hospitalId: "hosp_fortis_fmri",
+    doctorName: "Dr. TS Kler",
+    serviceType: "Coronary Artery Bypass Grafting (CABG)",
+    status: "Approved by Hospital",
+    step1SubmittedAt: "2026-02-08T09:15:00.000Z",
+    step2ApprovedAt: "2026-02-09T15:45:00.000Z",
+    visaNumber: "IND-MED-VIL-1102",
+    hospitalBedReserved: "Cardiac Care Unit (CCU Bed #12)",
+    adminNotes: "Embassy clearance letter generated. Waiting for patient flight confirmation.",
+    doctorNotes: "",
+    pdfReceiptId: "REC-FOR-1102"
+  }
+];
+
+export const MOCK_PATIENT_CONSULTATIONS = [
+  {
+    _id: "con_2026_101",
+    patientName: "Demo Patient",
+    patientEmail: "patient@mediyatra.org",
+    doctorName: "Dr. Naresh Trehan",
+    hospitalName: "Medanta - The Medicity",
+    specialty: "Cardiology",
+    symptoms: "Exertional chest tightness, shortness of breath, hypertension (BP 150/95). EKG shows minor ST depression.",
+    status: "Responded",
+    createdAt: "2026-02-01T10:00:00.000Z",
+    doctorResponse: "EKG & clinical history evaluated. High-risk coronary artery stenosis suspected. Recommended Coronary Angiography followed by CABG or Angioplasty. Prescribed Atorvastatin 20mg and Metoprolol 50mg.",
+    prescription: [
+      { medicine: "Tab. Atorvastatin 20mg", dosage: "1 tablet daily after dinner", duration: "30 Days" },
+      { medicine: "Tab. Metoprolol XL 50mg", dosage: "1 tablet once daily morning", duration: "30 Days" },
+      { medicine: "Tab. Aspirin 75mg", dosage: "1 tablet once daily post lunch", duration: "30 Days" }
+    ]
+  },
+  {
+    _id: "con_2026_102",
+    patientName: "Demo Patient",
+    patientEmail: "patient@mediyatra.org",
+    doctorName: "Dr. Ashok Seth",
+    hospitalName: "Indraprastha Apollo Hospitals",
+    specialty: "Cardiology",
+    symptoms: "Aortic Valve Stenosis evaluation for TAVI / TAVR transcatheter valve replacement.",
+    status: "Responded",
+    createdAt: "2026-02-03T14:30:00.000Z",
+    doctorResponse: "Echocardiogram indicates severe calcific aortic stenosis. Minimally invasive TAVI procedure cleared for admission.",
+    prescription: [
+      { medicine: "Tab. Clopidogrel 75mg", dosage: "1 tablet daily", duration: "60 Days" }
+    ]
+  }
+];
+
+export const MOCK_PATIENT_APPOINTMENTS = [
+  {
+    _id: "apt_2026_301",
+    patientName: "Demo Patient",
+    patientEmail: "patient@mediyatra.org",
+    doctorName: "Dr. Ashok Seth",
+    hospitalName: "Indraprastha Apollo Hospitals",
+    specialty: "Cardiology",
+    appointmentDate: "2026-02-25",
+    appointmentTime: "10:30 AM",
+    status: "Confirmed",
+    consultationType: "Video Consultation",
+    bookingReference: "APT-APO-8819",
+    amountPaidINR: 2500
+  },
+  {
+    _id: "apt_2026_302",
+    patientName: "Demo Patient",
+    patientEmail: "patient@mediyatra.org",
+    doctorName: "Dr. IPS Oberoi",
+    hospitalName: "Indraprastha Apollo Hospitals",
+    specialty: "Orthopaedics",
+    appointmentDate: "2026-02-28",
+    appointmentTime: "02:00 PM",
+    status: "Confirmed",
+    consultationType: "OPD In-Person",
+    bookingReference: "APT-APO-9942",
+    amountPaidINR: 2000
+  }
+];
+
+export const MOCK_NGO_AIDS = [
+  {
+    _id: "ngo_grant_101",
+    foundationName: "Rotary Global Mobility Drive",
+    patientName: "Ramesh Kumar",
+    patientEmail: "patient@mediyatra.org",
+    aidType: "Donated Wheelchair & Rehabilitation Kit",
+    city: "Patna, Bihar",
+    status: "Approved & Dispatched",
+    allocatedBudgetINR: 45000,
+    description: "All-terrain heavy duty wheelchair and physical rehabilitation support grant issued.",
+    dispatchedDate: "2026-02-05"
+  },
+  {
+    _id: "ngo_grant_102",
+    foundationName: "Being Human Healthcare Foundation",
+    patientName: "Master Aarav Sharma",
+    patientEmail: "patient@mediyatra.org",
+    aidType: "Pediatric Cardiac Surgery Grant (VSD Repair)",
+    city: "Bhopal, Madhya Pradesh",
+    status: "Approved & Dispatched",
+    allocatedBudgetINR: 150000,
+    description: "Subsidized open heart surgery grant sanctioned at Narayana Health Bengaluru.",
+    dispatchedDate: "2026-02-07"
+  },
+  {
+    _id: "ngo_grant_103",
+    foundationName: "Cure International Limb Fund",
+    patientName: "Sunita Devi",
+    patientEmail: "patient@mediyatra.org",
+    aidType: "Custom Prosthetic Limb Fitting",
+    city: "Jaipur, Rajasthan",
+    status: "Under Review",
+    allocatedBudgetINR: 65000,
+    description: "Prosthetic lower limb alignment fitting program at Ruby Hall Clinic Pune.",
+    dispatchedDate: "Pending Verification"
+  }
+];
+

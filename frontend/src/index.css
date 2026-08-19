@@ -7,35 +7,46 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: #fffdfb;
-    color: #2d3a5e;
+    background-color: #FFF6FB;
+    color: #2B4A66;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    color: #2d3a5e;
-    font-weight: 800;
+    color: inherit;
+    font-weight: 700;
   }
+}
+
+/* Custom Palette Utility Classes & Variables */
+:root {
+  --bg-blush: #FFF6FB;
+  --color-pink-soft: #FFD6E8;
+  --color-sky-blue: #7FD6FF;
+  --color-mint-green: #6FE3B4;
+  --color-deep-navy: #2B4A66;
 }
 
 /* Custom Portal Card Styling */
 .portal-card {
   background: #ffffff;
-  border: 2px solid #d7c6ff;
-  border-radius: 0.75rem;
-  transition: all 0.2s ease-in-out;
+  border: 1.5px solid #FFD6E8;
+  border-radius: 1rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px -2px rgba(43, 74, 102, 0.06);
 }
 
 .portal-card:hover {
-  border-color: #8fa9ff;
-  box-shadow: 0 10px 20px -5px rgba(45, 58, 94, 0.15);
+  border-color: #7FD6FF;
+  box-shadow: 0 12px 24px -6px rgba(43, 74, 102, 0.12);
+  transform: translateY(-2px);
 }
 
 .icon-circle {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 3.25rem;
+  height: 3.25rem;
   border-radius: 9999px;
-  background-color: #fbe7f1;
-  border: 2px solid #d7c6ff;
+  background-color: #FFD6E8;
+  border: 1.5px solid #7FD6FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,9 +58,9 @@
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #fbe7f1;
+  background: #FFF6FB;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2d3a5e;
+  background: #2B4A66;
   border-radius: 4px;
 }

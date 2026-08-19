@@ -38,26 +38,26 @@ export default function HospitalMapModal({ hospital, onClose, onBookHospital, is
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
-      <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-4xl w-full overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+      <div className="bg-white rounded-3xl border border-[#FFD6E8] shadow-2xl max-w-4xl w-full overflow-hidden max-h-[92vh] flex flex-col">
         
         {/* Header */}
-        <div className="bg-[#2D3A5E] text-white p-4 sm:p-5 flex items-center justify-between border-b border-[#1A233D]">
+        <div className="bg-[#2B4A66] text-white p-4 sm:p-5 flex items-center justify-between border-b border-[#1E364B]">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#8FA9FF]/20 rounded-xl border border-[#8FA9FF]/40 text-[#8FA9FF] shrink-0">
+            <div className="p-2.5 bg-sky-500/20 rounded-xl border border-[#7FD6FF]/40 text-[#7FD6FF] shrink-0">
               <MapPin className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black text-[#8FA9FF] uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-[#7FD6FF] uppercase tracking-wider block">
                   Interactive Location Map
                 </span>
-                <span className="px-2 py-0.5 bg-amber-100 text-amber-950 text-[10px] font-black rounded border border-amber-300 flex items-center gap-1">
+                <span className="px-2 py-0.5 bg-amber-100 text-amber-950 text-[10px] font-bold rounded border border-amber-300 flex items-center gap-1">
                   <Star className="w-3 h-3 fill-amber-400 text-amber-600" />
                   {hospital.rating || 4.8}
                 </span>
               </div>
-              <h3 className="font-black text-lg sm:text-xl text-white font-sans leading-snug">
+              <h3 className="font-bold text-lg sm:text-xl text-white font-sans leading-snug">
                 {hospital.name}
               </h3>
             </div>
@@ -65,7 +65,7 @@ export default function HospitalMapModal({ hospital, onClose, onBookHospital, is
 
           <button 
             onClick={onClose}
-            className="p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition"
+            className="p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition cursor-pointer"
             title="Close map"
           >
             <X className="w-6 h-6" />
