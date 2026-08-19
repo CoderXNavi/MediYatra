@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ShieldCheck, 
-  Building2, 
-  UserCheck, 
-  Calculator, 
-  Calendar, 
-  Plus, 
-  Trash2, 
-  Check, 
-  X, 
+import {
+  ShieldCheck,
+  Building2,
+  UserCheck,
+  Calculator,
+  Calendar,
+  Plus,
+  Trash2,
+  Check,
+  X,
   RefreshCw,
   Clock,
   Plane,
@@ -26,16 +26,16 @@ import {
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
-import { 
-  MOCK_TOURISM_PIPELINE, 
-  MOCK_PATIENT_CONSULTATIONS, 
+import {
+  MOCK_TOURISM_PIPELINE,
+  MOCK_PATIENT_CONSULTATIONS,
   MOCK_PATIENT_APPOINTMENTS,
   MOCK_NGO_AIDS
 } from '../data/mockData';
 
 export default function AdminDashboard({ currentUser }) {
   const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'users' | 'hospitals' | 'doctors' | 'appointments' | 'consultations' | 'tourism' | 'treatments' | 'charity'
-  
+
   // Real Database Analytics Metrics
   const [stats, setStats] = useState({
     totalPatients: 0,
@@ -98,7 +98,7 @@ export default function AdminDashboard({ currentUser }) {
       setHospitals(hospList || []);
       setDoctors(docList || []);
       setTreatments(treatList || []);
-      
+
       setAppointments((aptsRes?.data && aptsRes.data.length > 0) ? aptsRes.data : MOCK_PATIENT_APPOINTMENTS);
       setConsultations((conRes?.data && conRes.data.length > 0) ? conRes.data : MOCK_PATIENT_CONSULTATIONS);
       setTourismOrders((tourRes?.data && tourRes.data.length > 0) ? tourRes.data : MOCK_TOURISM_PIPELINE);
@@ -244,7 +244,7 @@ export default function AdminDashboard({ currentUser }) {
 
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
-      
+
       {/* Platform Management Header Banner */}
       <div className="bg-[#2B4A66] text-white rounded-2xl p-6 border border-[#7FD6FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -297,11 +297,10 @@ export default function AdminDashboard({ currentUser }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
-                isActive
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${isActive
                   ? 'bg-[#2B4A66] text-white shadow-xs border border-[#2B4A66]'
                   : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#FFD6E8]'
-              }`}
+                }`}
             >
               <Icon className={`w-4 h-4 ${isActive ? 'text-[#7FD6FF]' : 'text-[#2B4A66]'}`} />
               <span>{tab.label}</span>
@@ -367,28 +366,25 @@ export default function AdminDashboard({ currentUser }) {
                       <td className="p-3 font-black text-slate-900">{u.name}</td>
                       <td className="p-3 font-mono text-slate-800">{u.email}</td>
                       <td className="p-3">
-                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                          u.role === 'Admin' ? 'bg-purple-100 text-purple-950 border-purple-300' :
-                          u.role === 'Doctor' ? 'bg-blue-100 text-blue-950 border-blue-300' :
-                          u.role === 'Hospital' ? 'bg-amber-100 text-amber-950 border-amber-300' :
-                          'bg-slate-100 text-slate-900 border-slate-300'
-                        }`}>
+                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${u.role === 'Admin' ? 'bg-purple-100 text-purple-950 border-purple-300' :
+                            u.role === 'Doctor' ? 'bg-blue-100 text-blue-950 border-blue-300' :
+                              u.role === 'Hospital' ? 'bg-amber-100 text-amber-950 border-amber-300' :
+                                'bg-slate-100 text-slate-900 border-slate-300'
+                          }`}>
                           {u.role}
                         </span>
                       </td>
                       <td className="p-3">
-                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                          u.status === 'Deactivated' ? 'bg-red-100 text-red-950 border-red-300' : 'bg-emerald-100 text-emerald-950 border-emerald-300'
-                        }`}>
+                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${u.status === 'Deactivated' ? 'bg-red-100 text-red-950 border-red-300' : 'bg-emerald-100 text-emerald-950 border-emerald-300'
+                          }`}>
                           {u.status || 'Active'}
                         </span>
                       </td>
                       <td className="p-3 text-right">
                         <button
                           onClick={() => handleToggleUserStatus(u._id, u.status || 'Active')}
-                          className={`px-3 py-1 text-[10px] font-black rounded text-white ${
-                            u.status === 'Deactivated' ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-red-700 hover:bg-red-800'
-                          }`}
+                          className={`px-3 py-1 text-[10px] font-black rounded text-white ${u.status === 'Deactivated' ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-red-700 hover:bg-red-800'
+                            }`}
                         >
                           {u.status === 'Deactivated' ? 'Activate Account' : 'Deactivate Account'}
                         </button>
@@ -411,9 +407,8 @@ export default function AdminDashboard({ currentUser }) {
               <div key={n._id} className="p-4 bg-white border-2 border-slate-300 rounded-xl space-y-2 text-xs font-bold">
                 <div className="flex items-center justify-between border-b pb-2">
                   <h5 className="text-sm font-black text-slate-900">{n.name}</h5>
-                  <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                    n.isVerifiedByAdmin ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
-                  }`}>
+                  <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${n.isVerifiedByAdmin ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                    }`}>
                     {n.isVerifiedByAdmin ? 'Verified NGO' : 'Pending Verification'}
                   </span>
                 </div>
@@ -558,15 +553,14 @@ export default function AdminDashboard({ currentUser }) {
                       <tr key={apt._id} className="hover:bg-slate-50">
                         <td className="p-3 font-mono font-black text-[#2D3A5E]">{apt.bookingReference || apt._id}</td>
                         <td className="p-3 font-black text-slate-900">{apt.patientName}</td>
-                        <td className="p-3 text-slate-700">{apt.patientEmail}<br/>{apt.patientPhone}</td>
+                        <td className="p-3 text-slate-700">{apt.patientEmail}<br />{apt.patientPhone}</td>
                         <td className="p-3 font-mono text-slate-900">{new Date(apt.preferredDate).toLocaleDateString()}</td>
                         <td className="p-3">
-                          <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                            apt.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
-                            apt.status === 'Completed' ? 'bg-blue-100 text-blue-950 border-blue-300' :
-                            apt.status === 'Cancelled' ? 'bg-red-100 text-red-950 border-red-300' :
-                            'bg-amber-100 text-amber-950 border-amber-300'
-                          }`}>
+                          <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${apt.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
+                              apt.status === 'Completed' ? 'bg-blue-100 text-blue-950 border-blue-300' :
+                                apt.status === 'Cancelled' ? 'bg-red-100 text-red-950 border-red-300' :
+                                  'bg-amber-100 text-amber-950 border-amber-300'
+                            }`}>
                             {apt.status || 'Pending'}
                           </span>
                         </td>
@@ -670,12 +664,11 @@ export default function AdminDashboard({ currentUser }) {
                   {tourismOrders.map((ord) => (
                     <tr key={ord._id} className="hover:bg-slate-50">
                       <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
-                      <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
+                      <td className="p-3 font-black text-slate-900">{ord.patientName}<br /><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
                       <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
                       <td className="p-3">
-                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                          ord.status === 'Dispatched by Admin' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-purple-100 text-purple-950 border-purple-300'
-                        }`}>
+                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${ord.status === 'Dispatched by Admin' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-purple-100 text-purple-950 border-purple-300'
+                          }`}>
                           {ord.status}
                         </span>
                       </td>

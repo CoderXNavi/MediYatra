@@ -6,12 +6,19 @@
   html {
     scroll-behavior: smooth;
   }
+
   body {
     background-color: #FFF6FB;
     color: #2B4A66;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: inherit;
     font-weight: 700;
   }
@@ -57,9 +64,11 @@
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #FFF6FB;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #2B4A66;
   border-radius: 4px;

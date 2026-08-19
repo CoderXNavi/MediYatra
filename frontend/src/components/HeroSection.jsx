@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  Building2, 
-  UserCheck, 
-  Calculator, 
-  FileText, 
-  Stethoscope, 
-  PhoneCall, 
-  Search, 
+import {
+  Building2,
+  UserCheck,
+  Calculator,
+  FileText,
+  Stethoscope,
+  PhoneCall,
+  Search,
   ChevronRight,
   ShieldCheck,
   Bell,
@@ -19,14 +19,13 @@ import {
 
 import { getTranslation } from '../utils/translations';
 
-export default function HeroSection({ 
-  searchQuery, 
-  setSearchQuery, 
-  setActiveTab, 
+export default function HeroSection({
+  searchQuery,
+  setSearchQuery,
+  setActiveTab,
   displayLang = 'EN',
   onOpenAITriage,
   onOpenBooking,
-  onOpenInsurance = () => {},
   onOpenEmergency
 }) {
   const handleExecuteSearch = (e) => {
@@ -38,11 +37,11 @@ export default function HeroSection({
 
   return (
     <div className="space-y-10 pb-12 pt-2 font-sans bg-[#FFF6FB]">
-      
+
       {/* 1. Full Image Background Hero Section with Soft Left Gradient Overlay */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl overflow-hidden shadow-sm border border-[#FFD6E8] bg-white min-h-[360px] sm:min-h-[420px] flex items-center">
-          
+
           {/* Full Width Background Image */}
           <img
             src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1600"
@@ -55,7 +54,7 @@ export default function HeroSection({
 
           {/* Left Side Hero Content */}
           <div className="relative z-10 p-8 sm:p-12 max-w-2xl space-y-5">
-            
+
             <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#FFD6E8] text-[#2B4A66] text-xs font-bold rounded-full border border-pink-200">
               <ShieldCheck className="w-4 h-4 text-[#2B4A66]" />
               <span>JCI & NABH Accredited Healthcare</span>
@@ -124,9 +123,9 @@ export default function HeroSection({
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          
+
           {/* Item 1: Hospital Centers */}
-          <div 
+          <div
             onClick={() => setActiveTab('hospitals')}
             className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-[#FFD6E8] shadow-xs hover:shadow-md transition"
           >
@@ -150,7 +149,7 @@ export default function HeroSection({
           </div>
 
           {/* Item 2: Doctor Directory (Senior Surgeons) */}
-          <div 
+          <div
             onClick={() => setActiveTab('doctors')}
             className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-[#FFD6E8] shadow-xs hover:shadow-md transition"
           >
@@ -174,7 +173,7 @@ export default function HeroSection({
           </div>
 
           {/* Item 3: Medical Visa */}
-          <div 
+          <div
             onClick={() => setActiveTab('tourism')}
             className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-[#FFD6E8] shadow-xs hover:shadow-md transition"
           >
@@ -198,7 +197,7 @@ export default function HeroSection({
           </div>
 
           {/* Item 4: NGO Aid */}
-          <div 
+          <div
             onClick={() => setActiveTab('charity')}
             className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-[#FFD6E8] shadow-xs hover:shadow-md transition"
           >
@@ -221,33 +220,6 @@ export default function HeroSection({
             </div>
           </div>
 
-          {/* Item 5: Cashless Health Insurance */}
-          <div 
-            onClick={onOpenInsurance}
-            className="group cursor-pointer bg-white rounded-2xl overflow-hidden border-2 border-emerald-300 shadow-xs hover:shadow-md transition col-span-2 sm:col-span-1"
-          >
-            <div className="h-36 overflow-hidden bg-emerald-50 relative flex items-center justify-center">
-              <img
-                src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800"
-                alt="Cashless Health Insurance Desk"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800';
-                }}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <span className="absolute top-2 right-2 bg-emerald-700 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">
-                Pre-Auth Desk
-              </span>
-            </div>
-            <div className="p-3.5 text-center bg-emerald-50/50">
-              <h3 className="text-sm font-bold text-[#2B4A66] font-sans group-hover:text-emerald-700 flex items-center justify-center gap-1">
-                <span>Cashless Insurance</span>
-              </h3>
-              <p className="text-[11px] text-emerald-800 font-bold">Global & Indian Pre-Auth</p>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -263,9 +235,9 @@ export default function HeroSection({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          
+
           {/* Card 1: Doctor Directory */}
-          <div 
+          <div
             onClick={() => setActiveTab('doctors')}
             className="portal-card p-6 flex flex-col justify-between cursor-pointer group"
           >
@@ -294,7 +266,7 @@ export default function HeroSection({
           </div>
 
           {/* Card 2: Hospital Explorer */}
-          <div 
+          <div
             onClick={() => setActiveTab('hospitals')}
             className="portal-card p-6 flex flex-col justify-between cursor-pointer group"
           >
@@ -323,7 +295,7 @@ export default function HeroSection({
           </div>
 
           {/* Card 3: Procedure Tariffs */}
-          <div 
+          <div
             onClick={() => setActiveTab('treatments')}
             className="portal-card p-6 flex flex-col justify-between cursor-pointer group"
           >
@@ -352,7 +324,7 @@ export default function HeroSection({
           </div>
 
           {/* Card 4: Medical Visa Desk */}
-          <div 
+          <div
             onClick={() => setActiveTab('tourism')}
             className="portal-card p-6 flex flex-col justify-between cursor-pointer group"
           >
@@ -381,7 +353,7 @@ export default function HeroSection({
           </div>
 
           {/* Card 5: NGO Charity Aid */}
-          <div 
+          <div
             onClick={() => setActiveTab('charity')}
             className="portal-card p-6 flex flex-col justify-between cursor-pointer group"
           >
@@ -410,7 +382,7 @@ export default function HeroSection({
           </div>
 
           {/* Card 6: Emergency SOS */}
-          <div 
+          <div
             onClick={onOpenEmergency}
             className="portal-card p-6 flex flex-col justify-between cursor-pointer group border-2 border-red-300"
           >

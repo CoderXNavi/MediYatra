@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Building2, 
-  UserCheck, 
-  Calendar, 
-  Plus, 
-  Check, 
-  X, 
+import {
+  Building2,
+  UserCheck,
+  Calendar,
+  Plus,
+  Check,
+  X,
   RefreshCw,
   Bed,
   ShieldCheck,
@@ -122,7 +122,7 @@ export default function HospitalPortal({ currentUser }) {
 
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
-      
+
       {/* Hospital Provider Banner */}
       <div className="bg-[#2B4A66] text-white rounded-2xl p-6 border border-[#7FD6FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -170,11 +170,10 @@ export default function HospitalPortal({ currentUser }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
-                isActive
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${isActive
                   ? 'bg-[#2B4A66] text-white shadow-xs border border-[#2B4A66]'
                   : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#FFD6E8]'
-              }`}
+                }`}
             >
               <Icon className={`w-4 h-4 ${isActive ? 'text-[#7FD6FF]' : 'text-[#2B4A66]'}`} />
               <span>{tab.label}</span>
@@ -216,13 +215,12 @@ export default function HospitalPortal({ currentUser }) {
                       return (
                         <tr key={ord._id} className="hover:bg-slate-50">
                           <td className="p-3 font-mono font-black text-[#2D3A5E]">{ord._id}</td>
-                          <td className="p-3 font-black text-slate-900">{ord.patientName}<br/><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
+                          <td className="p-3 font-black text-slate-900">{ord.patientName}<br /><span className="text-[10px] text-slate-600 font-normal">{ord.patientEmail}</span></td>
                           <td className="p-3 font-black text-[#2D3A5E]">{ord.serviceType}</td>
                           <td className="p-3 text-slate-800">{ord.doctorName}</td>
                           <td className="p-3">
-                            <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
-                              isApproved ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
-                            }`}>
+                            <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${isApproved ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                              }`}>
                               {ord.status}
                             </span>
                           </td>
@@ -279,15 +277,14 @@ export default function HospitalPortal({ currentUser }) {
                       <tr key={apt._id} className="hover:bg-slate-50">
                         <td className="p-3 font-mono font-black text-[#2D3A5E]">{apt.bookingReference || apt._id}</td>
                         <td className="p-3 font-black text-slate-900">{apt.patientName}</td>
-                        <td className="p-3 text-slate-700">{apt.patientEmail}<br/>{apt.patientPhone}</td>
+                        <td className="p-3 text-slate-700">{apt.patientEmail}<br />{apt.patientPhone}</td>
                         <td className="p-3 font-mono text-slate-900">{new Date(apt.preferredDate).toLocaleDateString()}</td>
                         <td className="p-3">
-                          <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                            apt.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
-                            apt.status === 'Completed' ? 'bg-blue-100 text-blue-950 border-blue-300' :
-                            apt.status === 'Cancelled' ? 'bg-red-100 text-red-950 border-red-300' :
-                            'bg-amber-100 text-amber-950 border-amber-300'
-                          }`}>
+                          <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${apt.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
+                              apt.status === 'Completed' ? 'bg-blue-100 text-blue-950 border-blue-300' :
+                                apt.status === 'Cancelled' ? 'bg-red-100 text-red-950 border-red-300' :
+                                  'bg-amber-100 text-amber-950 border-amber-300'
+                            }`}>
                             {apt.status || 'Pending'}
                           </span>
                         </td>

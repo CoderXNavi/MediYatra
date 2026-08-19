@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  X, 
-  Send, 
-  Stethoscope, 
+import {
+  X,
+  Send,
+  Stethoscope,
   AlertTriangle,
   Sparkles,
   Bot,
@@ -17,10 +17,10 @@ import {
 import { apiService } from '../services/api';
 import { normalizeDoctor, normalizeHospital } from '../utils/normalizeData';
 
-export default function AITriageWidget({ 
-  isOpen, 
-  onOpen, 
-  onClose, 
+export default function AITriageWidget({
+  isOpen,
+  onOpen,
+  onClose,
   onBookDoctor,
   setActiveTab,
   onOpenBooking,
@@ -132,10 +132,10 @@ export default function AITriageWidget({
       {/* Floating Bottom-Right Nova AI Assistant Avatar & Bubble */}
       {!isOpen && (
         <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2 group">
-          
+
           {/* Greeting Speech Bubble */}
           {!isSpeechDismissed && (
-            <div 
+            <div
               onClick={onOpen}
               className="relative bg-white rounded-2xl p-3.5 shadow-2xl border-2 border-slate-200 cursor-pointer hover:border-[#8FA9FF] transition-all max-w-[220px] animate-bounce-subtle"
             >
@@ -150,7 +150,7 @@ export default function AITriageWidget({
               >
                 -
               </button>
-              
+
               <div className="space-y-0.5">
                 <h4 className="text-sm font-extrabold text-[#1E3A8A] flex items-center gap-1 font-sans">
                   <span>Hi</span>
@@ -173,9 +173,9 @@ export default function AITriageWidget({
             className="relative w-16 h-16 rounded-full border-4 border-white shadow-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform bg-blue-50 flex items-center justify-center shrink-0"
             title="Open Nova AI Healthcare Assistant"
           >
-            <img 
+            <img
               src="/nova_avatar.png"
-              alt="Nova AI Assistant" 
+              alt="Nova AI Assistant"
               className="w-full h-full object-cover"
             />
             {/* Green Online Status Badge */}
@@ -189,15 +189,15 @@ export default function AITriageWidget({
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-end p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-2xl max-w-lg w-full h-[90vh] flex flex-col overflow-hidden">
-            
+
             {/* Header */}
             <div className="bg-[#2D3A5E] text-white p-4 flex items-center justify-between border-b border-[#1A233D] shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative w-11 h-11 rounded-full border-2 border-[#8FA9FF] overflow-hidden bg-white shrink-0 p-0.5 shadow-md">
-                  <img 
-                    src="/nova_avatar.png" 
-                    alt="Nova AI" 
-                    className="w-full h-full object-cover rounded-full" 
+                  <img
+                    src="/nova_avatar.png"
+                    alt="Nova AI"
+                    className="w-full h-full object-cover rounded-full"
                   />
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border border-white rounded-full" />
                 </div>
@@ -209,7 +209,7 @@ export default function AITriageWidget({
                   <p className="text-xs text-[#8FA9FF] font-black">Healthcare Assistant & Clinical Triage Expert</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleResetChat}
@@ -218,8 +218,8 @@ export default function AITriageWidget({
                 >
                   <RefreshCw className="w-4 h-4" />
                 </button>
-                <button 
-                  onClick={onClose} 
+                <button
+                  onClick={onClose}
                   className="p-1.5 text-slate-300 hover:text-white rounded hover:bg-white/10 transition cursor-pointer"
                 >
                   <X className="w-5 h-5" />
@@ -267,12 +267,11 @@ export default function AITriageWidget({
                   )}
 
                   {/* Message Bubble Box */}
-                  <div className={`max-w-[85%] space-y-2 ${
-                    msg.sender === 'user'
+                  <div className={`max-w-[85%] space-y-2 ${msg.sender === 'user'
                       ? 'bg-[#2D3A5E] text-white rounded-2xl rounded-tr-xs p-3.5 shadow'
                       : 'bg-white text-slate-900 rounded-2xl rounded-tl-xs p-4 shadow-sm border-2 border-slate-200'
-                  }`}>
-                    
+                    }`}>
+
                     <p className="text-xs sm:text-sm font-bold leading-relaxed whitespace-pre-line">
                       {msg.text}
                     </p>
@@ -327,11 +326,11 @@ export default function AITriageWidget({
                         {msg.matchedDoctors.map(normalizeDoctor).filter(Boolean).map((doc) => (
                           <div key={doc._id} className="bg-slate-50 p-2.5 rounded-lg border border-slate-300 flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                              <img 
-                                src={doc.image} 
-                                alt={doc.name} 
-                                onError={handleImageError} 
-                                className="w-9 h-9 rounded-full object-cover border shrink-0" 
+                              <img
+                                src={doc.image}
+                                alt={doc.name}
+                                onError={handleImageError}
+                                className="w-9 h-9 rounded-full object-cover border shrink-0"
                               />
                               <div>
                                 <h5 className="text-xs font-black text-slate-900">{doc.name}</h5>

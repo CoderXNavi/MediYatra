@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  UserCheck, 
-  Stethoscope, 
-  Calendar, 
-  Clock, 
-  MessageSquare, 
-  CheckCircle2, 
+import {
+  UserCheck,
+  Stethoscope,
+  Calendar,
+  Clock,
+  MessageSquare,
+  CheckCircle2,
   RefreshCw,
   Send,
   Building2,
@@ -32,9 +32,9 @@ import { MOCK_TOURISM_PIPELINE, MOCK_PATIENT_CONSULTATIONS } from '../data/mockD
 
 export default function DoctorPortal({ currentUser }) {
   // Tabs: 'pipeline-cases' | 'consultations' | 'network' | 'surgical-tariffs' | 'travel-support' | 'profile'
-  const [activeTab, setActiveTab] = useState('pipeline-cases'); 
+  const [activeTab, setActiveTab] = useState('pipeline-cases');
   const [travelSubTab, setTravelSubTab] = useState('visa'); // 'visa' | 'interpreters' | 'accommodations'
-  
+
   // Data states
   const [tourismPipelineCases, setTourismPipelineCases] = useState([]);
   const [consultations, setConsultations] = useState([]);
@@ -52,7 +52,7 @@ export default function DoctorPortal({ currentUser }) {
   const [selectedPackageModal, setSelectedPackageModal] = useState(null);
   const [selectedInterpreterModal, setSelectedInterpreterModal] = useState(null);
   const [selectedAccommodationModal, setSelectedAccommodationModal] = useState(null);
-  
+
   // Action Forms State
   const [responseText, setResponseText] = useState('');
   const [statusMsg, setStatusMsg] = useState('');
@@ -201,7 +201,7 @@ export default function DoctorPortal({ currentUser }) {
 
   return (
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
-      
+
       {/* Doctor Portal Header Banner */}
       <div className="bg-[#2B4A66] text-white rounded-2xl p-6 border border-[#7FD6FF] shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -222,12 +222,10 @@ export default function DoctorPortal({ currentUser }) {
         <div className="flex items-center gap-2 shrink-0">
           <div className="bg-[#1E364B] px-3 py-1.5 rounded-xl border border-[#7FD6FF] text-right">
             <span className="text-[10px] font-bold text-slate-300 block uppercase">Duty Status</span>
-            <span className={`text-xs font-bold flex items-center justify-end gap-1 ${
-              doctorStatus === 'Available' ? 'text-emerald-400' : 'text-amber-400'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${
-                doctorStatus === 'Available' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
-              }`} />
+            <span className={`text-xs font-bold flex items-center justify-end gap-1 ${doctorStatus === 'Available' ? 'text-emerald-400' : 'text-amber-400'
+              }`}>
+              <span className={`w-2 h-2 rounded-full ${doctorStatus === 'Available' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                }`} />
               {doctorStatus}
             </span>
           </div>
@@ -253,9 +251,8 @@ export default function DoctorPortal({ currentUser }) {
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setActiveTab('pipeline-cases')}
-          className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition flex items-center gap-1.5 cursor-pointer ${
-            activeTab === 'pipeline-cases' ? 'bg-[#2B4A66] text-white border-[#2B4A66] shadow-xs' : 'bg-white text-slate-700 border-[#FFD6E8] hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition flex items-center gap-1.5 cursor-pointer ${activeTab === 'pipeline-cases' ? 'bg-[#2B4A66] text-white border-[#2B4A66] shadow-xs' : 'bg-white text-slate-700 border-[#FFD6E8] hover:bg-slate-50'
+            }`}
         >
           <Plane className="w-4 h-4 text-[#7FD6FF]" />
           <span>Step 4: Dispatched Clinical Cases ({tourismPipelineCases.length})</span>
@@ -263,9 +260,8 @@ export default function DoctorPortal({ currentUser }) {
 
         <button
           onClick={() => setActiveTab('consultations')}
-          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
-            activeTab === 'consultations' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${activeTab === 'consultations' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
+            }`}
         >
           <MessageSquare className="w-4 h-4 text-[#8FA9FF]" />
           <span>Patient Clinical Inquiries ({consultations.length})</span>
@@ -273,9 +269,8 @@ export default function DoctorPortal({ currentUser }) {
 
         <button
           onClick={() => setActiveTab('network')}
-          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
-            activeTab === 'network' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${activeTab === 'network' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
+            }`}
         >
           <UserCheck className="w-4 h-4 text-[#8FA9FF]" />
           <span>Faculty Directory & Peer Network</span>
@@ -283,9 +278,8 @@ export default function DoctorPortal({ currentUser }) {
 
         <button
           onClick={() => setActiveTab('surgical-tariffs')}
-          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
-            activeTab === 'surgical-tariffs' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${activeTab === 'surgical-tariffs' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
+            }`}
         >
           <BookOpen className="w-4 h-4 text-[#8FA9FF]" />
           <span>Surgical Package Tariffs</span>
@@ -293,9 +287,8 @@ export default function DoctorPortal({ currentUser }) {
 
         <button
           onClick={() => setActiveTab('travel-support')}
-          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
-            activeTab === 'travel-support' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${activeTab === 'travel-support' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
+            }`}
         >
           <Globe className="w-4 h-4 text-[#8FA9FF]" />
           <span>Professional Travel & Language Support</span>
@@ -303,9 +296,8 @@ export default function DoctorPortal({ currentUser }) {
 
         <button
           onClick={() => setActiveTab('profile')}
-          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${
-            activeTab === 'profile' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 text-xs font-black rounded-lg border-2 transition flex items-center gap-1.5 ${activeTab === 'profile' ? 'bg-[#2D3A5E] text-white border-[#2D3A5E] shadow' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
+            }`}
         >
           <Edit3 className="w-4 h-4 text-[#8FA9FF]" />
           <span>Manage Profile & Credentials</span>
@@ -347,9 +339,8 @@ export default function DoctorPortal({ currentUser }) {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                         <span className="font-mono text-xs font-black text-[#2D3A5E]">Ref ID: {cas._id}</span>
-                        <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
-                          isCompleted ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-blue-100 text-blue-950 border-blue-300'
-                        }`}>
+                        <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${isCompleted ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-blue-100 text-blue-950 border-blue-300'
+                          }`}>
                           {cas.status}
                         </span>
                       </div>
@@ -413,7 +404,7 @@ export default function DoctorPortal({ currentUser }) {
               <p className="text-xs text-slate-600 font-bold">Review pre-travel diagnostic questions submitted directly by international patients.</p>
             </div>
           </div>
-          
+
           {consultations.length === 0 ? (
             <div className="portal-card p-12 text-center bg-white border-2 border-slate-300 rounded-xl space-y-3">
               <MessageSquare className="w-12 h-12 text-slate-400 mx-auto" />
@@ -427,9 +418,8 @@ export default function DoctorPortal({ currentUser }) {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                       <span className="font-mono text-xs font-black text-[#2D3A5E]">Inquiry #{con._id}</span>
-                      <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${
-                        con.status === 'Responded' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
-                      }`}>
+                      <span className={`px-2 py-0.5 text-[10px] font-black rounded border ${con.status === 'Responded' ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                        }`}>
                         {con.status || 'Pending Review'}
                       </span>
                     </div>
@@ -437,7 +427,7 @@ export default function DoctorPortal({ currentUser }) {
                     <h4 className="text-sm font-black text-slate-900">Patient: {con.patientName} ({con.patientEmail})</h4>
                     <p className="text-xs font-black text-[#2D3A5E]">Subject: {con.subject}</p>
                     <p className="text-xs text-slate-800 bg-slate-50 p-3 rounded border border-slate-200 font-semibold">{con.message}</p>
-                    
+
                     {con.doctorResponse && (
                       <div className="bg-emerald-50 p-3 rounded border border-emerald-300 text-xs text-emerald-950 font-semibold">
                         <span className="font-black block text-[10px] uppercase text-emerald-900">Dispatched Response:</span>
@@ -468,7 +458,7 @@ export default function DoctorPortal({ currentUser }) {
       {/* ========================================================= */}
       {activeTab === 'network' && (
         <div className="space-y-6">
-          
+
           {/* Duty Status & Availability Control Bar for Logged-in Doctor */}
           <div className="portal-card p-5 bg-white border-2 border-slate-300 rounded-xl space-y-4 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
@@ -525,7 +515,7 @@ export default function DoctorPortal({ currentUser }) {
           {/* Faculty Cards Grid */}
           <div className="grid md:grid-cols-2 gap-6">
             {doctorsList.map((doc) => (
-              <div 
+              <div
                 key={doc._id}
                 className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md transition"
               >
@@ -603,7 +593,7 @@ export default function DoctorPortal({ currentUser }) {
 
           <div className="grid md:grid-cols-2 gap-6">
             {treatmentsList.map((t) => (
-              <div 
+              <div
                 key={t._id}
                 className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl space-y-4 flex flex-col justify-between shadow-sm"
               >
@@ -678,14 +668,13 @@ export default function DoctorPortal({ currentUser }) {
       {/* ========================================================= */}
       {activeTab === 'travel-support' && (
         <div className="space-y-6">
-          
+
           {/* Sub-tab Navigation */}
           <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
             <button
               onClick={() => setTravelSubTab('visa')}
-              className={`px-3.5 py-2 text-xs font-black rounded-lg transition flex items-center gap-1.5 ${
-                travelSubTab === 'visa' ? 'bg-[#2D3A5E] text-white' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
-              }`}
+              className={`px-3.5 py-2 text-xs font-black rounded-lg transition flex items-center gap-1.5 ${travelSubTab === 'visa' ? 'bg-[#2D3A5E] text-white' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                }`}
             >
               <FileText className="w-3.5 h-3.5 text-[#8FA9FF]" />
               <span>Doctor Travel & Visa Information</span>
@@ -693,9 +682,8 @@ export default function DoctorPortal({ currentUser }) {
 
             <button
               onClick={() => setTravelSubTab('interpreters')}
-              className={`px-3.5 py-2 text-xs font-black rounded-lg transition flex items-center gap-1.5 ${
-                travelSubTab === 'interpreters' ? 'bg-[#2D3A5E] text-white' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
-              }`}
+              className={`px-3.5 py-2 text-xs font-black rounded-lg transition flex items-center gap-1.5 ${travelSubTab === 'interpreters' ? 'bg-[#2D3A5E] text-white' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                }`}
             >
               <Languages className="w-3.5 h-3.5 text-[#8FA9FF]" />
               <span>Medical Language Support Network</span>
@@ -703,9 +691,8 @@ export default function DoctorPortal({ currentUser }) {
 
             <button
               onClick={() => setTravelSubTab('accommodations')}
-              className={`px-3.5 py-2 text-xs font-black rounded-lg transition flex items-center gap-1.5 ${
-                travelSubTab === 'accommodations' ? 'bg-[#2D3A5E] text-white' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
-              }`}
+              className={`px-3.5 py-2 text-xs font-black rounded-lg transition flex items-center gap-1.5 ${travelSubTab === 'accommodations' ? 'bg-[#2D3A5E] text-white' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                }`}
             >
               <Hotel className="w-3.5 h-3.5 text-[#8FA9FF]" />
               <span>Doctor Accommodation & Stay Info</span>

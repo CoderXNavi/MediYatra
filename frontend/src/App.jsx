@@ -27,7 +27,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'hospitals' | 'doctors' | 'treatments' | 'tourism' | 'charity' | 'records' | 'doctor-portal' | 'hospital-portal' | 'admin'
   const [currency, setCurrency] = useState('USD');
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Multilingual Language State (EN | HI | ES | FR | AR | RU)
   const [displayLang, setDisplayLang] = useState(() => {
     try {
@@ -41,8 +41,8 @@ export default function App() {
   useEffect(() => {
     try {
       localStorage.setItem('mediyatra_lang', displayLang);
-    } catch (e) {}
-    
+    } catch (e) { }
+
     // Trigger Site-Wide Auto Translation for entire DOM
     triggerGlobalWebsiteTranslation(displayLang);
   }, [displayLang]);
@@ -226,10 +226,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDFB] text-[#2D3A5E] font-sans antialiased overflow-x-hidden w-full">
-      
+
       {/* Navigation Header */}
-      <Navbar 
-        activeTab={activeTab} 
+      <Navbar
+        activeTab={activeTab}
         setActiveTab={setActiveTab}
         currency={currency}
         setCurrency={setCurrency}
@@ -252,14 +252,13 @@ export default function App() {
         {/* Home Landing View */}
         {activeTab === 'home' && (
           <>
-            <HeroSection 
+            <HeroSection
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               setActiveTab={setActiveTab}
               displayLang={displayLang}
               onOpenAITriage={() => setIsAITriageOpen(true)}
               onOpenBooking={() => !isNonPatientRole && setIsBookingOpen(true)}
-              onOpenInsurance={() => setIsInsuranceOpen(true)}
               onOpenEmergency={() => setIsEmergencyOpen(true)}
             />
 
@@ -287,15 +286,15 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {hospitals.slice(0, 3).map((hosp) => (
-                  <div 
+                  <div
                     key={hosp._id || hosp.name}
                     className="bg-white rounded-xl border-2 border-slate-200 shadow-md hover:shadow-xl transition overflow-hidden flex flex-col justify-between"
                   >
                     <div>
                       <div className="relative h-44 bg-slate-900">
-                        <img 
-                          src={hosp.image} 
-                          alt={hosp.name} 
+                        <img
+                          src={hosp.image}
+                          alt={hosp.name}
                           className="w-full h-full object-cover opacity-90"
                         />
                         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
@@ -364,14 +363,14 @@ export default function App() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {doctors.slice(0, 3).map((doc) => (
-                    <div 
+                    <div
                       key={doc._id || doc.name}
                       className="bg-white rounded-xl border-2 border-slate-200 shadow-md p-4 flex flex-col justify-between hover:shadow-xl transition"
                     >
                       <div className="flex items-start gap-3">
-                        <img 
-                          src={doc.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400'} 
-                          alt={doc.name} 
+                        <img
+                          src={doc.image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400'}
+                          alt={doc.name}
                           className="w-16 h-16 rounded-xl object-cover shrink-0 border-2 border-[#8FA9FF]"
                         />
                         <div className="space-y-1">
@@ -415,9 +414,9 @@ export default function App() {
 
         {/* Tab Views */}
         {activeTab === 'hospitals' && (
-          <HospitalExplorer 
-            hospitals={hospitals} 
-            currency={currency} 
+          <HospitalExplorer
+            hospitals={hospitals}
+            currency={currency}
             onBookHospital={handleBookHospital}
             searchQuery={searchQuery}
             currentUser={currentUser}
@@ -427,8 +426,8 @@ export default function App() {
         )}
 
         {activeTab === 'doctors' && (
-          <DoctorDirectory 
-            doctors={doctors} 
+          <DoctorDirectory
+            doctors={doctors}
             currency={currency}
             onConsultDoctor={handleConsultDoctor}
             onBookDoctor={handleBookDoctor}
@@ -440,8 +439,8 @@ export default function App() {
         )}
 
         {activeTab === 'treatments' && (
-          <TreatmentCostCalculator 
-            treatments={treatments} 
+          <TreatmentCostCalculator
+            treatments={treatments}
             currency={currency}
             onBookTreatment={handleBookTreatment}
             searchQuery={searchQuery}
@@ -452,7 +451,7 @@ export default function App() {
         )}
 
         {activeTab === 'tourism' && (
-          <MedicalTourismHub 
+          <MedicalTourismHub
             currency={currency}
             onSelectService={handleOpenTourismModal}
             currentUser={currentUser}
@@ -462,14 +461,14 @@ export default function App() {
         )}
 
         {activeTab === 'charity' && (
-          <CharityAidHub 
+          <CharityAidHub
             currentUser={currentUser}
             onOpenAuth={() => setIsAuthOpen(true)}
           />
         )}
 
         {activeTab === 'records' && (
-          <PatientRecordsPortal 
+          <PatientRecordsPortal
             currentUser={currentUser}
             onOpenAuth={() => setIsAuthOpen(true)}
             onBookNewAppointment={() => setIsBookingOpen(true)}
@@ -477,13 +476,13 @@ export default function App() {
         )}
 
         {activeTab === 'doctor-portal' && (
-          <DoctorPortal 
+          <DoctorPortal
             currentUser={currentUser}
           />
         )}
 
         {activeTab === 'hospital-portal' && (
-          <HospitalPortal 
+          <HospitalPortal
             currentUser={currentUser}
           />
         )}
@@ -493,7 +492,7 @@ export default function App() {
           currentUser?.role === 'Admin' ? (
             <AdminDashboard currentUser={currentUser} />
           ) : (
-            <AccessDenied 
+            <AccessDenied
               currentUser={currentUser}
               onOpenAuth={() => setIsAuthOpen(true)}
               onGoHome={() => setActiveTab('hospitals')}
@@ -504,7 +503,7 @@ export default function App() {
       </main>
 
       {/* Footer Component */}
-      <Footer 
+      <Footer
         setActiveTab={setActiveTab}
         onOpenEmergency={() => setIsEmergencyOpen(true)}
         onOpenAITriage={() => setIsAITriageOpen(true)}
@@ -513,7 +512,7 @@ export default function App() {
       {/* Modals */}
       {!isNonPatientRole && (
         <>
-          <ConsultationModal 
+          <ConsultationModal
             isOpen={isConsultationOpen}
             onClose={() => {
               setIsConsultationOpen(false);
@@ -538,7 +537,7 @@ export default function App() {
             }}
           />
 
-          <AppointmentModal 
+          <AppointmentModal
             isOpen={isBookingOpen}
             onClose={() => {
               setIsBookingOpen(false);
@@ -556,18 +555,18 @@ export default function App() {
         </>
       )}
 
-      <InsuranceVerificationModal 
+      <InsuranceVerificationModal
         isOpen={isInsuranceOpen}
         onClose={() => setIsInsuranceOpen(false)}
         currentUser={currentUser}
       />
 
-      <EmergencySOSModal 
+      <EmergencySOSModal
         isOpen={isEmergencyOpen}
         onClose={() => setIsEmergencyOpen(false)}
       />
 
-      <AITriageWidget 
+      <AITriageWidget
         isOpen={isAITriageOpen}
         onOpen={() => setIsAITriageOpen(true)}
         onClose={() => setIsAITriageOpen(false)}
@@ -577,7 +576,7 @@ export default function App() {
         onOpenEmergency={() => { setIsAITriageOpen(false); setIsEmergencyOpen(true); }}
       />
 
-      <AuthModal 
+      <AuthModal
         isOpen={isAuthOpen}
         onClose={() => {
           setIsAuthOpen(false);

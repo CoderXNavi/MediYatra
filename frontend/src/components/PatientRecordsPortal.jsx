@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FileText, 
-  FileCheck, 
-  Pill, 
-  Calendar, 
-  Download, 
-  CheckCircle2, 
-  Clock, 
+import {
+  FileText,
+  FileCheck,
+  Pill,
+  Calendar,
+  Download,
+  CheckCircle2,
+  Clock,
   XCircle,
   Building2,
   UserCheck,
@@ -19,10 +19,10 @@ import {
   Stethoscope
 } from 'lucide-react';
 import { generateOfficialPDFReceipt } from '../utils/pdfGenerator';
-import { 
-  MOCK_TOURISM_PIPELINE, 
-  MOCK_PATIENT_CONSULTATIONS, 
-  MOCK_PATIENT_APPOINTMENTS 
+import {
+  MOCK_TOURISM_PIPELINE,
+  MOCK_PATIENT_CONSULTATIONS,
+  MOCK_PATIENT_APPOINTMENTS
 } from '../data/mockData';
 
 export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNewAppointment }) {
@@ -50,7 +50,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
       setIsLoading(true);
       try {
         const userEmail = encodeURIComponent(currentUser.email.trim().toLowerCase());
-        
+
         const [conRes, aptsRes, tourRes, recsRes, repsRes, rxRes] = await Promise.all([
           fetch(`/api/consultations?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null),
           fetch(`/api/appointments?patientEmail=${userEmail}`).then(r => r.ok ? r.json() : null),
@@ -157,14 +157,14 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
     <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#FFF6FB]">
       {/* Full Image Background Hero Banner with Soft Left Gradient Overlay */}
       <div className="relative rounded-3xl overflow-hidden shadow-sm border border-[#FFD6E8] mb-10 bg-white min-h-[320px] sm:min-h-[380px] flex items-center">
-        
+
         {/* Full Cover Background Image */}
         <img
           src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=1600"
           alt="Patient Health Records & Clinical Pipeline"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        
+
         {/* Smooth Left-to-Right Soft Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 sm:via-white/85 to-transparent" />
 
@@ -189,7 +189,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
         </div>
 
       </div>
-      
+
       {/* Header */}
       <div className="bg-white rounded-2xl p-6 border border-[#FFD6E8] shadow-xs mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -232,11 +232,10 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
             <button
               key={tab.id}
               onClick={() => setActiveSubTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
-                isActive
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${isActive
                   ? 'bg-[#2B4A66] text-white shadow-xs border border-[#2B4A66]'
                   : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#FFD6E8]'
-              }`}
+                }`}
             >
               <Icon className={`w-4 h-4 ${isActive ? 'text-[#7FD6FF]' : 'text-[#2B4A66]'}`} />
               <span>{tab.label}</span>
@@ -271,7 +270,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
 
                 return (
                   <div key={ord._id} className="portal-card p-6 bg-white border-2 border-slate-300 rounded-xl space-y-5">
-                    
+
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-2">
                       <div>
                         <span className="font-mono text-xs font-bold text-[#2B4A66]">Case Reference ID: {ord._id}</span>
@@ -279,12 +278,11 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
                         <p className="text-xs text-slate-700 font-bold">Hospital: {ord.hospitalName} • Doctor: {ord.doctorName}</p>
                       </div>
 
-                      <span className={`px-3 py-1 text-xs font-black rounded-lg border w-fit ${
-                        isStep4Done ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
-                        isStep3Done ? 'bg-blue-100 text-blue-950 border-blue-300' :
-                        isStep2Done ? 'bg-purple-100 text-purple-950 border-purple-300' :
-                        'bg-amber-100 text-amber-950 border-amber-300'
-                      }`}>
+                      <span className={`px-3 py-1 text-xs font-black rounded-lg border w-fit ${isStep4Done ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
+                          isStep3Done ? 'bg-blue-100 text-blue-950 border-blue-300' :
+                            isStep2Done ? 'bg-purple-100 text-purple-950 border-purple-300' :
+                              'bg-amber-100 text-amber-950 border-amber-300'
+                        }`}>
                         Current Status: {ord.status}
                       </span>
                     </div>
@@ -292,36 +290,32 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
                     {/* Visual 4-Step Pipeline Bar */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
                       {/* Step 1 */}
-                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${
-                        isStep1Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-slate-50 border-slate-200 text-slate-500'
-                      }`}>
+                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${isStep1Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-slate-50 border-slate-200 text-slate-500'
+                        }`}>
                         <div className="text-[10px] font-black uppercase">Step 1: Patient</div>
                         <div className="text-xs font-black">Requested</div>
                         {isStep1Done && <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto mt-1" />}
                       </div>
 
                       {/* Step 2 */}
-                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${
-                        isStep2Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-amber-50 border-amber-300 text-amber-900'
-                      }`}>
+                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${isStep2Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-amber-50 border-amber-300 text-amber-900'
+                        }`}>
                         <div className="text-[10px] font-black uppercase">Step 2: Hospital</div>
                         <div className="text-xs font-black">{isStep2Done ? 'VIL Approved' : 'Pending Approval'}</div>
                         {isStep2Done ? <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto mt-1" /> : <Clock className="w-4 h-4 text-amber-600 mx-auto mt-1 animate-pulse" />}
                       </div>
 
                       {/* Step 3 */}
-                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${
-                        isStep3Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-slate-50 border-slate-200 text-slate-500'
-                      }`}>
+                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${isStep3Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-slate-50 border-slate-200 text-slate-500'
+                        }`}>
                         <div className="text-[10px] font-black uppercase">Step 3: Admin</div>
                         <div className="text-xs font-black">{isStep3Done ? 'Dispatched' : 'Awaiting Hospital'}</div>
                         {isStep3Done ? <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto mt-1" /> : <Clock className="w-4 h-4 text-slate-400 mx-auto mt-1" />}
                       </div>
 
                       {/* Step 4 */}
-                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${
-                        isStep4Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-slate-50 border-slate-200 text-slate-500'
-                      }`}>
+                      <div className={`p-3 rounded-lg border-2 text-center space-y-1 ${isStep4Done ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-slate-50 border-slate-200 text-slate-500'
+                        }`}>
                         <div className="text-[10px] font-black uppercase">Step 4: Doctor</div>
                         <div className="text-xs font-black">{isStep4Done ? 'Evaluated' : 'Treatment Ready'}</div>
                         {isStep4Done ? <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto mt-1" /> : <Stethoscope className="w-4 h-4 text-slate-400 mx-auto mt-1" />}
@@ -374,7 +368,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
       {activeSubTab === 'consultations' && (
         <div className="space-y-4">
           <h3 className="text-lg font-black text-slate-900 font-sans">Track Doctor Consultations for {currentUser.name}</h3>
-          
+
           {isLoading ? (
             <div className="p-8 text-center text-slate-600 font-bold">Loading patient consultations...</div>
           ) : consultations.length === 0 ? (
@@ -401,9 +395,8 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
                         <span className="font-mono text-xs font-black text-[#2D3A5E]">
                           Consultation ID: {con._id}
                         </span>
-                        <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
-                          isResponded ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
-                        }`}>
+                        <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${isResponded ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+                          }`}>
                           {con.status}
                         </span>
                       </div>
@@ -468,7 +461,7 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
       {activeSubTab === 'appointments' && (
         <div className="space-y-4">
           <h3 className="text-lg font-black text-slate-900 font-sans">Track Consultation Appointments for {currentUser.name}</h3>
-          
+
           {isLoading ? (
             <div className="p-8 text-center text-slate-600 font-bold">Loading patient appointments...</div>
           ) : appointments.length === 0 ? (
@@ -496,11 +489,10 @@ export default function PatientRecordsPortal({ currentUser, onOpenAuth, onBookNe
                         <span className="font-mono text-xs font-black text-[#2D3A5E]">
                           Ref: {apt.bookingReference || apt._id}
                         </span>
-                        <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${
-                          isConfirmed ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
-                          isPending ? 'bg-amber-100 text-amber-950 border-amber-300' :
-                          'bg-red-100 text-red-950 border-red-300'
-                        }`}>
+                        <span className={`px-2.5 py-0.5 text-[10px] font-black rounded border ${isConfirmed ? 'bg-emerald-100 text-emerald-950 border-emerald-300' :
+                            isPending ? 'bg-amber-100 text-amber-950 border-amber-300' :
+                              'bg-red-100 text-red-950 border-red-300'
+                          }`}>
                           {apt.status || 'Confirmed'}
                         </span>
                       </div>

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { 
+import {
   Home,
-  Building2, 
-  UserCheck, 
-  Calculator, 
-  Globe2, 
-  Stethoscope, 
-  PhoneCall, 
-  Menu, 
-  X, 
+  Building2,
+  UserCheck,
+  Calculator,
+  Globe2,
+  Stethoscope,
+  PhoneCall,
+  Menu,
+  X,
   ShieldCheck,
   Search,
   CalendarCheck,
@@ -23,17 +23,17 @@ import {
 
 import { getTranslation } from '../utils/translations';
 
-export default function Navbar({ 
-  activeTab, 
-  setActiveTab, 
-  currency, 
-  setCurrency, 
+export default function Navbar({
+  activeTab,
+  setActiveTab,
+  currency,
+  setCurrency,
   displayLang = 'EN',
-  setDisplayLang = () => {},
-  onOpenBooking, 
+  setDisplayLang = () => { },
+  onOpenBooking,
   onOpenEmergency,
   onOpenAITriage,
-  onOpenInsurance = () => {},
+  onOpenInsurance = () => { },
   onOpenAuth,
   currentUser,
   onLogout,
@@ -80,14 +80,14 @@ export default function Navbar({
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm w-full border-b border-slate-200">
-      
+
       {/* 1. Top Utility Bar (#2B4A66 Deep Slate Navy) */}
       <div className="bg-[#2B4A66] text-white px-3 sm:px-4 py-2 text-xs font-bold border-b border-slate-700">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
-          
+
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="flex items-center gap-1.5 text-[#7FD6FF] font-extrabold text-[11px] sm:text-xs">
-              <ShieldCheck className="w-4 h-4 text-[#7FD6FF] shrink-0" /> 
+              <ShieldCheck className="w-4 h-4 text-[#7FD6FF] shrink-0" />
               <span className="truncate">MediYatra Healthcare Concierge</span>
             </span>
             <span className="hidden md:inline text-slate-300 font-bold">|</span>
@@ -97,7 +97,7 @@ export default function Navbar({
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            
+
             {/* Cashless Insurance Button */}
             <button
               onClick={onOpenInsurance}
@@ -130,21 +130,19 @@ export default function Navbar({
               <span className="text-[10px] sm:text-[11px] text-[#7FD6FF] mr-1 font-black">Currency:</span>
               <button
                 onClick={() => setCurrency('USD')}
-                className={`px-1.5 py-0.5 text-[10px] sm:text-[11px] font-black rounded transition ${
-                  currency === 'USD' 
-                    ? 'bg-[#7FD6FF] text-[#2B4A66] shadow' 
+                className={`px-1.5 py-0.5 text-[10px] sm:text-[11px] font-black rounded transition ${currency === 'USD'
+                    ? 'bg-[#7FD6FF] text-[#2B4A66] shadow'
                     : 'text-white hover:text-[#7FD6FF]'
-                }`}
+                  }`}
               >
                 USD
               </button>
               <button
                 onClick={() => setCurrency('INR')}
-                className={`px-1.5 py-0.5 text-[10px] sm:text-[11px] font-black rounded ml-1 transition ${
-                  currency === 'INR' 
-                    ? 'bg-[#7FD6FF] text-[#2B4A66] shadow' 
+                className={`px-1.5 py-0.5 text-[10px] sm:text-[11px] font-black rounded ml-1 transition ${currency === 'INR'
+                    ? 'bg-[#7FD6FF] text-[#2B4A66] shadow'
                     : 'text-white hover:text-[#7FD6FF]'
-                }`}
+                  }`}
               >
                 INR
               </button>
@@ -187,15 +185,15 @@ export default function Navbar({
       {/* 2. Main Header Logo & Search Area */}
       <div className="bg-[#FFF6FB] py-3 px-3 sm:px-4 border-b border-pink-100">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
-          
+
           {/* Logo Emblem & Brand Title */}
-          <div 
-            className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0" 
+          <div
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0"
             onClick={() => handleNavClick(isAdmin ? 'admin' : isDoctor ? 'doctor-portal' : isHospital ? 'hospital-portal' : 'home')}
           >
-            <img 
-              src="/logo_clean.png" 
-              alt="MEDIYATRA Logo" 
+            <img
+              src="/logo_clean.png"
+              alt="MEDIYATRA Logo"
               className="h-8 sm:h-10 w-auto object-contain shrink-0"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
@@ -260,24 +258,14 @@ export default function Navbar({
                 <span className="text-white font-bold whitespace-nowrap">Admin Panel</span>
               </button>
             ) : (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={onOpenInsurance}
-                  className="px-3 py-2 bg-white hover:bg-pink-50 text-[#2B4A66] font-bold text-xs rounded-xl border border-[#FFD6E8] shadow-xs flex items-center gap-1.5 transition cursor-pointer"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span className="font-bold whitespace-nowrap">Cashless Insurance</span>
-                </button>
-
-                <button
-                  onClick={() => onOpenBooking()}
-                  className="px-3 sm:px-4 py-2 bg-[#2B4A66] hover:bg-[#1E364B] text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5 transition cursor-pointer"
-                >
-                  <CalendarCheck className="w-3.5 h-3.5 text-[#7FD6FF] shrink-0" />
-                  <span className="text-white font-bold whitespace-nowrap hidden sm:inline">Book Appointment</span>
-                  <span className="text-white font-bold whitespace-nowrap sm:hidden">Book OPD</span>
-                </button>
-              </div>
+              <button
+                onClick={() => onOpenBooking()}
+                className="px-3 sm:px-4 py-2 bg-[#2B4A66] hover:bg-[#1E364B] text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5 transition"
+              >
+                <CalendarCheck className="w-3.5 h-3.5 text-[#7FD6FF] shrink-0" />
+                <span className="text-white font-bold whitespace-nowrap hidden sm:inline">Book Appointment</span>
+                <span className="text-white font-bold whitespace-nowrap sm:hidden">Book OPD</span>
+              </button>
             )}
 
             {/* Mobile Menu Toggle */}
@@ -319,7 +307,7 @@ export default function Navbar({
       <div className="bg-[#2B4A66] text-white hidden md:block border-t border-slate-700">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-11 overflow-x-auto no-scrollbar">
-            
+
             <nav className="flex items-center gap-1 h-full shrink-0">
               {baseNavLinks.map((link) => {
                 const Icon = link.icon;
@@ -328,11 +316,10 @@ export default function Navbar({
                   <button
                     key={link.id}
                     onClick={() => handleNavClick(link.id)}
-                    className={`flex items-center gap-1.5 px-3.5 h-full text-xs font-bold transition border-b-4 bg-transparent shadow-none shrink-0 ${
-                      isActive
+                    className={`flex items-center gap-1.5 px-3.5 h-full text-xs font-bold transition border-b-4 bg-transparent shadow-none shrink-0 ${isActive
                         ? 'text-[#7FD6FF] border-[#7FD6FF]'
                         : 'text-white hover:text-[#7FD6FF] border-transparent'
-                    }`}
+                      }`}
                   >
                     <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#7FD6FF]' : 'text-white'}`} />
                     <span className={`whitespace-nowrap font-bold text-xs ${isActive ? 'text-[#7FD6FF]' : 'text-white'}`}>
@@ -376,9 +363,8 @@ export default function Navbar({
                   handleNavClick(link.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full text-left flex items-center gap-3 px-3.5 py-3 rounded-lg text-xs font-bold transition ${
-                  isActive ? 'bg-[#1E364B] text-[#7FD6FF] border border-[#7FD6FF]' : 'text-white hover:bg-[#1E364B]/50'
-                }`}
+                className={`w-full text-left flex items-center gap-3 px-3.5 py-3 rounded-lg text-xs font-bold transition ${isActive ? 'bg-[#1E364B] text-[#7FD6FF] border border-[#7FD6FF]' : 'text-white hover:bg-[#1E364B]/50'
+                  }`}
               >
                 <Icon className="w-4 h-4 shrink-0 text-[#7FD6FF]" />
                 <span className={isActive ? 'text-[#7FD6FF]' : 'text-white'}>
