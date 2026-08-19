@@ -50,14 +50,14 @@ export default function AdminDashboard({ currentUser }) {
     totalTourismOrders: 3
   });
 
-  const [users, setUsers] = useState([]);
-  const [hospitals, setHospitals] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-  const [consultations, setConsultations] = useState([]);
-  const [tourismOrders, setTourismOrders] = useState([]);
-  const [treatments, setTreatments] = useState([]);
-  const [ngos, setNgos] = useState([]);
+  const [users, setUsers] = useState(MOCK_DEMO_USERS);
+  const [hospitals, setHospitals] = useState(MOCK_HOSPITALS);
+  const [doctors, setDoctors] = useState(MOCK_DOCTORS);
+  const [appointments, setAppointments] = useState(MOCK_PATIENT_APPOINTMENTS);
+  const [consultations, setConsultations] = useState(MOCK_PATIENT_CONSULTATIONS);
+  const [tourismOrders, setTourismOrders] = useState(MOCK_TOURISM_PIPELINE);
+  const [treatments, setTreatments] = useState(MOCK_TREATMENTS);
+  const [ngos, setNgos] = useState(MOCK_NGO_AIDS);
   const [equipmentList, setEquipmentList] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -306,7 +306,7 @@ export default function AdminDashboard({ currentUser }) {
           { id: 'consultations', label: `Consultations (${consultations.length})`, icon: MessageSquare },
           { id: 'tourism', label: `Logistics Orders (${tourismOrders.length})`, icon: Plane },
           { id: 'charity', label: `NGO & Charity Aid (${ngos.length})`, icon: HeartHandshake },
-          { id: 'treatments', label: 'Surgical Tariffs', icon: Calculator },
+          { id: 'treatments', label: `Surgical Tariffs (${treatments.length})`, icon: Calculator },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
