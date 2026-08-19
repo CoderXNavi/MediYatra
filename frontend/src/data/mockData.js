@@ -1165,6 +1165,13 @@ export const MOCK_TRANSLATORS = [
   }
 ];
 
+export const MOCK_DEMO_USERS = [
+  { _id: 'usr_1', name: 'Vandana Patient', email: 'patient@mediyatra.org', role: 'Patient', status: 'Active', createdAt: '2026-01-15' },
+  { _id: 'usr_2', name: 'Dr. Naresh Trehan', email: 'doctor@mediyatra.org', role: 'Doctor', status: 'Active', createdAt: '2026-01-15' },
+  { _id: 'usr_3', name: 'Indraprastha Apollo Desk', email: 'hospital@mediyatra.org', role: 'Hospital', status: 'Active', createdAt: '2026-01-15' },
+  { _id: 'usr_4', name: 'Platform Operations Admin', email: 'admin@mediyatra.org', role: 'Admin', status: 'Active', createdAt: '2026-01-15' }
+];
+
 // ==================================================
 // JUDGE-READY DEMO PIPELINE & PATIENT RECORDS DATASET
 // ==================================================

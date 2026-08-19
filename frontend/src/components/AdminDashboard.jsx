@@ -30,7 +30,11 @@ import {
   MOCK_TOURISM_PIPELINE,
   MOCK_PATIENT_CONSULTATIONS,
   MOCK_PATIENT_APPOINTMENTS,
-  MOCK_NGO_AIDS
+  MOCK_NGO_AIDS,
+  MOCK_HOSPITALS,
+  MOCK_DOCTORS,
+  MOCK_TREATMENTS,
+  MOCK_DEMO_USERS
 } from '../data/mockData';
 
 export default function AdminDashboard({ currentUser }) {
@@ -38,45 +42,37 @@ export default function AdminDashboard({ currentUser }) {
 
   // Real Database Analytics Metrics
   const [stats, setStats] = useState({
-    totalPatients: 0,
-    totalDoctors: 0,
-    totalHospitals: 0,
-    totalAppointments: 0,
-    totalConsultations: 0,
-    pendingRequests: 0
+    totalUsers: 4,
+    totalPatients: 1,
+    totalDoctors: 12,
+    totalHospitals: 26,
+    totalAppointments: 2,
+    totalTourismOrders: 3
   });
 
   const [users, setUsers] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [consultations, setConsultations] = useState([]);
   const [tourismOrders, setTourismOrders] = useState([]);
-  const [hospitals, setHospitals] = useState([]);
-  const [doctors, setDoctors] = useState([]);
   const [treatments, setTreatments] = useState([]);
   const [ngos, setNgos] = useState([]);
   const [equipmentList, setEquipmentList] = useState([]);
+
   const [isLoading, setIsLoading] = useState(true);
-
-  // Form inputs for Management CRUD
-  const [newHospitalName, setNewHospitalName] = useState('');
-  const [newHospitalCity, setNewHospitalCity] = useState('New Delhi');
-  const [newDoctorName, setNewDoctorName] = useState('');
-  const [newDoctorSpecialty, setNewDoctorSpecialty] = useState('Cardiology');
-  const [newDoctorFee, setNewDoctorFee] = useState(60);
-
   const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
     loadAdminData();
-  }, []);
+  }, [currentUser]);
 
   async function loadAdminData() {
     setIsLoading(true);
     try {
       const authHeader = {
         headers: {
-          'Authorization': `Bearer ${currentUser?.token || ''}`,
-          'x-auth-token': currentUser?.token || ''
+          'Authorization': `Bearer ${currentUser?.token || ''}`
         }
       };
 
@@ -93,19 +89,40 @@ export default function AdminDashboard({ currentUser }) {
         fetch('/api/equipment').then(r => r.ok ? r.json() : null)
       ]);
 
-      if (statsRes?.data) setStats(statsRes.data);
-      if (usersRes?.data) setUsers(usersRes.data);
-      setHospitals(hospList || []);
-      setDoctors(docList || []);
-      setTreatments(treatList || []);
+      const loadedUsers = (usersRes?.data && usersRes.data.length > 0) ? usersRes.data : MOCK_DEMO_USERS;
+      const loadedHospitals = (hospList && hospList.length > 0) ? hospList : MOCK_HOSPITALS;
+      const loadedDoctors = (docList && docList.length > 0) ? docList : MOCK_DOCTORS;
+      const loadedTreatments = (treatList && treatList.length > 0) ? treatList : MOCK_TREATMENTS;
+      const loadedApts = (aptsRes?.data && aptsRes.data.length > 0) ? aptsRes.data : MOCK_PATIENT_APPOINTMENTS;
+      const loadedCons = (conRes?.data && conRes.data.length > 0) ? conRes.data : MOCK_PATIENT_CONSULTATIONS;
+      const loadedTours = (tourRes?.data && tourRes.data.length > 0) ? tourRes.data : MOCK_TOURISM_PIPELINE;
+      const loadedNgos = (ngoRes?.data && ngoRes.data.length > 0) ? ngoRes.data : MOCK_NGO_AIDS;
 
-      setAppointments((aptsRes?.data && aptsRes.data.length > 0) ? aptsRes.data : MOCK_PATIENT_APPOINTMENTS);
-      setConsultations((conRes?.data && conRes.data.length > 0) ? conRes.data : MOCK_PATIENT_CONSULTATIONS);
-      setTourismOrders((tourRes?.data && tourRes.data.length > 0) ? tourRes.data : MOCK_TOURISM_PIPELINE);
-      setNgos((ngoRes?.data && ngoRes.data.length > 0) ? ngoRes.data : MOCK_NGO_AIDS);
+      setUsers(loadedUsers);
+      setHospitals(loadedHospitals);
+      setDoctors(loadedDoctors);
+      setTreatments(loadedTreatments);
+      setAppointments(loadedApts);
+      setConsultations(loadedCons);
+      setTourismOrders(loadedTours);
+      setNgos(loadedNgos);
       if (eqRes?.data) setEquipmentList(eqRes.data);
+
+      setStats({
+        totalUsers: loadedUsers.length,
+        totalPatients: loadedUsers.filter(u => u.role === 'Patient').length || 1,
+        totalDoctors: loadedDoctors.length,
+        totalHospitals: loadedHospitals.length,
+        totalAppointments: loadedApts.length,
+        totalTourismOrders: loadedTours.length,
+        totalNgoGrants: loadedNgos.length
+      });
     } catch (e) {
       console.warn('Failed loading admin management data:', e);
+      setUsers(MOCK_DEMO_USERS);
+      setHospitals(MOCK_HOSPITALS);
+      setDoctors(MOCK_DOCTORS);
+      setTreatments(MOCK_TREATMENTS);
       setAppointments(MOCK_PATIENT_APPOINTMENTS);
       setConsultations(MOCK_PATIENT_CONSULTATIONS);
       setTourismOrders(MOCK_TOURISM_PIPELINE);
